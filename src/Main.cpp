@@ -36,7 +36,7 @@ const char* _fragmentShaderSource = "#version 330 core\n"
 
 int main() {
     glfwInit();
-    std::cout << "hej" << std::endl;
+    
     const int windowWidth = 800;
     const int windowHeight = 600;
 
