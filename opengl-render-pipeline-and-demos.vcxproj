@@ -148,6 +148,7 @@
   <ItemGroup>
     <ClCompile Include="src\glad.c" />
     <ClCompile Include="src\Main.cpp" />
+    <ClCompile Include="src\utils\file\path.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".gitattributes" />
@@ -157,7 +158,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Shader\Shader.hpp" />
-    <ClInclude Include="src\utils\file\file.h" />
+    <ClInclude Include="src\utils\file.h" />
+    <ClInclude Include="src\utils\stb_image.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

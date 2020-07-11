@@ -2,7 +2,7 @@
 #include <glad/glad.h>
 #include <glfw3.h>
 #include "Shader/Shader.hpp"
-#include "utils/file/file.h"
+#include "utils/file.h"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window);
@@ -14,7 +14,9 @@ unsigned int setVertexInput
     float vertices[],
     unsigned int verticesInBytes,
     unsigned int indices[],
-    unsigned int indicesInBytes
+    unsigned int indicesInBytes,
+    float texCoords[],
+    unsigned int texCoordsInBytes
 );
 
 int main() {
@@ -53,7 +55,12 @@ int main() {
         0, 1, 3,   // first triangle
         1, 2, 3    // second triangle
     };
-    auto VAO = setVertexInput(vertices, sizeof(vertices), indices, sizeof(indices));
+    float texCoords[] = {
+    0.0f, 0.0f,  // lower-left corner  
+    1.0f, 0.0f,  // lower-right corner
+    0.5f, 1.0f   // top-center corner
+    };
+    auto VAO = setVertexInput(vertices, sizeof(vertices), indices, sizeof(indices), texCoords, sizeof(texCoords));
 
     executeRenderLoop(window, ourShader, VAO);
 
@@ -84,7 +91,9 @@ unsigned int setVertexInput
     float vertices[],
     unsigned int verticesInBytes,
     unsigned int indices[],
-    unsigned int indicesInBytes
+    unsigned int indicesInBytes,
+    float texCoords[],
+    unsigned int texCoordsInBytes
 ) {
     unsigned int VAO;
     glGenVertexArrays(1, &VAO);

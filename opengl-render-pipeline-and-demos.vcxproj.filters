@@ -21,6 +21,9 @@
     <ClCompile Include="src\glad.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\utils\file\path.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include=".gitignore" />
@@ -29,10 +32,13 @@
     <None Include="src\shaders\TestShader\TestShader.vert" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\utils\file\file.h">
+    <ClInclude Include="src\Shader\Shader.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Shader\Shader.hpp">
+    <ClInclude Include="src\utils\stb_image.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utils\file.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
