@@ -25,5 +25,15 @@
   <ItemGroup>
     <None Include=".gitignore" />
     <None Include=".gitattributes" />
+    <None Include="src\shaders\TestShader\TestShader.frag" />
+    <None Include="src\shaders\TestShader\TestShader.vert" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\Shader\Shader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utils\file\file.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
