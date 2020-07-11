@@ -3,6 +3,7 @@
 #include <glfw3.h>
 #include "Shader/Shader.hpp"
 #include "utils/file.h"
+#include "utils/stb.h"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window);
