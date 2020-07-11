@@ -162,6 +162,12 @@
     <ClInclude Include="src\utils\stb.h" />
     <ClInclude Include="src\utils\stb\stb_image.h" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="src\resources\textures\awesomeface.png" />
+    <Image Include="src\resources\textures\cartoony-brown-stone.png" />
+    <Image Include="src\resources\textures\wooden-container.jpg" />
+    <Image Include="src\wooden-container.jpg" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
