@@ -4,6 +4,9 @@
 #include "Shader/Shader.hpp"
 #include "utils/fileUtils.h"
 #include "utils/stb.h"
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window);
@@ -74,10 +77,10 @@ int main() {
 }
 
 void executeRenderLoop(GLFWwindow* window, Shader shader, unsigned int VAO) {
+    shader.use();
+
     auto texture = generateAndBindTex2D(fileUtils::getFullPath("resources/textures/wooden-container.jpg").c_str(), ImageType::JPG);
     auto texture1 = generateAndBindTex2D(fileUtils::getFullPath("resources/textures/awesomeface.png").c_str(), ImageType::PNG);
-
-    shader.use();
     shader.setInt("texture1", 0);
     shader.setInt("texture2", 1);
 
@@ -87,16 +90,31 @@ void executeRenderLoop(GLFWwindow* window, Shader shader, unsigned int VAO) {
 
         clearBuffers();
 
-        shader.use();
-
-        glActiveTexture(GL_TEXTURE0); // activate the texture unit first before binding texture
+        glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, texture);
-
-        glActiveTexture(GL_TEXTURE1); // activate the texture unit first before binding texture
+        glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, texture1);
 
         glBindVertexArray(VAO);
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0); // TODO: makes number of indices not hardcoded
+
+        // Drawing first item
+        glm::mat4 trans = glm::mat4(1.0f);
+        trans = glm::translate(trans, glm::vec3(0.5f, -0.5f, 0.0f));
+        trans = glm::rotate(trans, (float)glfwGetTime(), glm::vec3(0.0, 0.0, 1.0));
+        trans = glm::scale(trans, glm::vec3(0.5, 0.5, 0.5));
+        unsigned int transformLoc = glGetUniformLocation(shader.ID, "transform");
+        glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
+
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0); // TODO: make number of indices not hardcoded
+
+        // Drawing second item
+        trans = glm::mat4(1.0f);
+        trans = glm::translate(trans, glm::vec3(-0.5f, 0.5f, 0.0f));
+        float scaleAmount = sin(glfwGetTime());
+        trans = glm::scale(trans, glm::vec3(scaleAmount, scaleAmount, scaleAmount));
+        glUniformMatrix4fv(transformLoc, 1, GL_FALSE, &trans[0][0]); // transformation matrix as reference instead of pointer (does the same thing)
+
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
