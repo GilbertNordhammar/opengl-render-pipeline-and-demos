@@ -30,6 +30,7 @@
     <None Include=".gitattributes" />
     <None Include="src\shaders\TestShader\TestShader.frag" />
     <None Include="src\shaders\TestShader\TestShader.vert" />
+    <None Include="src\Camera\Camera.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Shader\Shader.hpp">
