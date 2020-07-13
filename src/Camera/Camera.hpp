@@ -10,7 +10,9 @@ enum class CameraMovement {
     FORWARD,
     BACKWARD,
     LEFT,
-    RIGHT
+    RIGHT,
+    UP,
+    DOWN
 };
 
 // Default camera values
@@ -45,15 +47,15 @@ public:
     
     void Move(CameraMovement direction, float deltaTime);
     void ProcessMouseMovement(float xoffset, float yoffset, GLboolean constrainPitch = true);
-    void ProcessMouseScroll(float yoffset);
+    void Zoom(float yoffset);
     
-    //void SetFov(float value) { _fov = std::clamp(value, 0.0f, 90.0f); }
+    void SetFov(float value) { _fov = std::fmax(0, std::fmin(90, value)); }
     float GetFov() { return _fov; }
 
-    void SetMovementSpeed(float value) { _movementSpeed = std::fmaxf(0, value); }
+    void SetMovementSpeed(float value) { _movementSpeed = std::fmax(0, value); }
     float GetMovementSpeed() { return _movementSpeed; }
 
-    void SetMouseSensitivity(float value) { _mouseSensitivity = std::fmaxf(0, value); }
+    void SetMouseSensitivity(float value) { _mouseSensitivity = std::fmax(0, value); }
     float GetMouseSensitivity() { return _mouseSensitivity; }
 
     glm::mat4 GetViewMatrix() { return glm::lookAt(Position, Position + _front, _up); }

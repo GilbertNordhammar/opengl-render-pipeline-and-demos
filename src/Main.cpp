@@ -38,7 +38,7 @@ Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
 
 int main() {
     glfwInit();
-
+    
     GLFWwindow* window = createWindow(windowWidth, windowHeight);
     if (window == NULL)
     {
@@ -314,10 +314,10 @@ void processInput(GLFWwindow* window)
         camera.Move(CameraMovement::LEFT, deltaTime);
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
         camera.Move(CameraMovement::RIGHT, deltaTime);
-    /*if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
-        cameraPos += cameraSpeed * cameraUp;
+    if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
+        camera.Move(CameraMovement::UP, deltaTime);
     if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
-        cameraPos -= cameraSpeed * cameraUp;*/
+        camera.Move(CameraMovement::DOWN, deltaTime);
 }
 
 void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
@@ -339,5 +339,5 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
 
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
-    camera.ProcessMouseScroll(yoffset);
+    camera.Zoom(yoffset);
 }

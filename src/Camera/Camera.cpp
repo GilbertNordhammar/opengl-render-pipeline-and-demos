@@ -52,6 +52,10 @@ void Camera::Move(CameraMovement direction, float deltaTime)
         Position -= _right * velocity;
     if (direction == CameraMovement::RIGHT)
         Position += _right * velocity;
+    if (direction == CameraMovement::UP)
+        Position += _up * velocity;
+    if (direction == CameraMovement::DOWN)
+        Position -= _up * velocity;
 }
 
 void Camera::ProcessMouseMovement(float xoffset, float yoffset, GLboolean constrainPitch)
@@ -73,13 +77,9 @@ void Camera::ProcessMouseMovement(float xoffset, float yoffset, GLboolean constr
     UpdateCameraVectors();
 }
 
-void Camera::ProcessMouseScroll(float yoffset)
+void Camera::Zoom(float fovOffset)
 {
-    _fov -= (float)yoffset;
-    if (_fov < 1.0f)
-        _fov = 1.0f;
-    if (_fov > 45.0f)
-        _fov = 45.0f;
+    SetFov(_fov - fovOffset);
 }
 
 void Camera::UpdateCameraVectors()
