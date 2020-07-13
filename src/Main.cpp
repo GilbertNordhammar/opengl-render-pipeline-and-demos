@@ -153,7 +153,7 @@ void executeRenderLoop(GLFWwindow* window, Shader shader, unsigned int VAO) {
         glBindTexture(GL_TEXTURE_2D, texture);
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, texture1);
-
+        
         glBindVertexArray(VAO);
 
         glm::mat4 view;
@@ -163,7 +163,7 @@ void executeRenderLoop(GLFWwindow* window, Shader shader, unsigned int VAO) {
         glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
 
         glm::mat4 projection;
-        projection = glm::perspective(glm::radians(camera.Zoom), (float) windowWidth / windowHeight, 0.1f, 100.0f);
+        projection = glm::perspective(glm::radians(camera.GetFov()), (float) windowWidth / windowHeight, 0.1f, 100.0f);
         int projectionLoc = glGetUniformLocation(shader.ID, "projection");
         glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
@@ -307,13 +307,13 @@ void processInput(GLFWwindow* window)
 
     const float cameraSpeed = 2.5f * deltaTime; // adjust accordingly
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-        camera.ProcessKeyboard(Camera_Movement::FORWARD, deltaTime);
+        camera.Move(CameraMovement::FORWARD, deltaTime);
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-        camera.ProcessKeyboard(Camera_Movement::BACKWARD, deltaTime);
+        camera.Move(CameraMovement::BACKWARD, deltaTime);
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-        camera.ProcessKeyboard(Camera_Movement::LEFT, deltaTime);
+        camera.Move(CameraMovement::LEFT, deltaTime);
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-        camera.ProcessKeyboard(Camera_Movement::RIGHT, deltaTime);
+        camera.Move(CameraMovement::RIGHT, deltaTime);
     /*if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
         cameraPos += cameraSpeed * cameraUp;
     if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
