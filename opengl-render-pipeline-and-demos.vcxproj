@@ -156,6 +156,8 @@
     <None Include=".gitattributes" />
     <None Include=".gitignore" />
     <None Include="src\Camera\Camera.hpp" />
+    <None Include="src\shaders\LightSource\LightSource.frag" />
+    <None Include="src\shaders\LightSource\LightSource.vert" />
     <None Include="src\shaders\TestShader\TestShader.frag" />
     <None Include="src\shaders\TestShader\TestShader.vert" />
   </ItemGroup>
