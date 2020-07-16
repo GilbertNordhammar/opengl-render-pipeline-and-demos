@@ -115,10 +115,12 @@ int main() {
         fileUtils::getFullPath("shaders/LightSource/LightSource.frag").c_str());
 
     cubeShader.use();
-    auto cubeDiffuseTexture = generateAndBindTex2D(fileUtils::getFullPath("resources/textures/steel-wooden-container/diffuse.png").c_str(), ImageType::PNG, false);
-    auto cubeSpecularTexture = generateAndBindTex2D(fileUtils::getFullPath("resources/textures/steel-wooden-container/specular.png").c_str(), ImageType::PNG, false);
+    auto cubeDiffuseMap = generateAndBindTex2D(fileUtils::getFullPath("resources/textures/steel-wooden-container/diffuse.png").c_str(), ImageType::PNG, false);
+    auto cubeSpecularMap = generateAndBindTex2D(fileUtils::getFullPath("resources/textures/steel-wooden-container/specular.png").c_str(), ImageType::PNG, false);
+    auto cubeEmissionMap = generateAndBindTex2D(fileUtils::getFullPath("resources/textures/steel-wooden-container/emission.jpg").c_str(), ImageType::JPG, false);
     cubeShader.setInt("material.diffuse", 0);
     cubeShader.setInt("material.specular", 1);
+    cubeShader.setInt("material.emission", 2);
 
     glm::vec3 lightPos(2.0f, 2.0f, 0.0f);
     glEnable(GL_DEPTH_TEST);
@@ -152,9 +154,11 @@ int main() {
         cubeShader.setVec3("viewPos", camera.Position);
 
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, cubeDiffuseTexture);
+        glBindTexture(GL_TEXTURE_2D, cubeDiffuseMap);
         glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, cubeSpecularTexture);
+        glBindTexture(GL_TEXTURE_2D, cubeSpecularMap);
+        glActiveTexture(GL_TEXTURE2);
+        glBindTexture(GL_TEXTURE_2D, cubeEmissionMap);
         cubeShader.setFloat("material.shininess", 32.0f);
 
         cubeShader.setVec3("light.position", lightPos);
