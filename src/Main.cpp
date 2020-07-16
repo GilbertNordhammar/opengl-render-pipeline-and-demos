@@ -115,8 +115,10 @@ int main() {
         fileUtils::getFullPath("shaders/LightSource/LightSource.frag").c_str());
 
     cubeShader.use();
-    auto cubeTexture = generateAndBindTex2D(fileUtils::getFullPath("resources/textures/wooden-container.jpg").c_str(), ImageType::JPG, false);
-    cubeShader.setInt("texture1", 0);
+    auto cubeDiffuseTexture = generateAndBindTex2D(fileUtils::getFullPath("resources/textures/steel-wooden-container/diffuse.png").c_str(), ImageType::PNG, false);
+    auto cubeSpecularTexture = generateAndBindTex2D(fileUtils::getFullPath("resources/textures/steel-wooden-container/specular.png").c_str(), ImageType::PNG, false);
+    cubeShader.setInt("material.diffuse", 0);
+    cubeShader.setInt("material.specular", 1);
 
     glm::vec3 lightPos(2.0f, 2.0f, 0.0f);
     glEnable(GL_DEPTH_TEST);
@@ -129,10 +131,7 @@ int main() {
         lightPos.x = 1.0f + sin(glfwGetTime()) * 2.0f;
         lightPos.y = sin(glfwGetTime() / 2.0f) * 1.0f;
 
-        glm::vec3 lightColor;
-        lightColor.x = sin(glfwGetTime() * 2.0f);
-        lightColor.y = sin(glfwGetTime() * 0.7f);
-        lightColor.z = sin(glfwGetTime() * 1.3f);
+        glm::vec3 lightColor = glm::vec3(1.0, 1.0, 1.0);
 
         glm::vec3 diffuseColor = lightColor * glm::vec3(0.5f);
         glm::vec3 ambientColor = diffuseColor * glm::vec3(0.2f);
@@ -152,18 +151,16 @@ int main() {
 
         cubeShader.setVec3("viewPos", camera.Position);
 
-        cubeShader.setVec3("material.ambient", ambientColor);
-        cubeShader.setVec3("material.diffuse", diffuseColor);
-        cubeShader.setVec3("material.specular", 0.5f, 0.5f, 0.5f);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, cubeDiffuseTexture);
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, cubeSpecularTexture);
         cubeShader.setFloat("material.shininess", 32.0f);
 
         cubeShader.setVec3("light.position", lightPos);
         cubeShader.setVec3("light.ambient", 0.2f, 0.2f, 0.2f);
         cubeShader.setVec3("light.diffuse", 0.5f, 0.5f, 0.5f);
         cubeShader.setVec3("light.specular", 1.0f, 1.0f, 1.0f);
-
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, cubeTexture);
 
         glm::vec3 cubePositions[] = {
                 glm::vec3(0.0f,  0.0f,  0.0f),

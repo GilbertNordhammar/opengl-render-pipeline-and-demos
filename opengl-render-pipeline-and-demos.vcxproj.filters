@@ -64,5 +64,11 @@
     <Image Include="src\resources\textures\cartoony-brown-stone.png">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="src\resources\textures\steel-wooden-container\diffuse.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="src\resources\textures\steel-wooden-container\specular.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

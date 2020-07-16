@@ -170,6 +170,8 @@
   <ItemGroup>
     <Image Include="src\resources\textures\awesomeface.png" />
     <Image Include="src\resources\textures\cartoony-brown-stone.png" />
+    <Image Include="src\resources\textures\steel-wooden-container\diffuse.png" />
+    <Image Include="src\resources\textures\steel-wooden-container\specular.png" />
     <Image Include="src\resources\textures\wooden-container.jpg" />
     <Image Include="src\wooden-container.jpg" />
   </ItemGroup>
