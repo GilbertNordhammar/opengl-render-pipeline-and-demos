@@ -108,11 +108,15 @@ int main() {
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     pointVertexAttributesLightSource();
 
-    Shader cubeShader(fileUtils::getFullPath("shaders/StandardPhong/StandardPhong.vert").c_str(),
-        fileUtils::getFullPath("shaders/StandardPhong/StandardPhong.frag").c_str());
+    Shader cubeShader(
+        fileUtils::getFullPath("shaders/StandardPhong/StandardPhong.vert").c_str(),
+        fileUtils::getFullPath("shaders/StandardPhong/StandardPhong.frag").c_str()
+    );
 
-    Shader lightSourceShader(fileUtils::getFullPath("shaders/LightSource/LightSource.vert").c_str(),
-        fileUtils::getFullPath("shaders/LightSource/LightSource.frag").c_str());
+    Shader lightSourceShader(
+        fileUtils::getFullPath("shaders/LightSource/LightSource.vert").c_str(),
+        fileUtils::getFullPath("shaders/LightSource/LightSource.frag").c_str()
+    );
 
     cubeShader.use();
     auto cubeDiffuseMap = generateAndBindTex2D(fileUtils::getFullPath("resources/textures/steel-wooden-container/diffuse.png").c_str(), ImageType::PNG, false);
