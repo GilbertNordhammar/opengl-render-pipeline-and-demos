@@ -76,6 +76,8 @@ void main()
     // phase 3: Spot light
     result += CalcSpotLight(spotLight, norm, FragmentPosWS, viewDir);    
     
+    result += texture(material.emission, TexCoords).rgb;
+
     FragColor = vec4(result, 1.0);
 }
 

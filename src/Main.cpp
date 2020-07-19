@@ -136,15 +136,9 @@ int main() {
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
 
-        glm::vec3 lightColor = glm::vec3(1.0, 1.0, 1.0);
-
-        glm::vec3 diffuseColor = lightColor * glm::vec3(0.5f);
-        glm::vec3 ambientColor = diffuseColor * glm::vec3(0.2f);
-
         processInput(window);
         clearBuffers();
 
-        glm::mat4 model;
         glm::mat4 view = camera.GetViewMatrix();
         glm::mat4 projection = glm::perspective(glm::radians(camera.GetFov()), (float)windowWidth / windowHeight, 0.1f, 100.0f);
 
@@ -156,6 +150,7 @@ int main() {
 
         cubeShader.setVec3("viewPos", camera.Position);
 
+        // Setting material properties
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, cubeDiffuseMap);
         glActiveTexture(GL_TEXTURE1);
@@ -236,9 +231,8 @@ int main() {
         glBindVertexArray(cubeVAO);
         for (unsigned int i = 0; i < 15; i++)
         {
-            model = glm::mat4(1.0f);
+            glm::mat4 model = glm::mat4(1.0f);
             model = glm::translate(model, cubePositions[i]);
-            //float angle = glfwGetTime() * 20.0f * i;
             float angle = 20.0f * i;
             model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
             cubeShader.setMat4("model", model);
@@ -250,12 +244,12 @@ int main() {
         lightSourceShader.use();
         lightSourceShader.setMat4("projection", projection);
         lightSourceShader.setMat4("view", view);
-        lightSourceShader.setVec3("lightColor", lightColor);
+        lightSourceShader.setVec3("lightColor", glm::vec3(1.0f, 1.0f, 1.0f));
 
         glBindVertexArray(lightSourceVAO);
         for (unsigned int i = 0; i < 4; i++)
         {
-            model = glm::mat4(1.0f);
+            glm::mat4 model = glm::mat4(1.0f);
             model = glm::translate(model, pointLightPositions[i]);
             model = glm::scale(model, glm::vec3(0.2f));
             lightSourceShader.setMat4("model", model);
