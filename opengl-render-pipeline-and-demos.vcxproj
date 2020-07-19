@@ -82,9 +82,13 @@
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>D:\Programmering\libraries\c++\glfw\include;$(IncludePath)</IncludePath>
     <LibraryPath>D:\Programmering\libraries\c++\glfw\lib;$(LibraryPath)</LibraryPath>
+    <PostBuildEventUseInBuild>true</PostBuildEventUseInBuild>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
+    <PostBuildEventUseInBuild>true</PostBuildEventUseInBuild>
+    <IncludePath>D:\Programmering\libraries\c++\glfw\include;$(IncludePath)</IncludePath>
+    <LibraryPath>D:\Programmering\libraries\c++\glfw\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -121,7 +125,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)\src\dependencies\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\dependencies\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -129,6 +133,9 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>glfw3.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy "$(SolutionDir)resources" "$(TargetDir)resources" /E /H /C /I /Y</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -138,13 +145,18 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)\dependencies\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>glfw3.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy "$(SolutionDir)resources" "$(TargetDir)resources" /E /H /C /I /Y</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\Camera\Camera.cpp" />
@@ -155,7 +167,13 @@
   <ItemGroup>
     <None Include=".gitattributes" />
     <None Include=".gitignore" />
+    <None Include="resources\shaders\LightSource\LightSource.frag" />
+    <None Include="resources\shaders\LightSource\LightSource.vert" />
+    <None Include="resources\shaders\StandardPhong\StandardPhong.frag" />
+    <None Include="resources\shaders\StandardPhong\StandardPhong.vert" />
     <None Include="src\Camera\Camera.hpp" />
+    <None Include="src\shaders\LightSource\LightSource.frag" />
+    <None Include="src\shaders\LightSource\LightSource.vert" />
     <None Include="src\shaders\StandardPhong\StandardPhong.frag" />
     <None Include="src\shaders\StandardPhong\StandardPhong.vert" />
   </ItemGroup>
@@ -166,6 +184,12 @@
     <ClInclude Include="src\utils\stb\stb_image.h" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="resources\textures\awesomeface.png" />
+    <Image Include="resources\textures\cartoony-brown-stone.png" />
+    <Image Include="resources\textures\steel-wooden-container\diffuse.png" />
+    <Image Include="resources\textures\steel-wooden-container\emission.jpg" />
+    <Image Include="resources\textures\steel-wooden-container\specular.png" />
+    <Image Include="resources\textures\wooden-container.jpg" />
     <Image Include="src\resources\textures\awesomeface.png" />
     <Image Include="src\resources\textures\cartoony-brown-stone.png" />
     <Image Include="src\resources\textures\steel-wooden-container\diffuse.png" />

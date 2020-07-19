@@ -109,19 +109,19 @@ int main() {
     pointVertexAttributesLightSource();
 
     Shader cubeShader(
-        fileUtils::getFullPath("shaders/StandardPhong/StandardPhong.vert").c_str(),
-        fileUtils::getFullPath("shaders/StandardPhong/StandardPhong.frag").c_str()
+        fileUtils::getFullResourcesPath("shaders/StandardPhong/StandardPhong.vert").c_str(),
+        fileUtils::getFullResourcesPath("shaders/StandardPhong/StandardPhong.frag").c_str()
     );
 
     Shader lightSourceShader(
-        fileUtils::getFullPath("shaders/LightSource/LightSource.vert").c_str(),
-        fileUtils::getFullPath("shaders/LightSource/LightSource.frag").c_str()
+        fileUtils::getFullResourcesPath("shaders/LightSource/LightSource.vert").c_str(),
+        fileUtils::getFullResourcesPath("shaders/LightSource/LightSource.frag").c_str()
     );
 
     cubeShader.use();
-    auto cubeDiffuseMap = generateAndBindTex2D(fileUtils::getFullPath("resources/textures/steel-wooden-container/diffuse.png").c_str(), ImageType::PNG, false);
-    auto cubeSpecularMap = generateAndBindTex2D(fileUtils::getFullPath("resources/textures/steel-wooden-container/specular.png").c_str(), ImageType::PNG, false);
-    auto cubeEmissionMap = generateAndBindTex2D(fileUtils::getFullPath("resources/textures/steel-wooden-container/emission.jpg").c_str(), ImageType::JPG, false);
+    auto cubeDiffuseMap = generateAndBindTex2D(fileUtils::getFullResourcesPath("textures/steel-wooden-container/diffuse.png").c_str(), ImageType::PNG, false);
+    auto cubeSpecularMap = generateAndBindTex2D(fileUtils::getFullResourcesPath("textures/steel-wooden-container/specular.png").c_str(), ImageType::PNG, false);
+    auto cubeEmissionMap = generateAndBindTex2D(fileUtils::getFullResourcesPath("textures/steel-wooden-container/emission.jpg").c_str(), ImageType::JPG, false);
     cubeShader.setInt("material.diffuse", 0);
     cubeShader.setInt("material.specular", 1);
     cubeShader.setInt("material.emission", 2);
