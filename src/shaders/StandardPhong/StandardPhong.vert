@@ -8,14 +8,14 @@ uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
 
-out vec2 TexCoord;
-out vec3 WorldPos;
+out vec2 TexCoords;
+out vec3 FragmentPosWS;
 out vec3 Normal;
 
 void main()
 {
-    TexCoord = aTexCoord;
-    WorldPos = vec3(model * vec4(aPos, 1.0)); 
+    TexCoords = aTexCoord;
+    FragmentPosWS = vec3(model * vec4(aPos, 1.0)); 
     Normal = mat3(transpose(inverse(model))) * aNormal; // TODO: Move transpose calculation to CPU and pass via uniform
     gl_Position = projection * view * model * vec4(aPos, 1.0);
 }
