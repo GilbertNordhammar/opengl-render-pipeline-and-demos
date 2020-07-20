@@ -31,10 +31,6 @@
   <ItemGroup>
     <None Include=".gitignore" />
     <None Include=".gitattributes" />
-    <None Include="src\shaders\StandardPhong\StandardPhong.frag" />
-    <None Include="src\shaders\StandardPhong\StandardPhong.vert" />
-    <None Include="src\shaders\LightSource\LightSource.vert" />
-    <None Include="src\shaders\LightSource\LightSource.frag" />
     <None Include="src\Camera\Camera.hpp">
       <Filter>Header Files</Filter>
     </None>
@@ -58,25 +54,7 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="src\resources\textures\wooden-container.jpg">
-      <Filter>Resource Files</Filter>
-    </Image>
     <Image Include="src\wooden-container.jpg">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="src\resources\textures\awesomeface.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="src\resources\textures\cartoony-brown-stone.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="src\resources\textures\steel-wooden-container\diffuse.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="src\resources\textures\steel-wooden-container\specular.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="src\resources\textures\steel-wooden-container\emission.jpg">
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="resources\textures\steel-wooden-container\diffuse.png">

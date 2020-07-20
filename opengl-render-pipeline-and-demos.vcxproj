@@ -176,10 +176,6 @@
     <None Include="resources\shaders\StandardPhong\StandardPhong.frag" />
     <None Include="resources\shaders\StandardPhong\StandardPhong.vert" />
     <None Include="src\Camera\Camera.hpp" />
-    <None Include="src\shaders\LightSource\LightSource.frag" />
-    <None Include="src\shaders\LightSource\LightSource.vert" />
-    <None Include="src\shaders\StandardPhong\StandardPhong.frag" />
-    <None Include="src\shaders\StandardPhong\StandardPhong.vert" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Shader\Shader.hpp" />
@@ -194,12 +190,6 @@
     <Image Include="resources\textures\steel-wooden-container\emission.jpg" />
     <Image Include="resources\textures\steel-wooden-container\specular.png" />
     <Image Include="resources\textures\wooden-container.jpg" />
-    <Image Include="src\resources\textures\awesomeface.png" />
-    <Image Include="src\resources\textures\cartoony-brown-stone.png" />
-    <Image Include="src\resources\textures\steel-wooden-container\diffuse.png" />
-    <Image Include="src\resources\textures\steel-wooden-container\emission.jpg" />
-    <Image Include="src\resources\textures\steel-wooden-container\specular.png" />
-    <Image Include="src\resources\textures\wooden-container.jpg" />
     <Image Include="src\wooden-container.jpg" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
