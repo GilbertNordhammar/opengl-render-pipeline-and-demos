@@ -3,11 +3,12 @@
 #include <glfw3.h>
 #include "Shader/Shader.hpp"
 #include "utils/fileUtils.h"
-#include "utils/stb.h"
+#include <stb.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include "Camera/Camera.hpp"
+#include "Model/Model.hpp"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window);
@@ -16,10 +17,8 @@ GLFWwindow* createWindow(int width, int height);
 unsigned int generateAndBindVAO();
 unsigned int generateAndBindVBO(float vertices[], unsigned int verticesInBytes);
 unsigned int generateAndBindEBO(unsigned int indices[], unsigned int indicesInBytes);
-void pointVertexAttributes();
 void pointVertexAttributesLightSource();
 enum class ImageType {JPG, PNG};
-unsigned int generateAndBindTex2D(const char* texSrc, ImageType type, bool flipVertically);
 void mouseCallback(GLFWwindow* window, double xpos, double ypos);
 void scrollCallback(GLFWwindow* window, double xoffset, double yoffset);
 
@@ -99,12 +98,8 @@ int main() {
     -0.5f,  0.5f, -0.5f,    0.0f, 1.0f,     0.0f,  1.0f,  0.0f
     };
 
-
-    auto cubeVAO = generateAndBindVAO();
-    auto VBO = generateAndBindVBO(vertices, sizeof(vertices));
-    pointVertexAttributes();
-
     auto lightSourceVAO = generateAndBindVAO();
+    auto VBO = generateAndBindVBO(vertices, sizeof(vertices));
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     pointVertexAttributesLightSource();
 
@@ -118,14 +113,6 @@ int main() {
         fileUtils::getFullResourcesPath("shaders/LightSource/LightSource.frag").c_str()
     );
 
-    cubeShader.use();
-    auto cubeDiffuseMap = generateAndBindTex2D(fileUtils::getFullResourcesPath("textures/steel-wooden-container/diffuse.png").c_str(), ImageType::PNG, false);
-    auto cubeSpecularMap = generateAndBindTex2D(fileUtils::getFullResourcesPath("textures/steel-wooden-container/specular.png").c_str(), ImageType::PNG, false);
-    auto cubeEmissionMap = generateAndBindTex2D(fileUtils::getFullResourcesPath("textures/steel-wooden-container/emission.jpg").c_str(), ImageType::JPG, false);
-    cubeShader.setInt("material.diffuse", 0);
-    cubeShader.setInt("material.specular", 1);
-    cubeShader.setInt("material.emission", 2);
-
     glm::vec3 pointLightPositions[] = {
         glm::vec3(0.7f,  0.2f,  20.0f),
         glm::vec3(2.3f, -3.3f, -4.0f),
@@ -133,7 +120,15 @@ int main() {
         glm::vec3(0.0f,  0.0f, -3.0f)
     };
 
+    stbi_set_flip_vertically_on_load(true);
     glEnable(GL_DEPTH_TEST);
+
+    Shader shader = Shader(
+        fileUtils::getFullResourcesPath("shaders/StandardPhong/StandardPhong.vert").c_str(),
+        fileUtils::getFullResourcesPath("shaders/StandardPhong/StandardPhong.frag").c_str()
+    );
+    Model ourModel = Model(fileUtils::getFullResourcesPath("models/backpack/backpack.obj"));
+    
     while (!glfwWindowShouldClose(window))
     {
         float currentFrame = glfwGetTime();
@@ -155,12 +150,6 @@ int main() {
         cubeShader.setVec3("viewPos", camera.Position);
 
         // Setting material properties
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, cubeDiffuseMap);
-        glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, cubeSpecularMap);
-        /*glActiveTexture(GL_TEXTURE2);
-        glBindTexture(GL_TEXTURE_2D, cubeEmissionMap);*/
         cubeShader.setFloat("material.shininess", 32.0f);
 
         // Directional light
@@ -214,35 +203,12 @@ int main() {
         cubeShader.setFloat("spotLight.cutOff", glm::cos(glm::radians(12.5f)));
         cubeShader.setFloat("spotLight.outerCutOff", glm::cos(glm::radians(15.0f)));
 
-        glm::vec3 cubePositions[] = {
-                glm::vec3(0.0f,  0.0f,  0.0f),
-                glm::vec3(2.0f,  5.0f, -7.0f),
-                glm::vec3(-1.5f, -2.2f, -2.5f),
-                glm::vec3(-3.8f, -2.0f, -5.3f),
-                glm::vec3(2.4f, -0.4f, -3.5f),
-                glm::vec3(-1.7f,  3.0f, -7.5f),
-                glm::vec3(1.3f, -2.0f, -2.5f),
-                glm::vec3(1.5f,  2.0f, -2.5f),
-                glm::vec3(1.5f,  0.2f, -1.5f),
-                glm::vec3(-1.3f,  1.0f, -1.5f),
-                glm::vec3(-1.7f,  1.0f, -7.5f),
-                glm::vec3(1.3f, -2.0f, -7.5f),
-                glm::vec3(1.5f,  2.0f, -6.5f),
-                glm::vec3(1.5f,  0.2f, -5.5f),
-                glm::vec3(-1.3f,  1.0f, -8.5f)
-        };
+        glm::mat4 model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f)); // translate it down so it's at the center of the scene
+        model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));	// it's a bit too big for our scene, so scale it down
+        cubeShader.setMat4("model", model);
 
-        glBindVertexArray(cubeVAO);
-        for (unsigned int i = 0; i < 15; i++)
-        {
-            glm::mat4 model = glm::mat4(1.0f);
-            model = glm::translate(model, cubePositions[i]);
-            float angle = 20.0f * i;
-            model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
-            cubeShader.setMat4("model", model);
-
-            glDrawArrays(GL_TRIANGLES, 0, 36);
-        }
+        ourModel.Draw(cubeShader);
 
         // Drawing spot light cubes
         lightSourceShader.use();
@@ -294,54 +260,9 @@ unsigned int generateAndBindEBO(unsigned int indices[], unsigned int indicesInBy
     return EBO;
 }
 
-void pointVertexAttributes() {
-    // position attribute
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-
-    // UV attribute
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
-    glEnableVertexAttribArray(1);
-
-    // normal attribute
-    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(5 * sizeof(float)));
-    glEnableVertexAttribArray(2);
-}
-
 void pointVertexAttributesLightSource() {
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
-}
-
-unsigned int generateAndBindTex2D(const char* texSrc, ImageType type, bool flipVertically) {
-    // Load and bind texture
-    unsigned int texture;
-    glGenTextures(1, &texture);
-    glBindTexture(GL_TEXTURE_2D, texture);
-    
-    // set the texture wrapping/filtering options (on the currently bound texture object)
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-    // load and generate the texture
-    stbi_set_flip_vertically_on_load(flipVertically);
-    int width, height, nrChannels;
-    unsigned char* data = stbi_load(texSrc, &width, &height, &nrChannels, 0);
-    if (data)
-    {
-        auto pixelFormat = type == ImageType::JPG ? GL_RGB : GL_RGBA;
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, pixelFormat, GL_UNSIGNED_BYTE, data);
-        glGenerateMipmap(GL_TEXTURE_2D);
-    }
-    else
-    {
-        std::cout << "Failed to load texture at " << texSrc << std::endl;
-    }
-    stbi_image_free(data);
-
-    return texture;
 }
 
 GLFWwindow* createWindow(int width, int height) {

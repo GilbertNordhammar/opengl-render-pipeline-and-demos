@@ -129,7 +129,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)dependencies\glm;$(SolutionDir)dependencies\glfw\include;$(SolutionDir)dependencies\glad;$(SolutionDir)dependencies\assimp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)dependencies\glm;$(SolutionDir)dependencies\glfw\include;$(SolutionDir)dependencies\glad;$(SolutionDir)dependencies\assimp\include;$(SolutionDir)dependencies\stb;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -140,7 +140,7 @@
     </Link>
     <PostBuildEvent>
       <Command>xcopy "$(SolutionDir)resources" "$(TargetDir)resources" /E /H /C /I /Y
-xcopy "$(SolutionDir)dependencies\assimp\lib\assimp-vc142-mtd.dll" "$(TargetDir)"</Command>
+xcopy "$(SolutionDir)dependencies\assimp\lib\assimp-vc142-mtd.dll" "$(TargetDir)" /Y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -151,7 +151,7 @@ xcopy "$(SolutionDir)dependencies\assimp\lib\assimp-vc142-mtd.dll" "$(TargetDir)
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)dependencies\glm;$(SolutionDir)dependencies\glfw\include;$(SolutionDir)dependencies\glad;$(SolutionDir)dependencies\assimp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)dependencies\glm;$(SolutionDir)dependencies\glfw\include;$(SolutionDir)dependencies\glad;$(SolutionDir)dependencies\assimp\include;$(SolutionDir)dependencies\stb;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -163,13 +163,15 @@ xcopy "$(SolutionDir)dependencies\assimp\lib\assimp-vc142-mtd.dll" "$(TargetDir)
     </Link>
     <PostBuildEvent>
       <Command>xcopy "$(SolutionDir)resources" "$(TargetDir)resources" /E /H /C /I /Y
-xcopy "$(SolutionDir)dependencies\assimp\lib\assimp-vc142-mtd.dll" "$(TargetDir)"</Command>
+xcopy "$(SolutionDir)dependencies\assimp\lib\assimp-vc142-mtd.dll" "$(TargetDir)" /Y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\Camera\Camera.cpp" />
     <ClCompile Include="src\glad.c" />
     <ClCompile Include="src\Main.cpp" />
+    <ClCompile Include="src\Mesh\Mesh.cpp" />
+    <ClCompile Include="src\Model\Model.cpp" />
     <ClCompile Include="src\utils\fileUtils\path.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -182,10 +184,10 @@ xcopy "$(SolutionDir)dependencies\assimp\lib\assimp-vc142-mtd.dll" "$(TargetDir)
     <None Include="src\Camera\Camera.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Mesh\Mesh.hpp" />
+    <ClInclude Include="src\Model\Model.hpp" />
     <ClInclude Include="src\Shader\Shader.hpp" />
     <ClInclude Include="src\utils\fileUtils.h" />
-    <ClInclude Include="src\utils\stb.h" />
-    <ClInclude Include="src\utils\stb\stb_image.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="resources\textures\awesomeface.png" />
