@@ -60,9 +60,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="src\wooden-container.jpg">
-      <Filter>Resource Files</Filter>
-    </Image>
     <Image Include="resources\textures\steel-wooden-container\diffuse.png">
       <Filter>Resource Files</Filter>
     </Image>
