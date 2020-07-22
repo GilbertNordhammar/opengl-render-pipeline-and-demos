@@ -56,17 +56,28 @@ void Mesh::Draw(Shader& shader)
     for (unsigned int i = 0; i < textures.size(); i++)
     {
         glActiveTexture(GL_TEXTURE0 + i);
-        
+
         std::string number;
-        std::string name = textures[i].type;
-        if (name == "texture_diffuse")
+        std::string name;
+
+        switch (textures[i].type) {
+        case aiTextureType::aiTextureType_DIFFUSE:
+            name = "texture_diffuse";
             number = std::to_string(diffuseNr++);
-        else if (name == "texture_specular")
-            number = std::to_string(specularNr++); // transfer unsigned int to stream
-        else if (name == "texture_normal")
-            number = std::to_string(normalNr++); // transfer unsigned int to stream
-        else if (name == "texture_height")
-            number = std::to_string(heightNr++); // transfer unsigned int to stream
+            break;
+        case aiTextureType::aiTextureType_SPECULAR:
+            name = "texture_specular";
+            number = std::to_string(specularNr++);
+            break;
+        case aiTextureType::aiTextureType_NORMALS:
+            name = "texture_normal";
+            number = std::to_string(normalNr++);
+            break;
+        case aiTextureType::aiTextureType_HEIGHT:
+            name = "texture_height";
+            number = std::to_string(heightNr++);
+            break;
+        }
 
         shader.setFloat(("material." + name + number).c_str(), i);
         glBindTexture(GL_TEXTURE_2D, textures[i].id);
