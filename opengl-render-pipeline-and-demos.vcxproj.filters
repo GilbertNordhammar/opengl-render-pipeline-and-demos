@@ -44,6 +44,8 @@
     <None Include="resources\shaders\LightSource\LightSource.vert" />
     <None Include="resources\shaders\StandardPhong\StandardPhong.frag" />
     <None Include="resources\shaders\StandardPhong\StandardPhong.vert" />
+    <None Include="resources\shaders\LinearDepthDisplay\LinearDepthDisplay.frag" />
+    <None Include="resources\shaders\LinearDepthDisplay\LinearDepthDisplay.vert" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Shader\Shader.hpp">

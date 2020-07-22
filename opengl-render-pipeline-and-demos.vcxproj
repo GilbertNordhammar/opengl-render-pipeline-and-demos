@@ -177,6 +177,8 @@ xcopy "$(SolutionDir)dependencies\assimp\lib\assimp-vc142-mtd.dll" "$(TargetDir)
   <ItemGroup>
     <None Include=".gitattributes" />
     <None Include=".gitignore" />
+    <None Include="resources\shaders\LinearDepthDisplay\LinearDepthDisplay.frag" />
+    <None Include="resources\shaders\LinearDepthDisplay\LinearDepthDisplay.vert" />
     <None Include="resources\shaders\LightSource\LightSource.frag" />
     <None Include="resources\shaders\LightSource\LightSource.vert" />
     <None Include="resources\shaders\StandardPhong\StandardPhong.frag" />
