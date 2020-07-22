@@ -13,18 +13,18 @@ class Model
 public:
     Model(std::string path)
     {
-        loadModel(path);
+        LoadModel(path);
     }
     void Draw(Shader& shader);
 
 private:
     // model data
-    std::vector<Mesh> meshes;
-    std::string directory;
-    std::vector<Texture> textures_loaded;
+    std::vector<Mesh> mMeshes;
+    std::string mDirectory;
+    std::vector<Texture> mLoadedTextures;
 
-    void loadModel(std::string path);
-    void processNode(aiNode* node, const aiScene* scene);
-    Mesh processMesh(aiMesh* mesh, const aiScene* scene);
-    std::vector<Texture> loadMaterialTextures(aiMaterial* mat, aiTextureType type);
+    void LoadModel(std::string path);
+    void ProcessNode(aiNode* node, const aiScene* scene);
+    Mesh ProcessMesh(aiMesh* mesh, const aiScene* scene);
+    std::vector<Texture> LoadMaterialTextures(aiMaterial* mat, aiTextureType type);
 };
