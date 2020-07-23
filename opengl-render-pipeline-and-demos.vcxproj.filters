@@ -46,6 +46,8 @@
     <None Include="resources\shaders\StandardPhong\StandardPhong.vert" />
     <None Include="resources\shaders\LinearDepthDisplay\LinearDepthDisplay.frag" />
     <None Include="resources\shaders\LinearDepthDisplay\LinearDepthDisplay.vert" />
+    <None Include="resources\shaders\StandardUnlit\StandardUnlit.frag" />
+    <None Include="resources\shaders\StandardUnlit\StandardUnlit.vert" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Shader\Shader.hpp">
@@ -58,6 +60,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Model\Model.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\effects\drawWithOutline\drawWithOutline.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utils\array.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\WorldObject\WorldObject.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

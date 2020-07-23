@@ -9,6 +9,10 @@
 #include <glm/gtc/type_ptr.hpp>
 #include "Camera/Camera.hpp"
 #include "Model/Model.hpp"
+#include "WorldObject/WorldObject.hpp"
+#include "utils/array.h"
+#include "effects/drawWithOutline/drawWithOutline.hpp"
+#include <vector>
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window);
@@ -48,17 +52,14 @@ int main() {
         return -1;
     }
 
-    Shader lightSourceShader(
-        fileUtils::getFullResourcesPath("shaders/LightSource/LightSource.vert").c_str(),
-        fileUtils::getFullResourcesPath("shaders/LightSource/LightSource.frag").c_str()
-    );
-
     stbi_set_flip_vertically_on_load(true);
     glEnable(GL_DEPTH_TEST);
+    
+    glEnable(GL_STENCIL_TEST);
 
-    Shader depthDisplayShader(
-        fileUtils::getFullResourcesPath("shaders/LinearDepthDisplay/LinearDepthDisplay.vert").c_str(),
-        fileUtils::getFullResourcesPath("shaders/LinearDepthDisplay/LinearDepthDisplay.frag").c_str()
+    Shader unlitShader(
+        fileUtils::getFullResourcesPath("shaders/StandardUnlit/StandardUnlit.vert").c_str(),
+        fileUtils::getFullResourcesPath("shaders/StandardUnlit/StandardUnlit.frag").c_str()
     );
     Shader phongShader(
         fileUtils::getFullResourcesPath("shaders/StandardPhong/StandardPhong.vert").c_str(),
@@ -69,20 +70,23 @@ int main() {
         fileUtils::getFullResourcesPath("shaders/LightSource/LightSource.frag").c_str()
     );
 
-    auto plane = Model(fileUtils::getFullResourcesPath("models/primitives/plane/plane.obj"));
-    auto backpack = Model(fileUtils::getFullResourcesPath("models/backpack/backpack.obj"));
-    auto pointLight = Model(fileUtils::getFullResourcesPath("models/primitives/sphere/sphere.obj"));
+    auto backpackModel = Model(fileUtils::getFullResourcesPath("models/backpack/backpack.obj"));
+    auto sphere = Model(fileUtils::getFullResourcesPath("models/primitives/sphere/sphere.obj"));
 
-    glm::vec3 pointLightPositions[] = {
-        glm::vec3(0.7f,  0.2f,  20.0f),
-        glm::vec3(2.3f, -3.3f, -4.0f),
-        glm::vec3(-4.0f,  2.0f, -12.0f),
-        glm::vec3(0.0f,  1.0f, 3.0f)
+    std::vector<WorldObject> backpacks {
+        WorldObject(backpackModel, phongShader, glm::vec3(0.0f,  2.0f,  0.0f)),
+        WorldObject(backpackModel, phongShader, glm::vec3(0.0f, 0.0f, -8.0f))
     };
 
-    glm::vec3 ourModelPositions[] = {
-        glm::vec3(0.0f,  0.0f,  0.0f),
-        glm::vec3(0.0f, 0.0f, -8.0f)
+    WorldObject pointLights[] = {
+        WorldObject(sphere, pointLightShader, 
+            glm::vec3(0.7f,  0.2f,  20.0f), glm::vec3(0.0,  0.0f,  0.0f), glm::vec3(0.2f)),
+        WorldObject(sphere, pointLightShader, 
+            glm::vec3(2.3f, -3.3f, -4.0f), glm::vec3(0.0,  0.0f,  0.0f), glm::vec3(0.2f)),
+        WorldObject(sphere, pointLightShader, 
+            glm::vec3(-4.0f,  2.0f, -12.0f), glm::vec3(0.0,  0.0f,  0.0f), glm::vec3(0.2f)),
+        WorldObject(sphere, pointLightShader, 
+            glm::vec3(0.0f,  1.0f, 3.0f), glm::vec3(0.0,  0.0f,  0.0f), glm::vec3(0.2f))
     };
 
     while (!glfwWindowShouldClose(window))
@@ -114,7 +118,7 @@ int main() {
         phongShader.setVec3("dirLight.specular", 0.5f, 0.5f, 0.5f);
 
         // point light 1
-        phongShader.setVec3("pointLights[0].position", pointLightPositions[0]);
+        phongShader.setVec3("pointLights[0].position", pointLights[0].mPosition);
         phongShader.setVec3("pointLights[0].ambient", 0.05f, 0.05f, 0.05f);
         phongShader.setVec3("pointLights[0].diffuse", 0.8f, 0.8f, 0.8f);
         phongShader.setVec3("pointLights[0].specular", 1.0f, 1.0f, 1.0f);
@@ -122,7 +126,7 @@ int main() {
         phongShader.setFloat("pointLights[0].linear", 0.09);
         phongShader.setFloat("pointLights[0].quadratic", 0.032);
         // point light 2
-        phongShader.setVec3("pointLights[1].position", pointLightPositions[1]);
+        phongShader.setVec3("pointLights[1].position", pointLights[1].mPosition);
         phongShader.setVec3("pointLights[1].ambient", 0.05f, 0.05f, 0.05f);
         phongShader.setVec3("pointLights[1].diffuse", 0.8f, 0.8f, 0.8f);
         phongShader.setVec3("pointLights[1].specular", 1.0f, 1.0f, 1.0f);
@@ -130,7 +134,7 @@ int main() {
         phongShader.setFloat("pointLights[1].linear", 0.09);
         phongShader.setFloat("pointLights[1].quadratic", 0.032);
         // point light 3
-        phongShader.setVec3("pointLights[2].position", pointLightPositions[2]);
+        phongShader.setVec3("pointLights[2].position", pointLights[2].mPosition);
         phongShader.setVec3("pointLights[2].ambient", 0.05f, 0.05f, 0.05f);
         phongShader.setVec3("pointLights[2].diffuse", 0.8f, 0.8f, 0.8f);
         phongShader.setVec3("pointLights[2].specular", 1.0f, 1.0f, 1.0f);
@@ -138,7 +142,7 @@ int main() {
         phongShader.setFloat("pointLights[2].linear", 0.09);
         phongShader.setFloat("pointLights[2].quadratic", 0.032);
         // point light 4
-        phongShader.setVec3("pointLights[3].position", pointLightPositions[3]);
+        phongShader.setVec3("pointLights[3].position", pointLights[3].mPosition);
         phongShader.setVec3("pointLights[3].ambient", 0.05f, 0.05f, 0.05f);
         phongShader.setVec3("pointLights[3].diffuse", 0.8f, 0.8f, 0.8f);
         phongShader.setVec3("pointLights[3].specular", 1.0f, 1.0f, 1.0f);
@@ -158,41 +162,27 @@ int main() {
         phongShader.setFloat("spotLight.cutOff", glm::cos(glm::radians(12.5f)));
         phongShader.setFloat("spotLight.outerCutOff", glm::cos(glm::radians(15.0f)));
 
-        int numbModels = sizeof(ourModelPositions) / sizeof(ourModelPositions[0]);
-        for (int i = 0; i < numbModels; i++) {
-            glm::mat4 modelMatrix = glm::mat4(1.0f);
-            modelMatrix = glm::translate(modelMatrix, ourModelPositions[i]);
-            modelMatrix = glm::scale(modelMatrix, glm::vec3(1.0f, 1.0f, 1.0f));
-            phongShader.setMat4("model", modelMatrix);
-            backpack.Draw(phongShader);
-        }
+        /*for (auto it = backpacks.begin(); it != backpacks.end(); ++it) {
+            it->Draw();
+        }*/
 
-        // Drawing spot light cubes
-        lightSourceShader.use();
-        lightSourceShader.setMat4("projection", projectionMatrix);
-        lightSourceShader.setMat4("view", viewMatrix);
-        lightSourceShader.setVec3("lightColor", glm::vec3(1.0f, 1.0f, 1.0f));
+        unlitShader.use();
+        unlitShader.setMat4("view", viewMatrix);
+        unlitShader.setMat4("projection", projectionMatrix);
+        unlitShader.setVec3("color", glm::vec3(1.0f, 0.0f, 0.0f));
+        drawWithOutline(backpacks, unlitShader, 1.1f, true);
 
-        int numbLights = sizeof(pointLightPositions) / sizeof(pointLightPositions[0]);
+        // Drawing spot light spheres
+        pointLightShader.use();
+        pointLightShader.setMat4("projection", projectionMatrix);
+        pointLightShader.setMat4("view", viewMatrix);
+        pointLightShader.setVec3("lightColor", glm::vec3(1.0f, 1.0f, 1.0f));
+
+        int numbLights = arrayUtils::length(pointLights);
         for (unsigned int i = 0; i < numbLights; i++)
         {
-            glm::mat4 modelMatrix = glm::mat4(1.0f);
-            modelMatrix = glm::translate(modelMatrix, pointLightPositions[i]);
-            modelMatrix = glm::scale(modelMatrix, glm::vec3(0.2f));
-            lightSourceShader.setMat4("model", modelMatrix);
-            pointLight.Draw(lightSourceShader);
+            pointLights[i].Draw();
         }
-
-        depthDisplayShader.use();
-        glm::mat4 modelMatrix = glm::mat4(1.0f);
-        modelMatrix = glm::translate(modelMatrix, glm::vec3(0.0f, -4.0f, 0.0f));
-        modelMatrix = glm::scale(modelMatrix, glm::vec3(1.0f));
-        depthDisplayShader.setMat4("model", modelMatrix);
-        depthDisplayShader.setMat4("view", viewMatrix);
-        depthDisplayShader.setMat4("projection", projectionMatrix);
-        //plane.Draw(depthDisplayShader);
-
-        backpack.Draw(phongShader);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
@@ -216,7 +206,7 @@ GLFWwindow* createWindow(int width, int height) {
 
 void clearBuffers() {
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 }
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
