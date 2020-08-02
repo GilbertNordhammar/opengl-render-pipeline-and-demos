@@ -60,7 +60,7 @@ void Mesh::Draw(Shader& shader)
         std::string number;
         std::string name;
 
-        switch (mTextures[i].type) {
+        switch (mTextures[i].GetType()) {
         case aiTextureType::aiTextureType_DIFFUSE:
             name = "texture_diffuse";
             number = std::to_string(diffuseNr++);
@@ -80,7 +80,7 @@ void Mesh::Draw(Shader& shader)
         }
 
         shader.setFloat(("material." + name + number).c_str(), i);
-        glBindTexture(GL_TEXTURE_2D, mTextures[i].id);
+        glBindTexture(GL_TEXTURE_2D, mTextures[i].GetId());
     }
 
     glBindVertexArray(mVAO);

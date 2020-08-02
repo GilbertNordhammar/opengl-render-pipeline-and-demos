@@ -6,6 +6,7 @@
 #include <vector>
 #include <map>
 #include <assimp/scene.h>
+#include "src/Texture/Texture.hpp"
 
 struct Vertex {
     glm::vec3 position;
@@ -15,15 +16,8 @@ struct Vertex {
     glm::vec3 bitangent;
 };
 
-struct Texture {
-    unsigned int id;
-    aiTextureType type;
-    std::string path;
-};
-
 class Mesh {
 public:
-    // mesh data
     std::vector<Vertex>       mVertices;
     std::vector<unsigned int> mIndices;
     std::vector<Texture>      mTextures;
@@ -31,7 +25,6 @@ public:
     Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures);
     void Draw(Shader& shader);
 private:
-    //  render data
     unsigned int mVAO, mVBO, mEBO;
 
     void SetupMesh();
