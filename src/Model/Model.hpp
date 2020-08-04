@@ -11,10 +11,8 @@
 class Model
 {
 public:
-    Model(std::string path)
-    {
-        LoadModel(path);
-    }
+    Model(std::string path);
+    Model(std::vector<Mesh> meshes);
     void Draw(Shader& shader);
 
 private:

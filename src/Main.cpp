@@ -13,6 +13,7 @@
 #include "utils/array.h"
 #include "effects/drawWithOutline/drawWithOutline.hpp"
 #include <vector>
+#include "Mesh/Mesh.hpp"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window);
@@ -54,8 +55,10 @@ int main() {
 
     stbi_set_flip_vertically_on_load(true);
     glEnable(GL_DEPTH_TEST);
-    
     glEnable(GL_STENCIL_TEST);
+    
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 
     Shader unlitShader(
         fileUtils::getFullResourcesPath("shaders/StandardUnlit/StandardUnlit.vert").c_str(),
@@ -88,6 +91,48 @@ int main() {
         WorldObject(sphere, pointLightShader, 
             glm::vec3(0.0f,  1.0f, 3.0f), glm::vec3(0.0,  0.0f,  0.0f), glm::vec3(0.2f))
     };
+
+    std::vector<glm::vec3> windowVertPositions = {
+        glm::vec3(-1.0f, 0.0f, 1.0f),
+        glm::vec3(1.0f, 0.0f, 1.0f),
+        glm::vec3(-1.0f, 0.0f, -1.0f),
+        glm::vec3(1.0f, 0.0f, -1.0f)
+    };
+    std::vector<glm::vec2> windowTexCoords = {
+        glm::vec2(0.0f, 1.0f),
+        glm::vec2(1.0f, 1.0f),
+        glm::vec2(0.0f, 0.0f),
+        glm::vec2(1.0f, 0.0f)
+    };
+    std::vector<Vertex> windowVertices;
+    for (int i = 0; i < windowVertPositions.size(); i++) {
+        auto vert = Vertex();
+        vert.position = windowVertPositions[i];
+        vert.texCoords = windowTexCoords[i];
+        vert.normal = glm::vec3(0.0f, 1.0f, 0.0f);
+        windowVertices.push_back(vert);
+    }
+    std::vector<unsigned int> windowIndices = { 
+        0, 1, 2,
+        1, 2, 3
+    };
+    std::vector<Texture> windowTextures = {
+        Texture(fileUtils::getFullResourcesPath("textures/red-window.png"), aiTextureType::aiTextureType_DIFFUSE)
+    };
+    std::vector<Mesh> windowMeshes = { Mesh(windowVertices, windowIndices, windowTextures) };
+    auto windowModel = Model(windowMeshes);
+
+    std::vector<WorldObject> transparentObjects = {
+        WorldObject(windowModel, phongShader, glm::vec3(-1.5f, 0.0f, -0.48f)),
+        WorldObject(windowModel, phongShader, glm::vec3(1.5f, 0.0f, 0.51f)),
+        WorldObject(windowModel, phongShader, glm::vec3(0.0f, 0.0f, 0.7f)),
+        WorldObject(windowModel, phongShader, glm::vec3(-0.3f, 0.0f, -2.3f)),
+        WorldObject(windowModel, phongShader, glm::vec3(0.5f, 0.0f, -0.6f))
+    };
+ 
+    for (auto& obj : transparentObjects) {
+        obj.mRotation = glm::vec3(90.0f, 0.0f, 0.0f);
+    }
 
     while (!glfwWindowShouldClose(window))
     {
@@ -162,15 +207,9 @@ int main() {
         phongShader.setFloat("spotLight.cutOff", glm::cos(glm::radians(12.5f)));
         phongShader.setFloat("spotLight.outerCutOff", glm::cos(glm::radians(15.0f)));
 
-        /*for (auto it = backpacks.begin(); it != backpacks.end(); ++it) {
-            it->Draw();
-        }*/
-
-        unlitShader.use();
-        unlitShader.setMat4("view", viewMatrix);
-        unlitShader.setMat4("projection", projectionMatrix);
-        unlitShader.setVec3("color", glm::vec3(1.0f, 0.0f, 0.0f));
-        drawWithOutline(backpacks, unlitShader, 1.1f, true);
+        for (auto backpack: backpacks) {
+            backpack.Draw();
+        }
 
         // Drawing spot light spheres
         pointLightShader.use();
@@ -182,6 +221,16 @@ int main() {
         for (unsigned int i = 0; i < numbLights; i++)
         {
             pointLights[i].Draw();
+        }
+
+        std::map<float, WorldObject*, std::greater<float>> transparentObjSorted;
+        for (auto& obj : transparentObjects) {
+            float distance = glm::length(camera.Position - obj.mPosition);
+            transparentObjSorted[distance] = &obj;
+        }
+
+        for (auto& [key, val] : transparentObjSorted) {
+            val->Draw();
         }
 
         glfwSwapBuffers(window);

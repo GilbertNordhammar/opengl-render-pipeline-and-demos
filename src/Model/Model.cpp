@@ -1,6 +1,13 @@
 #include "Model.hpp"
 #include <stb_image.h>
 
+Model::Model(std::string path) 
+{
+    LoadModel(path);
+}
+
+Model::Model(std::vector<Mesh> meshes): mMeshes(meshes) {}
+
 void Model::Draw(Shader& shader)
 {
 	for (unsigned int i = 0; i < mMeshes.size(); i++)

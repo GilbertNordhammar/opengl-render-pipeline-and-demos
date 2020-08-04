@@ -53,6 +53,7 @@ void Mesh::Draw(Shader& shader)
     unsigned int specularNr = 1;
     unsigned int normalNr = 1;
     unsigned int heightNr = 1;
+
     for (unsigned int i = 0; i < mTextures.size(); i++)
     {
         glActiveTexture(GL_TEXTURE0 + i);
