@@ -199,8 +199,6 @@ xcopy "$(SolutionDir)dependencies\assimp\lib\assimp-vc142-mtd.dll" "$(TargetDir)
     <ClInclude Include="src\WorldObject\WorldObject.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="resources\textures\awesomeface.png" />
-    <Image Include="resources\textures\cartoony-brown-stone.png" />
     <Image Include="resources\textures\steel-wooden-container\diffuse.png" />
     <Image Include="resources\textures\steel-wooden-container\emission.jpg" />
     <Image Include="resources\textures\steel-wooden-container\specular.png" />

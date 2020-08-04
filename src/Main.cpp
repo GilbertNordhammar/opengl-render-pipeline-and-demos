@@ -60,6 +60,8 @@ int main() {
     glEnable(GL_BLEND);
     glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 
+    glEnable(GL_CULL_FACE);
+
     Shader unlitShader(
         fileUtils::getFullResourcesPath("shaders/StandardUnlit/StandardUnlit.vert").c_str(),
         fileUtils::getFullResourcesPath("shaders/StandardUnlit/StandardUnlit.frag").c_str()
@@ -114,7 +116,7 @@ int main() {
     }
     std::vector<unsigned int> windowIndices = { 
         0, 1, 2,
-        1, 2, 3
+        1, 3, 2
     };
     std::vector<Texture> windowTextures = {
         Texture(fileUtils::getFullResourcesPath("textures/red-window.png"), aiTextureType::aiTextureType_DIFFUSE)
@@ -229,9 +231,11 @@ int main() {
             transparentObjSorted[distance] = &obj;
         }
 
+        glDisable(GL_CULL_FACE); // temporarily turns culling of since we're rendering quads here
         for (auto& [key, val] : transparentObjSorted) {
             val->Draw();
         }
+        glEnable(GL_CULL_FACE);
 
         glfwSwapBuffers(window);
         glfwPollEvents();

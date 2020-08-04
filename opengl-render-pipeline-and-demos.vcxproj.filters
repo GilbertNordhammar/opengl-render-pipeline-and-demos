@@ -88,12 +88,6 @@
     <Image Include="resources\textures\steel-wooden-container\specular.png">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="resources\textures\awesomeface.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="resources\textures\cartoony-brown-stone.png">
-      <Filter>Resource Files</Filter>
-    </Image>
     <Image Include="resources\textures\wooden-container.jpg">
       <Filter>Resource Files</Filter>
     </Image>
