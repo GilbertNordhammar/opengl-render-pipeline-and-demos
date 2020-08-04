@@ -159,8 +159,8 @@ int main() {
         // Directional light
         phongShader.setVec3("dirLight.direction", -0.2f, -1.0f, -0.3f);
         phongShader.setVec3("dirLight.ambient", 0.05f, 0.05f, 0.05f);
-        phongShader.setVec3("dirLight.diffuse", 0.4f, 0.4f, 0.4f);
-        phongShader.setVec3("dirLight.specular", 0.5f, 0.5f, 0.5f);
+        phongShader.setVec3("dirLight.diffuse", 0.8f, 0.8f, 0.8f);
+        phongShader.setVec3("dirLight.specular", 1.0f, 1.0f, 1.0f);
 
         // point light 1
         phongShader.setVec3("pointLights[0].position", pointLights[0].mPosition);
