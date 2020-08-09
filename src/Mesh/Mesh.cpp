@@ -1,6 +1,8 @@
 #include "Mesh.hpp"
 #include <glad/glad.h>
 
+const int MAX_NUMB_TEXTURES = 15;
+
 Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures)
 {
     this->mVertices = vertices;
@@ -49,15 +51,20 @@ void Mesh::SetupMesh()
 
 void Mesh::Draw(Shader& shader)
 {
+    shader.use();
+
     unsigned int diffuseNr = 1;
     unsigned int specularNr = 1;
     unsigned int normalNr = 1;
     unsigned int heightNr = 1;
 
+    for (int i = 0; i < MAX_NUMB_TEXTURES; i++) {
+        glActiveTexture(GL_TEXTURE0 + i);
+        glBindTexture(GL_TEXTURE_2D, 0);
+    }
+
     for (unsigned int i = 0; i < mTextures.size(); i++)
     {
-        glActiveTexture(GL_TEXTURE0 + i);
-
         std::string number;
         std::string name;
 
@@ -80,7 +87,8 @@ void Mesh::Draw(Shader& shader)
             break;
         }
 
-        shader.setFloat(("material." + name + number).c_str(), i);
+        shader.setInt(("material." + name + number).c_str(), i);
+        glActiveTexture(GL_TEXTURE0 + i);
         glBindTexture(GL_TEXTURE_2D, mTextures[i].GetId());
     }
 
