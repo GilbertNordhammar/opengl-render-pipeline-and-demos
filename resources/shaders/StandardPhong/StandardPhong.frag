@@ -42,7 +42,7 @@ struct SpotLight {
     vec3 specular;       
 };
 
-#define NR_POINT_LIGHTS 4  
+#define NR_POINT_LIGHTS 4
 
 in vec2 TexCoords;
 in vec3 FragmentPosWS;
@@ -139,7 +139,7 @@ vec3 CalcDirLight(
     vec3 ambient  = light.ambient  * diffuseMap.rgb * diffuseMap.a;
     vec3 diffuse  = light.diffuse  * diff * diffuseMap.rgb * diffuseMap.a;
     vec3 specular = light.specular * spec * specularMap.rgb;
-    return (ambient + diffuse + specular);
+    return max(vec3(0), ambient + diffuse + specular);
 }
 
 vec3 CalcPointLight(
@@ -172,7 +172,7 @@ vec3 CalcPointLight(
     ambient  *= attenuation;
     diffuse  *= attenuation;
     specular *= attenuation;
-    return (ambient + diffuse + specular);
+    return max(vec3(0), ambient + diffuse + specular);
 }
 
 vec3 CalcSpotLight(
@@ -210,5 +210,5 @@ vec3 CalcSpotLight(
     diffuse *= attenuation * intensity;
     specular *= attenuation * intensity;
 
-    return (ambient + diffuse + specular);
+    return max(vec3(0), ambient + diffuse + specular);
 }

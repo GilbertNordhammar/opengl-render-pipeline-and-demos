@@ -14,6 +14,9 @@
 #include "effects/drawWithOutline/drawWithOutline.hpp"
 #include <vector>
 #include "Mesh/Mesh.hpp"
+#include "src/light/DirectionalLight/DirectionalLight.hpp"
+#include "src/light/PointLight/PointLight.hpp"
+#include "src/light/SpotLight/SpotLight.hpp"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window);
@@ -21,6 +24,20 @@ void clearBuffers();
 GLFWwindow* createWindow(int width, int height);
 void mouseCallback(GLFWwindow* window, double xpos, double ypos);
 void scrollCallback(GLFWwindow* window, double xoffset, double yoffset);
+void setLightProperties(
+    Shader& shader,
+    std::vector<PointLight> pointLights,
+    DirectionalLight dirLight,
+    SpotLight spotLight
+);
+void DrawScene(
+    std::vector<WorldObject> opaqueObjects,
+    std::vector<WorldObject> transparentObjects,
+    std::vector<PointLight> pointLights,
+    DirectionalLight dirLight,
+    SpotLight spotLight
+);
+
 
 int windowWidth = 800;
 int windowHeight = 600;
@@ -62,10 +79,6 @@ int main() {
 
     glEnable(GL_CULL_FACE);
 
-    Shader unlitShader(
-        fileUtils::getFullResourcesPath("shaders/StandardUnlit/StandardUnlit.vert").c_str(),
-        fileUtils::getFullResourcesPath("shaders/StandardUnlit/StandardUnlit.frag").c_str()
-    );
     Shader phongShader(
         fileUtils::getFullResourcesPath("shaders/StandardPhong/StandardPhong.vert").c_str(),
         fileUtils::getFullResourcesPath("shaders/StandardPhong/StandardPhong.frag").c_str()
@@ -77,22 +90,6 @@ int main() {
 
     auto backpackModel = Model(fileUtils::getFullResourcesPath("models/backpack/backpack.obj"));
     auto sphere = Model(fileUtils::getFullResourcesPath("models/primitives/sphere/sphere.obj"));
-
-    std::vector<WorldObject> backpacks {
-        WorldObject(backpackModel, phongShader, glm::vec3(0.0f,  2.0f,  0.0f)),
-        WorldObject(backpackModel, phongShader, glm::vec3(0.0f, 0.0f, -8.0f))
-    };
-
-    WorldObject pointLights[] = {
-        WorldObject(sphere, pointLightShader, 
-            glm::vec3(0.7f,  0.2f,  20.0f), glm::vec3(0.0,  0.0f,  0.0f), glm::vec3(0.2f)),
-        WorldObject(sphere, pointLightShader, 
-            glm::vec3(2.3f, -3.3f, -4.0f), glm::vec3(0.0,  0.0f,  0.0f), glm::vec3(0.2f)),
-        WorldObject(sphere, pointLightShader, 
-            glm::vec3(-4.0f,  2.0f, -12.0f), glm::vec3(0.0,  0.0f,  0.0f), glm::vec3(0.2f)),
-        WorldObject(sphere, pointLightShader, 
-            glm::vec3(0.0f,  1.0f, 3.0f), glm::vec3(0.0,  0.0f,  0.0f), glm::vec3(0.2f))
-    };
 
     std::vector<glm::vec3> windowVertPositions = {
         glm::vec3(-1.0f, 0.0f, 1.0f),
@@ -124,6 +121,19 @@ int main() {
     std::vector<Mesh> windowMeshes = { Mesh(windowVertices, windowIndices, windowTextures) };
     auto windowModel = Model(windowMeshes);
 
+    std::vector<WorldObject> opaqueObjects = {
+        WorldObject(backpackModel, phongShader, glm::vec3(0.0f,  2.0f,  0.0f)),
+        WorldObject(backpackModel, phongShader, glm::vec3(0.0f, 0.0f, -8.0f)),
+        WorldObject(sphere, pointLightShader,
+            glm::vec3(0.7f,  0.2f,  20.0f), glm::vec3(0.0,  0.0f,  0.0f), glm::vec3(0.2f)),
+        WorldObject(sphere, pointLightShader,
+            glm::vec3(2.3f, -3.3f, -4.0f), glm::vec3(0.0,  0.0f,  0.0f), glm::vec3(0.2f)),
+        WorldObject(sphere, pointLightShader,
+            glm::vec3(-4.0f,  2.0f, -12.0f), glm::vec3(0.0,  0.0f,  0.0f), glm::vec3(0.2f)),
+        WorldObject(sphere, pointLightShader,
+            glm::vec3(0.0f,  1.0f, 3.0f), glm::vec3(0.0,  0.0f,  0.0f), glm::vec3(0.2f))
+    };
+
     std::vector<WorldObject> transparentObjects = {
         WorldObject(windowModel, phongShader, glm::vec3(-1.5f, 0.0f, -0.48f)),
         WorldObject(windowModel, phongShader, glm::vec3(1.5f, 0.0f, 0.51f)),
@@ -136,6 +146,38 @@ int main() {
         obj.mRotation = glm::vec3(90.0f, 0.0f, 0.0f);
     }
 
+    DirectionalLight directionalLight = DirectionalLight();
+    directionalLight.direction = glm::vec3(-0.2f, -1.0f, -0.3f);
+    directionalLight.phong.amibent = glm::vec3(0.05f, 0.05f, 0.05f);
+    directionalLight.phong.diffuse = glm::vec3(0.8f, 0.8f, 0.8f);
+    directionalLight.phong.specular = glm::vec3(1.0f, 1.0f, 1.0f);
+    
+    SpotLight spotLight = SpotLight();
+    spotLight.innerCuttoff = glm::cos(glm::radians(12.5f));
+    spotLight.outerCuttoff = glm::cos(glm::radians(15.0f));
+    spotLight.phong.amibent = glm::vec3(0.0f, 0.0f, 0.0f);
+    spotLight.phong.diffuse = glm::vec3(1.0f, 1.0f, 1.0f);
+    spotLight.phong.specular = glm::vec3(1.0f, 1.0f, 1.0f);
+    spotLight.positional.constant = 1.0f;
+    spotLight.positional.linear = 0.09f;
+    spotLight.positional.quadratic = 0.032f;
+
+    std::vector<PointLight> pointLights;
+    for (int i = 0; i < 4; i++) {
+        PointLight light;
+        light.phong.amibent = glm::vec3(0.05f, 0.05f, 0.05f);
+        light.phong.diffuse = glm::vec3(0.8f, 0.8f, 0.8f);
+        light.phong.specular = glm::vec3(1.0f, 1.0f, 1.0f);
+        light.positional.constant = 1.0f;
+        light.positional.linear = 0.09f;
+        light.positional.quadratic = 0.032f;
+        pointLights.push_back(light);
+    }
+    pointLights[0].positional.position = glm::vec3(0.7f, 0.2f, 20.0f);
+    pointLights[1].positional.position = glm::vec3(2.3f, -3.3f, -4.0f);
+    pointLights[2].positional.position = glm::vec3(-4.0f, 2.0f, -12.0f);
+    pointLights[3].positional.position = glm::vec3(0.0f, 1.0f, 3.0f);
+
     while (!glfwWindowShouldClose(window))
     {
         float currentFrame = glfwGetTime();
@@ -145,97 +187,10 @@ int main() {
         processInput(window);
         clearBuffers();
 
-        glm::mat4 viewMatrix = camera.GetViewMatrix();
-        glm::mat4 projectionMatrix = glm::perspective(glm::radians(camera.GetFov()), (float)windowWidth / windowHeight, 0.1f, 100.0f);
-
-        phongShader.use();
-
-        phongShader.setMat4("view", viewMatrix);
-        phongShader.setMat4("projection", projectionMatrix);
-
-        phongShader.setVec3("viewPos", camera.Position);
-
-        // Setting material properties
-        phongShader.setFloat("material.shininess", 32.0f);
-
-        // Directional light
-        phongShader.setVec3("dirLight.direction", -0.2f, -1.0f, -0.3f);
-        phongShader.setVec3("dirLight.ambient", 0.05f, 0.05f, 0.05f);
-        phongShader.setVec3("dirLight.diffuse", 0.8f, 0.8f, 0.8f);
-        phongShader.setVec3("dirLight.specular", 1.0f, 1.0f, 1.0f);
-
-        // point light 1
-        phongShader.setVec3("pointLights[0].position", pointLights[0].mPosition);
-        phongShader.setVec3("pointLights[0].ambient", 0.05f, 0.05f, 0.05f);
-        phongShader.setVec3("pointLights[0].diffuse", 0.8f, 0.8f, 0.8f);
-        phongShader.setVec3("pointLights[0].specular", 1.0f, 1.0f, 1.0f);
-        phongShader.setFloat("pointLights[0].constant", 1.0f);
-        phongShader.setFloat("pointLights[0].linear", 0.09);
-        phongShader.setFloat("pointLights[0].quadratic", 0.032);
-        // point light 2
-        phongShader.setVec3("pointLights[1].position", pointLights[1].mPosition);
-        phongShader.setVec3("pointLights[1].ambient", 0.05f, 0.05f, 0.05f);
-        phongShader.setVec3("pointLights[1].diffuse", 0.8f, 0.8f, 0.8f);
-        phongShader.setVec3("pointLights[1].specular", 1.0f, 1.0f, 1.0f);
-        phongShader.setFloat("pointLights[1].constant", 1.0f);
-        phongShader.setFloat("pointLights[1].linear", 0.09);
-        phongShader.setFloat("pointLights[1].quadratic", 0.032);
-        // point light 3
-        phongShader.setVec3("pointLights[2].position", pointLights[2].mPosition);
-        phongShader.setVec3("pointLights[2].ambient", 0.05f, 0.05f, 0.05f);
-        phongShader.setVec3("pointLights[2].diffuse", 0.8f, 0.8f, 0.8f);
-        phongShader.setVec3("pointLights[2].specular", 1.0f, 1.0f, 1.0f);
-        phongShader.setFloat("pointLights[2].constant", 1.0f);
-        phongShader.setFloat("pointLights[2].linear", 0.09);
-        phongShader.setFloat("pointLights[2].quadratic", 0.032);
-        // point light 4
-        phongShader.setVec3("pointLights[3].position", pointLights[3].mPosition);
-        phongShader.setVec3("pointLights[3].ambient", 0.05f, 0.05f, 0.05f);
-        phongShader.setVec3("pointLights[3].diffuse", 0.8f, 0.8f, 0.8f);
-        phongShader.setVec3("pointLights[3].specular", 1.0f, 1.0f, 1.0f);
-        phongShader.setFloat("pointLights[3].constant", 1.0f);
-        phongShader.setFloat("pointLights[3].linear", 0.09);
-        phongShader.setFloat("pointLights[3].quadratic", 0.032);
-
-        // spotLight
-        phongShader.setVec3("spotLight.position", camera.Position);
-        phongShader.setVec3("spotLight.direction", camera.GetFront());
-        phongShader.setVec3("spotLight.ambient", 0.0f, 0.0f, 0.0f);
-        phongShader.setVec3("spotLight.diffuse", 1.0f, 1.0f, 1.0f);
-        phongShader.setVec3("spotLight.specular", 1.0f, 1.0f, 1.0f);
-        phongShader.setFloat("spotLight.constant", 1.0f);
-        phongShader.setFloat("spotLight.linear", 0.09);
-        phongShader.setFloat("spotLight.quadratic", 0.032);
-        phongShader.setFloat("spotLight.cutOff", glm::cos(glm::radians(12.5f)));
-        phongShader.setFloat("spotLight.outerCutOff", glm::cos(glm::radians(15.0f)));
-
-        for (auto backpack: backpacks) {
-            backpack.Draw();
-        }
-
-        // Drawing spot light spheres
-        pointLightShader.use();
-        pointLightShader.setMat4("projection", projectionMatrix);
-        pointLightShader.setMat4("view", viewMatrix);
-        pointLightShader.setVec3("lightColor", glm::vec3(1.0f, 1.0f, 1.0f));
-
-        int numbLights = arrayUtils::length(pointLights);
-        for (unsigned int i = 0; i < numbLights; i++)
-        {
-            pointLights[i].Draw();
-        }
-
-        std::map<float, WorldObject*, std::greater<float>> transparentObjSorted;
-        for (auto& obj : transparentObjects) {
-            float distance = glm::length(camera.Position - obj.mPosition);
-            transparentObjSorted[distance] = &obj;
-        }
-
-        glDisable(GL_CULL_FACE); // temporarily turns culling of since we're rendering quads here
-        for (auto& [key, val] : transparentObjSorted) {
-            val->Draw();
-        }
-        glEnable(GL_CULL_FACE);
+        DrawScene(
+            opaqueObjects, 
+            transparentObjects, 
+            pointLights, directionalLight, spotLight);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
@@ -243,6 +198,94 @@ int main() {
 
     glfwTerminate();
     return 0;
+}
+
+void DrawScene(
+    std::vector<WorldObject> opaqueObjects, 
+    std::vector<WorldObject> transparentObjects,
+    std::vector<PointLight> pointLights,
+    DirectionalLight dirLight,
+    SpotLight spotLight
+) {
+    glm::mat4 viewMatrix = camera.GetViewMatrix();
+    glm::mat4 projectionMatrix = glm::perspective(glm::radians(camera.GetFov()), (float)windowWidth / windowHeight, 0.1f, 100.0f);
+
+    spotLight.positional.position = camera.Position;
+    spotLight.direction = camera.GetFront();
+
+    for (auto& obj : opaqueObjects) {
+        obj.mShader.use();
+
+        obj.mShader.setMat4("view", viewMatrix);
+        obj.mShader.setMat4("projection", projectionMatrix);
+
+        obj.mShader.setVec3("viewPos", camera.Position);
+        obj.mShader.setFloat("material.shininess", 32.0f);
+
+        setLightProperties(obj.mShader, pointLights, dirLight, spotLight);
+
+        // For spot lights
+        obj.mShader.setVec3("lightColor", glm::vec3(1.0f, 1.0f, 1.0f));
+
+        obj.Draw();
+    }
+
+    std::map<float, WorldObject*, std::greater<float>> transparentObjSorted;
+    for (auto& obj : transparentObjects) {
+        float distance = glm::length(camera.Position - obj.mPosition);
+        transparentObjSorted[distance] = &obj;
+    }
+
+    glDisable(GL_CULL_FACE); // temporarily turns culling of since we're rendering quads here
+    for (auto& [key, obj] : transparentObjSorted) {
+        obj->mShader.use();
+
+        obj->mShader.setMat4("view", viewMatrix);
+        obj->mShader.setMat4("projection", projectionMatrix);
+
+        obj->mShader.setVec3("viewPos", camera.Position);
+        obj->mShader.setFloat("material.shininess", 32.0f);
+
+        setLightProperties(obj->mShader, pointLights, dirLight, spotLight);
+
+        obj->Draw();
+    }
+    glEnable(GL_CULL_FACE);
+}
+
+void setLightProperties(
+    Shader& shader, 
+    std::vector<PointLight> pointLights, 
+    DirectionalLight dirLight, 
+    SpotLight spotLight
+    ) 
+{
+    for (int i = 0; i < pointLights.size(); i++) {
+        std::string pointLightSlot = "pointLights[" + std::to_string(i) + "]";
+        shader.setVec3(pointLightSlot + ".position", pointLights[i].positional.position);
+        shader.setVec3(pointLightSlot + ".ambient", pointLights[i].phong.amibent);
+        shader.setVec3(pointLightSlot + ".diffuse", pointLights[i].phong.diffuse);
+        shader.setVec3(pointLightSlot + ".specular", pointLights[i].phong.specular);
+        shader.setFloat(pointLightSlot + ".constant", pointLights[i].positional.constant);
+        shader.setFloat(pointLightSlot + ".linear", pointLights[i].positional.linear);
+        shader.setFloat(pointLightSlot + ".quadratic", pointLights[i].positional.quadratic);
+    }
+
+    shader.setVec3("dirLight.direction", dirLight.direction);
+    shader.setVec3("dirLight.ambient", dirLight.phong.amibent);
+    shader.setVec3("dirLight.diffuse", dirLight.phong.diffuse);
+    shader.setVec3("dirLight.specular", dirLight.phong.specular);
+    
+    shader.setVec3("spotLight.position", spotLight.positional.position);
+    shader.setVec3("spotLight.direction", spotLight.direction);
+    shader.setVec3("spotLight.ambient", spotLight.phong.amibent);
+    shader.setVec3("spotLight.diffuse", spotLight.phong.diffuse);
+    shader.setVec3("spotLight.specular", spotLight.phong.specular);
+    shader.setFloat("spotLight.constant", spotLight.positional.constant);
+    shader.setFloat("spotLight.linear", spotLight.positional.linear);
+    shader.setFloat("spotLight.quadratic", spotLight.positional.quadratic);
+    shader.setFloat("spotLight.cutOff", spotLight.innerCuttoff);
+    shader.setFloat("spotLight.outerCutOff", spotLight.outerCuttoff);
 }
 
 GLFWwindow* createWindow(int width, int height) {

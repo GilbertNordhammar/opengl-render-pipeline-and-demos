@@ -190,9 +190,14 @@ xcopy "$(SolutionDir)dependencies\assimp\lib\assimp-vc142-mtd.dll" "$(TargetDir)
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\effects\drawWithOutline\drawWithOutline.hpp" />
+    <ClInclude Include="src\light\attributes\PositionalLight.hpp" />
+    <ClInclude Include="src\light\DirectionalLight\DirectionalLight.hpp" />
+    <ClInclude Include="src\light\attributes\PhongLight.hpp" />
+    <ClInclude Include="src\light\SpotLight\SpotLight.hpp" />
     <ClInclude Include="src\Mesh\Mesh.hpp" />
     <ClInclude Include="src\Model\Model.hpp" />
     <ClInclude Include="src\Shader\Shader.hpp" />
+    <ClInclude Include="src\light\PointLight\PointLight.hpp" />
     <ClInclude Include="src\Texture\Texture.hpp" />
     <ClInclude Include="src\utils\array.h" />
     <ClInclude Include="src\utils\fileUtils.h" />
