@@ -36,6 +36,12 @@
     <ClCompile Include="src\Texture\Texture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\ScreenRenderer\ScreenRenderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\PostProcessEffect\PostProcessEffect.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include=".gitignore" />
@@ -51,6 +57,10 @@
     <None Include="resources\shaders\LinearDepthDisplay\LinearDepthDisplay.vert" />
     <None Include="resources\shaders\StandardUnlit\StandardUnlit.frag" />
     <None Include="resources\shaders\StandardUnlit\StandardUnlit.vert" />
+    <None Include="resources\shaders\post_processing\Grayscale.frag" />
+    <None Include="resources\shaders\post_processing\InvertColors.frag" />
+    <None Include="resources\shaders\post_processing\default.vert" />
+    <None Include="resources\shaders\post_processing\NoEffect.frag" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Shader\Shader.hpp">
@@ -90,6 +100,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\light\DirectionalLight\DirectionalLight.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ScreenRenderer\ScreenRenderer.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\PostProcessEffect\PostProcessEffect.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

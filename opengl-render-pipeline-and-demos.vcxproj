@@ -167,6 +167,8 @@ xcopy "$(SolutionDir)dependencies\assimp\lib\assimp-vc142-mtd.dll" "$(TargetDir)
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\PostProcessEffect\PostProcessEffect.cpp" />
+    <ClCompile Include="src\ScreenRenderer\ScreenRenderer.cpp" />
     <ClCompile Include="src\Camera\Camera.cpp" />
     <ClCompile Include="src\glad.c" />
     <ClCompile Include="src\Main.cpp" />
@@ -178,6 +180,10 @@ xcopy "$(SolutionDir)dependencies\assimp\lib\assimp-vc142-mtd.dll" "$(TargetDir)
   <ItemGroup>
     <None Include=".gitattributes" />
     <None Include=".gitignore" />
+    <None Include="resources\shaders\post_processing\Grayscale.frag" />
+    <None Include="resources\shaders\post_processing\InvertColors.frag" />
+    <None Include="resources\shaders\post_processing\NoEffect.frag" />
+    <None Include="resources\shaders\post_processing\default.vert" />
     <None Include="resources\shaders\StandardUnlit\StandardUnlit.vert" />
     <None Include="resources\shaders\StandardUnlit\StandardUnlit.frag" />
     <None Include="resources\shaders\LinearDepthDisplay\LinearDepthDisplay.frag" />
@@ -189,6 +195,7 @@ xcopy "$(SolutionDir)dependencies\assimp\lib\assimp-vc142-mtd.dll" "$(TargetDir)
     <None Include="src\Camera\Camera.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\ScreenRenderer\ScreenRenderer.hpp" />
     <ClInclude Include="src\effects\drawWithOutline\drawWithOutline.hpp" />
     <ClInclude Include="src\light\attributes\PositionalLight.hpp" />
     <ClInclude Include="src\light\DirectionalLight\DirectionalLight.hpp" />
@@ -196,6 +203,7 @@ xcopy "$(SolutionDir)dependencies\assimp\lib\assimp-vc142-mtd.dll" "$(TargetDir)
     <ClInclude Include="src\light\SpotLight\SpotLight.hpp" />
     <ClInclude Include="src\Mesh\Mesh.hpp" />
     <ClInclude Include="src\Model\Model.hpp" />
+    <ClInclude Include="src\PostProcessEffect\PostProcessEffect.hpp" />
     <ClInclude Include="src\Shader\Shader.hpp" />
     <ClInclude Include="src\light\PointLight\PointLight.hpp" />
     <ClInclude Include="src\Texture\Texture.hpp" />

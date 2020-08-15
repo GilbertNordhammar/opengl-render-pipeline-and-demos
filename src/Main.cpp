@@ -17,10 +17,11 @@
 #include "src/light/DirectionalLight/DirectionalLight.hpp"
 #include "src/light/PointLight/PointLight.hpp"
 #include "src/light/SpotLight/SpotLight.hpp"
+#include "src/ScreenRenderer/ScreenRenderer.hpp"
+#include "PostProcessEffect/PostProcessEffect.hpp"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window);
-void clearBuffers();
 GLFWwindow* createWindow(int width, int height);
 void mouseCallback(GLFWwindow* window, double xpos, double ypos);
 void scrollCallback(GLFWwindow* window, double xoffset, double yoffset);
@@ -37,7 +38,7 @@ void DrawScene(
     DirectionalLight dirLight,
     SpotLight spotLight
 );
-
+void createFramebuffer(unsigned int& OUT_fbo, unsigned int& OUT_textureColorBuffer, bool useDepthAndStencil);
 
 int windowWidth = 800;
 int windowHeight = 600;
@@ -71,12 +72,6 @@ int main() {
     }
 
     stbi_set_flip_vertically_on_load(true);
-    glEnable(GL_DEPTH_TEST);
-    glEnable(GL_STENCIL_TEST);
-    
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
-
     glEnable(GL_CULL_FACE);
 
     Shader phongShader(
@@ -178,6 +173,20 @@ int main() {
     pointLights[2].positional.position = glm::vec3(-4.0f, 2.0f, -12.0f);
     pointLights[3].positional.position = glm::vec3(0.0f, 1.0f, 3.0f);
 
+    unsigned int fboScene, texColBufferScene;
+    createFramebuffer(fboScene, texColBufferScene, true);
+   
+    unsigned int fboPostProcess1, texColBufferPostProcess1;
+    createFramebuffer(fboPostProcess1, texColBufferPostProcess1, false);
+
+    unsigned int fboPostProcess2, texColBufferPostProcess2;
+    createFramebuffer(fboPostProcess2, texColBufferPostProcess2, false);
+
+    auto screenRenderer = ScreenRenderer();
+
+    auto ppGrayscale = PostProcessEffect(fileUtils::getFullResourcesPath("shaders/post_processing/Grayscale.frag").c_str());
+    auto ppInvertColors = PostProcessEffect(fileUtils::getFullResourcesPath("shaders/post_processing/InvertColors.frag").c_str());
+
     while (!glfwWindowShouldClose(window))
     {
         float currentFrame = glfwGetTime();
@@ -185,16 +194,40 @@ int main() {
         lastFrame = currentFrame;
 
         processInput(window);
-        clearBuffers();
+
+        glBindFramebuffer(GL_FRAMEBUFFER, fboScene);
+        glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+
+        glEnable(GL_DEPTH_TEST);
+        glEnable(GL_STENCIL_TEST);
+
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 
         DrawScene(
             opaqueObjects, 
             transparentObjects, 
             pointLights, directionalLight, spotLight);
+        
+        glDisable(GL_DEPTH_TEST);
+        glDisable(GL_STENCIL_TEST);
+        glDisable(GL_BLEND);
+
+        glBindFramebuffer(GL_FRAMEBUFFER, fboPostProcess1);
+        screenRenderer.Draw(texColBufferScene, &ppGrayscale);
+
+        glBindFramebuffer(GL_FRAMEBUFFER, fboPostProcess2);
+        screenRenderer.Draw(texColBufferPostProcess1, &ppInvertColors);
+        
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        screenRenderer.Draw(texColBufferPostProcess2);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
+
+    glDeleteFramebuffers(1, &fboScene);
 
     glfwTerminate();
     return 0;
@@ -253,6 +286,37 @@ void DrawScene(
     glEnable(GL_CULL_FACE);
 }
 
+void createFramebuffer(unsigned int& OUT_fbo, unsigned int& OUT_textureColorBuffer, bool useDepthAndStencil) {
+    unsigned int fbo;
+    glGenFramebuffers(1, &fbo);
+    glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+    // create a color attachment texture
+    unsigned int textureColorbuffer;
+    glGenTextures(1, &textureColorbuffer);
+    glBindTexture(GL_TEXTURE_2D, textureColorbuffer);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, windowWidth, windowHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureColorbuffer, 0);
+    // create a renderbuffer object for depth and stencil attachment (we won't be sampling these)
+    
+    if (useDepthAndStencil) {
+        unsigned int rboDepthStencil;
+        glGenRenderbuffers(1, &rboDepthStencil);
+        glBindRenderbuffer(GL_RENDERBUFFER, rboDepthStencil);
+        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, windowWidth, windowHeight); // use a single renderbuffer object for both a depth AND stencil buffer.
+        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rboDepthStencil); // now actually attach it
+    }
+
+    // now that we actually created the framebuffer and added all attachments we want to check if it is actually complete now
+    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+        std::cout << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!" << std::endl;
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+    OUT_fbo = fbo;
+    OUT_textureColorBuffer = textureColorbuffer;
+}
+
 void setLightProperties(
     Shader& shader, 
     std::vector<PointLight> pointLights, 
@@ -298,11 +362,6 @@ GLFWwindow* createWindow(int width, int height) {
     #endif
 
     return glfwCreateWindow(width, height, "LearnOpenGL", NULL, NULL);
-}
-
-void clearBuffers() {
-    glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 }
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
