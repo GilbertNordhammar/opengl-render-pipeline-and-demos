@@ -22,21 +22,16 @@ public:
             mGeometryPath(geometryPath) 
     {
         createAndLinkProgram();
-        std::cout << "Created " << mProgramID << " " << this << std::endl; //
     }
 
     Shader(const Shader& other) : 
-        Shader(other.mVertexPath, other.mFragmentPath, other.mGeometryPath) {
-        std::cout << "Copied " << other.mProgramID << " " << &other << std::endl; //
-    }
+        Shader(other.mVertexPath, other.mFragmentPath, other.mGeometryPath) {}
 
     Shader(Shader&& other) noexcept :
         mVertexPath(other.mVertexPath), 
         mFragmentPath(other.mFragmentPath), 
         mGeometryPath(other.mGeometryPath),
-        mProgramID(other.mProgramID) {
-        std::cout << "Moved " << other.mProgramID << " " << &other << std::endl; //
-    }
+        mProgramID(other.mProgramID) {}
 
     Shader& operator=(Shader other) {
         swap(*this, other);
@@ -54,7 +49,6 @@ public:
     }
 
     ~Shader() {
-        std::cout << "Destroyed " << mProgramID << " " << this << std::endl; //
         glDeleteProgram(mProgramID);
     }
 
