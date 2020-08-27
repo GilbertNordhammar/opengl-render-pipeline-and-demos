@@ -31,7 +31,6 @@ private:
 	GLuint CreateRboAttachment(GLuint attachment, GLuint internalFormat);
 	void CheckFrambufferStatus();
 	
-
 	GLuint mFbo = 0;
 	GLuint mColorAttachment = 0;
 	GLuint mDepthStencilAttachment = 0;

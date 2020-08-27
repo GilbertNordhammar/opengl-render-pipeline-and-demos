@@ -79,17 +79,17 @@ int main() {
     glEnable(GL_CULL_FACE);
 
     Shader phongShader(
-        fileUtils::getFullResourcesPath("shaders/StandardPhong/StandardPhong.vert").c_str(),
-        fileUtils::getFullResourcesPath("shaders/StandardPhong/StandardPhong.frag").c_str()
+        fileUtils::getFullResourcesPath("shaders/StandardPhong/StandardPhong.vert"),
+        fileUtils::getFullResourcesPath("shaders/StandardPhong/StandardPhong.frag")
     );
     Shader pointLightShader(
-        fileUtils::getFullResourcesPath("shaders/LightSource/LightSource.vert").c_str(),
-        fileUtils::getFullResourcesPath("shaders/LightSource/LightSource.frag").c_str()
+        fileUtils::getFullResourcesPath("shaders/LightSource/LightSource.vert"),
+        fileUtils::getFullResourcesPath("shaders/LightSource/LightSource.frag")
     );
 
     Shader unlitShader(
-        fileUtils::getFullResourcesPath("shaders/StandardUnlit/StandardUnlit.vert").c_str(),
-        fileUtils::getFullResourcesPath("shaders/StandardUnlit/StandardUnlit.frag").c_str()
+        fileUtils::getFullResourcesPath("shaders/StandardUnlit/StandardUnlit.vert"),
+        fileUtils::getFullResourcesPath("shaders/StandardUnlit/StandardUnlit.frag")
     );
 
     auto backpackModel = Model(fileUtils::getFullResourcesPath("models/backpack/backpack.obj"));
@@ -185,8 +185,8 @@ int main() {
 
     auto screenRenderer = ScreenRenderer();
 
-    auto ppGrayscale = PostProcessEffect(fileUtils::getFullResourcesPath("shaders/post_processing/Grayscale.frag").c_str());
-    auto ppInvertColors = PostProcessEffect(fileUtils::getFullResourcesPath("shaders/post_processing/InvertColors.frag").c_str());
+    auto ppGrayscale = PostProcessEffect(fileUtils::getFullResourcesPath("shaders/post_processing/Grayscale.frag"));
+    auto ppInvertColors = PostProcessEffect(fileUtils::getFullResourcesPath("shaders/post_processing/InvertColors.frag"));
 
     sceneFrameBuffer = &FrameBuffer(ColorType::Texture, DepthStencilType::DepthStencilRbo);
     sceneFrameBuffer->Create(windowWidth, windowHeight);

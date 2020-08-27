@@ -4,7 +4,7 @@
 class PostProcessEffect
 {
 public:
-	PostProcessEffect(const char* fragmentPath);
+	PostProcessEffect(const std::string& fragmentPath);
 	void UseShader(GLuint screenTexture);
 	
 private:
