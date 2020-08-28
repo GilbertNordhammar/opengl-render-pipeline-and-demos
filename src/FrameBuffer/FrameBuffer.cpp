@@ -2,21 +2,58 @@
 #include <iostream>
 
 FrameBuffer::FrameBuffer(
-	ColorType colorAttachmentType,
-	DepthStencilType depthStencilAttachmentType) :
+	unsigned int width, unsigned int height,
+	ColorType colorAttachmentType, DepthStencilType depthStencilAttachmentType) :
+		mWidth(width),
+		mHeight(height),
 		mColorType(colorAttachmentType),
-		mDepthStencilType(depthStencilAttachmentType) {}
-
-void FrameBuffer::Create(unsigned int width, unsigned int height)
+		mDepthStencilType(depthStencilAttachmentType) 
 {
-	CleanUp();
+	Create();
+}
 
-	mWidth = width;
-	mHeight = height;
+FrameBuffer::FrameBuffer(const FrameBuffer& other) :
+	FrameBuffer(other.mWidth, other.mHeight, other.mColorType, other.mDepthStencilType) {}
 
+FrameBuffer::FrameBuffer(FrameBuffer&& other) noexcept :
+	mWidth(other.mWidth), mHeight(other.mHeight), 
+	mColorType(other.mColorType), mDepthStencilType(other.mDepthStencilType),
+	mFbo(other.mFbo), mColorTex(other.mColorTex), mColorRbo(other.mColorRbo),
+	mDepthTex(other.mDepthTex), mDepthRbo(other.mDepthRbo), mDepthStencilRbo(other.mDepthStencilRbo) {}
+
+FrameBuffer& FrameBuffer::operator=(FrameBuffer other) {
+	swap(*this, other);
+
+	return *this;
+}
+
+void FrameBuffer::swap(FrameBuffer& first, FrameBuffer& second) noexcept {
+	using std::swap;
+
+	swap(first.mColorTex, second.mColorTex);
+	swap(first.mColorRbo, second.mColorRbo);
+	swap(first.mDepthTex, second.mDepthTex);
+	swap(first.mDepthRbo, second.mDepthRbo);
+	swap(first.mDepthStencilRbo, second.mDepthStencilRbo);
+
+	swap(first.mColorType, second.mColorType);
+	swap(first.mDepthStencilType, second.mDepthStencilType);
+
+	swap(first.mWidth, second.mWidth);
+	swap(first.mHeight, second.mHeight);
+
+
+}
+
+FrameBuffer::~FrameBuffer() {
+	Cleanup();
+}
+
+void FrameBuffer::Create()
+{
 	CreateFbo();
 	CreateColorAttachment();
-	CreateDepthStencilAttachment();
+	CreateDepthAndStencilAttachments();
 
 	CheckFrambufferStatus();
 }
@@ -25,25 +62,25 @@ void FrameBuffer::CreateColorAttachment() {
 	switch (mColorType)
 	{
 	case ColorType::Texture:
-		mColorAttachment = CreateTextureAttachment(GL_COLOR_ATTACHMENT0, GL_RGB); // TODO: Switch to sized internal format if possible (gives error for GL_RGB8, but it should work according to khronos docs)
+		mColorTex = CreateTextureAttachment(GL_COLOR_ATTACHMENT0, GL_RGB); // TODO: Switch to sized internal format if possible (gives error for GL_RGB8, but it should work according to khronos docs)
 		break;
 	case ColorType::Rbo:
-		mColorAttachment = CreateRboAttachment(GL_COLOR_ATTACHMENT0, GL_RGB);
+		mColorRbo = CreateRboAttachment(GL_COLOR_ATTACHMENT0, GL_RGB);
 		break;
 	}
 }
 
-void FrameBuffer::CreateDepthStencilAttachment() {
+void FrameBuffer::CreateDepthAndStencilAttachments() {
 	switch (mDepthStencilType)
 	{
-	case DepthStencilType::DepthTexture:
-		mDepthStencilAttachment = CreateTextureAttachment(GL_DEPTH_ATTACHMENT, GL_DEPTH_COMPONENT);
+	case DepthStencilType::DepthStencilRbo:
+		mDepthStencilRbo = CreateRboAttachment(GL_DEPTH_STENCIL_ATTACHMENT, GL_DEPTH24_STENCIL8);
+		break;
+	case DepthStencilType::DepthTex:
+		mDepthTex = CreateTextureAttachment(GL_DEPTH_ATTACHMENT, GL_DEPTH_COMPONENT);
 		break;
 	case DepthStencilType::DepthRbo:
-		mDepthStencilAttachment = CreateRboAttachment(GL_DEPTH_ATTACHMENT, GL_DEPTH_COMPONENT24);
-		break;
-	case DepthStencilType::DepthStencilRbo:
-		mDepthStencilAttachment = CreateRboAttachment(GL_DEPTH_STENCIL_ATTACHMENT, GL_DEPTH24_STENCIL8);
+		mDepthRbo = CreateRboAttachment(GL_DEPTH_ATTACHMENT, GL_DEPTH_COMPONENT);
 		break;
 	}
 }
@@ -76,23 +113,50 @@ GLuint FrameBuffer::CreateRboAttachment(GLuint attachment, GLuint internalFormat
 }
 
 void FrameBuffer::CheckFrambufferStatus() {
-	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-		std::cout << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!" << std::endl;
+	GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+	if (status != GL_FRAMEBUFFER_COMPLETE) {
+		std::cout << "ERROR::FRAMEBUFFER: Framebuffer is not complete!" << std::endl;
+		
+		switch (status)
+		{
+		case GL_FRAMEBUFFER_UNSUPPORTED:
+			std::cout << "DETAILED::ERROR: GL_FRAMEBUFFER_UNSUPPORTED" << std::endl;
+			break;
+		case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT:
+			std::cout << "DETAILED::ERROR: GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT" << std::endl;
+			break;
+		}
+	}
+		
 }
 
 void FrameBuffer::Bind() {
 	glBindFramebuffer(GL_FRAMEBUFFER, mFbo);
 }
 
-void FrameBuffer::CleanUp() {
+void FrameBuffer::Resize(unsigned int width, unsigned int height) {
+	Cleanup();
+	mWidth = width;
+	mHeight = height;
+	Create();
+}
+
+void FrameBuffer::Cleanup() {
 	glDeleteFramebuffers(1, &mFbo);
 	mFbo = 0;
+	
+	glDeleteTextures(1, &mColorTex);
+	mColorTex = 0;
 
-	glDeleteTextures(1, &mColorAttachment);
-	glDeleteRenderbuffers(1, &mColorAttachment);
-	mColorAttachment = 0;
+	glDeleteRenderbuffers(1, &mColorRbo);
+	mColorRbo = 0;
 
-	glDeleteBuffers(1, &mDepthStencilAttachment);
-	glDeleteRenderbuffers(1, &mDepthStencilAttachment);
-	mDepthStencilAttachment = 0;
+	glDeleteBuffers(1, &mDepthTex);
+	mDepthTex = 0;
+
+	glDeleteRenderbuffers(1, &mDepthRbo);
+	mDepthRbo = 0;
+
+	glDeleteRenderbuffers(1, &mDepthStencilRbo);
+	mDepthStencilRbo = 0;
 }

@@ -188,14 +188,9 @@ int main() {
     auto ppGrayscale = PostProcessEffect(fileUtils::getFullResourcesPath("shaders/post_processing/Grayscale.frag"));
     auto ppInvertColors = PostProcessEffect(fileUtils::getFullResourcesPath("shaders/post_processing/InvertColors.frag"));
 
-    sceneFrameBuffer = &FrameBuffer(ColorType::Texture, DepthStencilType::DepthStencilRbo);
-    sceneFrameBuffer->Create(windowWidth, windowHeight);
-
-    ppEffect1FrameBuffer = &FrameBuffer(ColorType::Texture, DepthStencilType::None);
-    ppEffect1FrameBuffer->Create(windowWidth, windowHeight);
-
-    ppEffect2FrameBuffer = &FrameBuffer(ColorType::Texture, DepthStencilType::None);
-    ppEffect2FrameBuffer->Create(windowWidth, windowHeight);
+    sceneFrameBuffer = new FrameBuffer(windowWidth, windowHeight, ColorType::Texture, DepthStencilType::DepthRbo);
+    ppEffect1FrameBuffer = new FrameBuffer(windowWidth, windowHeight, ColorType::Texture, DepthStencilType::None);
+    ppEffect2FrameBuffer = new FrameBuffer(windowWidth, windowHeight, ColorType::Texture, DepthStencilType::None);
 
     while (!glfwWindowShouldClose(window))
     {
@@ -224,22 +219,27 @@ int main() {
         glDisable(GL_STENCIL_TEST);
         glDisable(GL_BLEND);
 
+        // With post processing
         ppEffect1FrameBuffer->Bind();
-        screenRenderer.Draw(sceneFrameBuffer->GetColorAttachment(), &ppGrayscale);
+        screenRenderer.Draw(sceneFrameBuffer->GetColorTex(), &ppGrayscale);
 
         ppEffect2FrameBuffer->Bind();
-        screenRenderer.Draw(ppEffect1FrameBuffer->GetColorAttachment(), &ppInvertColors);
+        screenRenderer.Draw(ppEffect1FrameBuffer->GetColorTex(), &ppInvertColors);
 
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        screenRenderer.Draw(ppEffect2FrameBuffer->GetColorAttachment());
+        screenRenderer.Draw(ppEffect2FrameBuffer->GetColorTex());
+
+        // No post processing
+        /*glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        screenRenderer.Draw(sceneFrameBuffer->GetDepthTex());*/
 
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
 
-    sceneFrameBuffer->CleanUp();
-    ppEffect1FrameBuffer->CleanUp();
-    ppEffect2FrameBuffer->CleanUp();
+    delete sceneFrameBuffer;
+    delete ppEffect1FrameBuffer;
+    delete ppEffect2FrameBuffer;
 
     glfwTerminate();
     return 0;
@@ -351,9 +351,9 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
     windowHeight = height;
     glViewport(0, 0, width, height);
 
-    sceneFrameBuffer->Create(width, height);
-    ppEffect1FrameBuffer->Create(width, height);
-    ppEffect2FrameBuffer->Create(width, height);
+    sceneFrameBuffer->Resize(width, height);
+    ppEffect1FrameBuffer->Resize(width, height);
+    ppEffect2FrameBuffer->Resize(width, height);
 }
 
 void processInput(GLFWwindow* window)
