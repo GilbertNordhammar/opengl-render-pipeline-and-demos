@@ -3,7 +3,7 @@
 
 const int MAX_NUMB_TEXTURES = 15;
 
-Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures)
+Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture2D> textures)
 {
     this->mVertices = vertices;
     this->mIndices = indices;

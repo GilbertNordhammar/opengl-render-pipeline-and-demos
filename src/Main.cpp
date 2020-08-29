@@ -119,8 +119,8 @@ int main() {
         0, 1, 2,
         1, 3, 2
     };
-    std::vector<Texture> windowTextures = {
-        Texture(fileUtils::getFullResourcesPath("textures/red-window.png"), aiTextureType::aiTextureType_DIFFUSE)
+    std::vector<Texture2D> windowTextures = {
+        Texture2D(fileUtils::getFullResourcesPath("textures/red-window.png"), aiTextureType::aiTextureType_DIFFUSE)
     };
     std::vector<Mesh> windowMeshes = { Mesh(windowVertices, windowIndices, windowTextures) };
     auto windowModel = Model(windowMeshes);

@@ -1,18 +1,19 @@
 #pragma once
 #include <string>
 #include <assimp/scene.h>
+#include <glad/glad.h>
 
-class Texture
+class Texture2D
 {
 public:
-    Texture(std::string path, aiTextureType type);
+    Texture2D(std::string path, aiTextureType type);
 
-    unsigned int GetId() { return mId; }
+    GLuint GetId() { return mId; }
     aiTextureType GetType() { return mType; }
     std::string GetFilePath() { return mFilePath; }
 
 private:
-    unsigned int mId;
+    GLuint mId = 0;
     aiTextureType mType;
     std::string mFilePath;
 

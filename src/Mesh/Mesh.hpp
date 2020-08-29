@@ -6,7 +6,7 @@
 #include <vector>
 #include <map>
 #include <assimp/scene.h>
-#include "src/Texture/Texture.hpp"
+#include "src/Texture2D/Texture2D.hpp"
 
 struct Vertex {
     glm::vec3 position;
@@ -20,9 +20,9 @@ class Mesh {
 public:
     std::vector<Vertex>       mVertices;
     std::vector<unsigned int> mIndices;
-    std::vector<Texture>      mTextures;
+    std::vector<Texture2D>      mTextures;
 
-    Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures);
+    Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture2D> textures);
     void Draw(Shader& shader);
 private:
     unsigned int mVAO, mVBO, mEBO;

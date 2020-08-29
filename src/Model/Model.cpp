@@ -48,7 +48,7 @@ Mesh Model::ProcessMesh(aiMesh* mesh, const aiScene* scene)
 {
     std::vector<Vertex> vertices;
     std::vector<unsigned int> indices;
-    std::vector<Texture> textures;
+    std::vector<Texture2D> textures;
 
     for (unsigned int i = 0; i < mesh->mNumVertices; i++)
     {
@@ -88,19 +88,19 @@ Mesh Model::ProcessMesh(aiMesh* mesh, const aiScene* scene)
     if (mesh->mMaterialIndex >= 0)
     {
         aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
-        std::vector<Texture> diffuseMaps = LoadMaterialTextures(material, aiTextureType_DIFFUSE);
+        std::vector<Texture2D> diffuseMaps = LoadMaterialTextures(material, aiTextureType_DIFFUSE);
         textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
 
-        std::vector<Texture> specularMaps = LoadMaterialTextures(material, aiTextureType_SPECULAR);
+        std::vector<Texture2D> specularMaps = LoadMaterialTextures(material, aiTextureType_SPECULAR);
         textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
     }
 
     return Mesh(vertices, indices, textures);
 }
 
-std::vector<Texture> Model::LoadMaterialTextures(aiMaterial* mat, aiTextureType type)
+std::vector<Texture2D> Model::LoadMaterialTextures(aiMaterial* mat, aiTextureType type)
 {
-    std::vector<Texture> textures;
+    std::vector<Texture2D> textures;
     for (unsigned int i = 0; i < mat->GetTextureCount(type); i++)
     {
         aiString str;
@@ -118,7 +118,7 @@ std::vector<Texture> Model::LoadMaterialTextures(aiMaterial* mat, aiTextureType 
         }
         if (!skip)
         {   
-            Texture texture(filePath, type);
+            Texture2D texture(filePath, type);
             textures.push_back(texture);
             mLoadedTextures.push_back(texture); // add to loaded textures
         }

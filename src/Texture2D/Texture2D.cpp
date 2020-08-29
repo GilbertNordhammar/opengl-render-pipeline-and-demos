@@ -1,16 +1,15 @@
-#include "Texture.hpp"
+#include "Texture2D.hpp"
 #include <stb_image.h>
-#include <glad/glad.h>
 #include <iostream>
 
-Texture::Texture(std::string path, aiTextureType type) : 
+Texture2D::Texture2D(std::string path, aiTextureType type) : 
 	mFilePath(path), mType(type) {
     mId = LoadTexture(path.c_str());
 }
 
-unsigned int Texture::LoadTexture(const char* path)
+GLuint Texture2D::LoadTexture(const char* path)
 {
-    unsigned int textureID;
+    GLuint textureID;
     glGenTextures(1, &textureID);
 
     int width, height, nrComponents;
