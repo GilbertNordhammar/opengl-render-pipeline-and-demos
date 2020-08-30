@@ -21,12 +21,7 @@ FrameBuffer::FrameBuffer(FrameBuffer&& other) noexcept :
 	mFbo(other.mFbo), mColorTex(other.mColorTex), mColorRbo(other.mColorRbo),
 	mDepthTex(other.mDepthTex), mDepthRbo(other.mDepthRbo), mDepthStencilRbo(other.mDepthStencilRbo) 
 {
-	other.mFbo = 0;
-	other.mColorTex = 0;
-	other.mColorRbo = 0;
-	other.mDepthTex = 0;
-	other.mDepthRbo = 0;
-	other.mDepthStencilRbo = 0;
+	other.Cleanup();
 }
 
 FrameBuffer& FrameBuffer::operator=(FrameBuffer other) {
