@@ -22,7 +22,6 @@ public:
 	
 	void Bind();
 	void Resize(unsigned int width, unsigned int height);
-	void Cleanup();
 
 	GLuint GetFbo() { return mFbo; }
 	GLuint GetColorTex() { return mColorTex; }
@@ -42,6 +41,7 @@ private:
 	GLuint CreateTextureAttachment(GLuint attachment, GLuint internalFormat);
 	GLuint CreateRboAttachment(GLuint attachment, GLuint internalFormat);
 	void CheckFrambufferStatus();
+	void Cleanup();
 	void swap(FrameBuffer& first, FrameBuffer& second) noexcept;
 
 	GLuint mFbo = 0;

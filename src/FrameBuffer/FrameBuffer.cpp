@@ -19,7 +19,15 @@ FrameBuffer::FrameBuffer(FrameBuffer&& other) noexcept :
 	mWidth(other.mWidth), mHeight(other.mHeight), 
 	mColorType(other.mColorType), mDepthStencilType(other.mDepthStencilType),
 	mFbo(other.mFbo), mColorTex(other.mColorTex), mColorRbo(other.mColorRbo),
-	mDepthTex(other.mDepthTex), mDepthRbo(other.mDepthRbo), mDepthStencilRbo(other.mDepthStencilRbo) {}
+	mDepthTex(other.mDepthTex), mDepthRbo(other.mDepthRbo), mDepthStencilRbo(other.mDepthStencilRbo) 
+{
+	other.mFbo = 0;
+	other.mColorTex = 0;
+	other.mColorRbo = 0;
+	other.mDepthTex = 0;
+	other.mDepthRbo = 0;
+	other.mDepthStencilRbo = 0;
+}
 
 FrameBuffer& FrameBuffer::operator=(FrameBuffer other) {
 	swap(*this, other);

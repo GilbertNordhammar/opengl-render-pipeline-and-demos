@@ -31,7 +31,10 @@ public:
         mVertexPath(other.mVertexPath), 
         mFragmentPath(other.mFragmentPath), 
         mGeometryPath(other.mGeometryPath),
-        mProgramID(other.mProgramID) {}
+        mProgramID(other.mProgramID) 
+    {
+        other.mProgramID = 0;
+    }
 
     Shader& operator=(Shader other) {
         swap(*this, other);
