@@ -12,18 +12,19 @@ Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std:
     SetupMesh();
 }
 
+Mesh::Mesh(const Mesh& other) : Mesh(other.mVertices, other.mIndices, other.mTextures) {}
+
 void Mesh::SetupMesh()
 {
-    glGenVertexArrays(1, &mVAO);
-    glGenBuffers(1, &mVBO);
-    glGenBuffers(1, &mEBO);
+    mVao = VAOArray(1);
+    mVboAndEbo = BufferArray(2);
 
-    glBindVertexArray(mVAO);
-    glBindBuffer(GL_ARRAY_BUFFER, mVBO);
+    glBindVertexArray(mVao.GetFirst());
+    glBindBuffer(GL_ARRAY_BUFFER, mVboAndEbo.GetObjects()[0]);
 
     glBufferData(GL_ARRAY_BUFFER, mVertices.size() * sizeof(Vertex), &mVertices[0], GL_STATIC_DRAW);
 
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mEBO);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mVboAndEbo.GetObjects()[1]);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, mIndices.size() * sizeof(unsigned int), &mIndices[0], GL_STATIC_DRAW);
 
     // vertex Positions
@@ -92,7 +93,7 @@ void Mesh::Draw(Shader& shader)
         glBindTexture(GL_TEXTURE_2D, mTextures[i].GetId());
     }
 
-    glBindVertexArray(mVAO);
+    glBindVertexArray(mVao.GetFirst());
     glDrawElements(GL_TRIANGLES, mIndices.size(), GL_UNSIGNED_INT, 0);
     
     glBindVertexArray(0);
