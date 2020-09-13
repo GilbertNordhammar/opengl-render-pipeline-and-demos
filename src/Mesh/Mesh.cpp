@@ -3,7 +3,10 @@
 
 const int MAX_NUMB_TEXTURES = 15;
 
+GLObjectGenerator Mesh::mObjGenerator = GLObjectGenerator();
+
 Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture2D> textures)
+    : mVboAndEbo(Mesh::mObjGenerator.GenBuffers(2)), mVao(Mesh::mObjGenerator.GenVertexArrays(1))
 {
     this->mVertices = vertices;
     this->mIndices = indices;
@@ -38,9 +41,6 @@ void Mesh::Swap(Mesh& first, Mesh& second) {
 
 void Mesh::SetupMesh()
 {
-    mVao = VAOArray(1);
-    mVboAndEbo = BufferArray(2);
-
     glBindVertexArray(mVao.GetFirst());
     glBindBuffer(GL_ARRAY_BUFFER, mVboAndEbo.GetObjects()[0]);
 

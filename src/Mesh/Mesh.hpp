@@ -1,13 +1,11 @@
 #pragma once
-
 #include <glm/glm.hpp>
 #include "../Shader/Shader.hpp"
 #include <vector>
 #include <map>
 #include <assimp/scene.h>
 #include "src/Texture2D/Texture2D.hpp"
-#include "src/gl_object_arrays/BufferArray/BufferArray.hpp";
-#include "src/gl_object_arrays/VAOArray/VAOArray.hpp"
+#include "src/GLObjectGenerator/GLObjectGenerator.hpp"
 
 struct Vertex {
     glm::vec3 position;
@@ -31,8 +29,10 @@ public:
 
     void Draw(Shader& shader) const;
 private:
-    BufferArray mVboAndEbo;
-    VAOArray mVao;
+    GLObjectArray mVboAndEbo;
+    GLObjectArray mVao;
+    
+    static GLObjectGenerator mObjGenerator;
 
     void Swap(Mesh& first, Mesh& second);
     void SetupMesh();
