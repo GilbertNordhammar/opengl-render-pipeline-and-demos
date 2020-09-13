@@ -14,6 +14,28 @@ Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std:
 
 Mesh::Mesh(const Mesh& other) : Mesh(other.mVertices, other.mIndices, other.mTextures) {}
 
+Mesh::Mesh(Mesh&& other) noexcept :
+    mVertices(std::move(other.mVertices)), 
+    mIndices(std::move(other.mIndices)),
+    mTextures(std::move(other.mTextures)),
+    mVboAndEbo(std::move(other.mVboAndEbo)),
+    mVao(std::move(other.mVao)) {}
+
+Mesh& Mesh::operator=(Mesh other) {
+    Swap(*this, other);
+    return *this;
+}
+
+void Mesh::Swap(Mesh& first, Mesh& second) {
+    using std::swap;
+
+    swap(first.mVertices, second.mVertices);
+    swap(first.mIndices, second.mIndices);
+    swap(first.mTextures, second.mTextures);
+    swap(first.mVboAndEbo, second.mVboAndEbo);
+    swap(first.mVao, second.mVao);
+}
+
 void Mesh::SetupMesh()
 {
     mVao = VAOArray(1);
@@ -50,7 +72,7 @@ void Mesh::SetupMesh()
     glBindVertexArray(0);
 }
 
-void Mesh::Draw(Shader& shader)
+void Mesh::Draw(Shader& shader) const
 {
     shader.use();
 

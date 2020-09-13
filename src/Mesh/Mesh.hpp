@@ -1,6 +1,5 @@
 #pragma once
 
-#include <iostream>
 #include <glm/glm.hpp>
 #include "../Shader/Shader.hpp"
 #include <vector>
@@ -26,11 +25,15 @@ public:
 
     Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture2D> textures);
     Mesh(const Mesh& other);
-    ~Mesh() { std::cout << "destroyed Mesh " << mVboAndEbo.GetObjects()[0] << " " << mVboAndEbo.GetObjects()[1] << std::endl; }
-    void Draw(Shader& shader);
+    Mesh(Mesh&& other) noexcept;
+
+    Mesh& operator=(Mesh other);
+
+    void Draw(Shader& shader) const;
 private:
     BufferArray mVboAndEbo;
     VAOArray mVao;
 
+    void Swap(Mesh& first, Mesh& second);
     void SetupMesh();
 };

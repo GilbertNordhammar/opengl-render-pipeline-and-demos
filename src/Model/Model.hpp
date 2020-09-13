@@ -16,7 +16,6 @@ public:
     void Draw(Shader& shader);
 
 private:
-    // model data
     std::vector<Mesh> mMeshes;
     std::string mDirectory;
     std::vector<Texture2D> mLoadedTextures;

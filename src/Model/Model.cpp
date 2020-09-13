@@ -26,6 +26,7 @@ void Model::LoadModel(std::string path)
     }
     mDirectory = path.substr(0, path.find_last_of('/'));
 
+    mMeshes.reserve(scene->mNumMeshes);
     ProcessNode(scene->mRootNode, scene);
 }
 
@@ -50,6 +51,7 @@ Mesh Model::ProcessMesh(aiMesh* mesh, const aiScene* scene)
     std::vector<unsigned int> indices;
     std::vector<Texture2D> textures;
 
+    vertices.reserve(mesh->mNumVertices);
     for (unsigned int i = 0; i < mesh->mNumVertices; i++)
     {
         Vertex vertex;
@@ -77,7 +79,7 @@ Mesh Model::ProcessMesh(aiMesh* mesh, const aiScene* scene)
 
         vertices.push_back(vertex);
     }
-    
+
     for (unsigned int i = 0; i < mesh->mNumFaces; i++)
     {
         aiFace face = mesh->mFaces[i];
