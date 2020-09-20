@@ -8,9 +8,9 @@ class Texture2D
 public:
     Texture2D(std::string path, aiTextureType type);
 
-    GLuint GetId() { return mId; }
-    aiTextureType GetType() { return mType; }
-    std::string GetFilePath() { return mFilePath; }
+    GLuint GetId() const { return mId; }
+    aiTextureType GetType() const { return mType; }
+    std::string GetFilePath() const { return mFilePath; }
 
 private:
     GLuint mId = 0;
