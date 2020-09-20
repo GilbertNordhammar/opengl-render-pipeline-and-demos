@@ -45,6 +45,18 @@
     <ClCompile Include="src\Texture2D\Texture2D.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\CubeMap\Cubemap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Skybox\Skybox.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GLObjectArray\GLObjectArray.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GLObjectGenerator\GLObjectGenerator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include=".gitignore" />
@@ -64,6 +76,8 @@
     <None Include="resources\shaders\post_processing\InvertColors.frag" />
     <None Include="resources\shaders\post_processing\default.vert" />
     <None Include="resources\shaders\post_processing\NoEffect.frag" />
+    <None Include="resources\shaders\Cubemap\Cubemap.vert" />
+    <None Include="resources\shaders\Cubemap\Cubemap.frag" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Shader\Shader.hpp">
@@ -112,6 +126,18 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Texture2D\Texture2D.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\CubeMap\Cubemap.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Skybox\Skybox.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GLObjectArray\GLObjectArray.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GLObjectGenerator\GLObjectGenerator.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

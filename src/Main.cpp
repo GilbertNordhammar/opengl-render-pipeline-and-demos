@@ -1,9 +1,11 @@
+#define STB_IMAGE_IMPLEMENTATION // Must be defined before stb_image.h is included anywhere
+
 #include <iostream>
 #include <glad/glad.h>
 #include <glfw3.h>
 #include "Shader/Shader.hpp"
 #include "utils/fileUtils.h"
-#include <stb.h>
+#include <stb_image.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -20,6 +22,7 @@
 #include "src/ScreenRenderer/ScreenRenderer.hpp"
 #include "PostProcessEffect/PostProcessEffect.hpp"
 #include "FrameBuffer/FrameBuffer.hpp"
+#include "Skybox/Skybox.hpp"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window);
@@ -33,11 +36,12 @@ void setLightProperties(
     SpotLight spotLight
 );
 void DrawScene(
-    std::vector<WorldObject> opaqueObjects,
-    std::vector<WorldObject> transparentObjects,
-    std::vector<PointLight> pointLights,
-    DirectionalLight dirLight,
-    SpotLight spotLight
+    std::vector<WorldObject>& opaqueObjects,
+    std::vector<WorldObject>& transparentObjects,
+    std::vector<PointLight>& pointLights,
+    DirectionalLight& dirLight,
+    SpotLight& spotLight,
+    Skybox& skybox
 );
 
 int windowWidth = 800;
@@ -47,7 +51,7 @@ float deltaTime = 0.0f;	// Time between current frame and last frame
 float lastFrame = 0.0f; // Time of last frame
 bool firstMouse = false;
 
-Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
+Camera camera(glm::vec3(0.0f, 0.0f, 0.0f));
 
 FrameBuffer* sceneFrameBuffer;
 FrameBuffer* ppEffect1FrameBuffer;
@@ -75,7 +79,6 @@ int main() {
         return -1;
     }
 
-    stbi_set_flip_vertically_on_load(true);
     glEnable(GL_CULL_FACE);
 
     Shader phongShader(
@@ -150,6 +153,10 @@ int main() {
         obj.mRotation = glm::vec3(90.0f, 0.0f, 0.0f);
     }
 
+    auto cubemapFolder = fileUtils::getFullResourcesPath("skybox-textures/mountains-lake");
+    std::vector<std::string> cubemapFaces = { "right.jpg", "left.jpg", "top.jpg", "bottom.jpg", "front.jpg", "back.jpg" };
+    auto skyBox = Skybox(Cubemap(cubemapFolder, cubemapFaces));
+
     DirectionalLight directionalLight = DirectionalLight();
     directionalLight.direction = glm::vec3(-0.2f, -1.0f, -0.3f);
     directionalLight.phong.amibent = glm::vec3(0.05f, 0.05f, 0.05f);
@@ -182,7 +189,6 @@ int main() {
     pointLights[2].positional.position = glm::vec3(-4.0f, 2.0f, -12.0f);
     pointLights[3].positional.position = glm::vec3(0.0f, 1.0f, 3.0f);
 
-
     auto screenRenderer = ScreenRenderer();
 
     auto ppGrayscale = PostProcessEffect(fileUtils::getFullResourcesPath("shaders/post_processing/Grayscale.frag"));
@@ -213,25 +219,26 @@ int main() {
         DrawScene(
             opaqueObjects,
             transparentObjects,
-            pointLights, directionalLight, spotLight);
+            pointLights, directionalLight, spotLight,
+            skyBox);
 
         glDisable(GL_DEPTH_TEST);
         glDisable(GL_STENCIL_TEST);
         glDisable(GL_BLEND);
 
         // With post processing
-        ppEffect1FrameBuffer->Bind();
+        /*ppEffect1FrameBuffer->Bind();
         screenRenderer.Draw(sceneFrameBuffer->GetColorTex(), &ppGrayscale);
 
         ppEffect2FrameBuffer->Bind();
         screenRenderer.Draw(ppEffect1FrameBuffer->GetColorTex(), &ppInvertColors);
 
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        screenRenderer.Draw(ppEffect2FrameBuffer->GetColorTex());
+        screenRenderer.Draw(ppEffect2FrameBuffer->GetColorTex());*/
 
         // No post processing
-        /*glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        screenRenderer.Draw(sceneFrameBuffer->GetDepthTex());*/
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        screenRenderer.Draw(sceneFrameBuffer->GetColorTex());
 
         glfwSwapBuffers(window);
         glfwPollEvents();
@@ -246,14 +253,18 @@ int main() {
 }
 
 void DrawScene(
-    std::vector<WorldObject> opaqueObjects, 
-    std::vector<WorldObject> transparentObjects,
-    std::vector<PointLight> pointLights,
-    DirectionalLight dirLight,
-    SpotLight spotLight
+    std::vector<WorldObject>& opaqueObjects, 
+    std::vector<WorldObject>& transparentObjects,
+    std::vector<PointLight>& pointLights,
+    DirectionalLight& dirLight,
+    SpotLight& spotLight,
+    Skybox& skybox
 ) {
     glm::mat4 viewMatrix = camera.GetViewMatrix();
     glm::mat4 projectionMatrix = glm::perspective(glm::radians(camera.GetFov()), (float)windowWidth / windowHeight, 0.1f, 100.0f);
+
+    
+    skybox.Draw(viewMatrix, projectionMatrix);
 
     spotLight.positional.position = camera.Position;
     spotLight.direction = camera.GetFront();
@@ -280,8 +291,8 @@ void DrawScene(
         float distance = glm::length(camera.Position - obj.mPosition);
         transparentObjSorted[distance] = &obj;
     }
-
-    glDisable(GL_CULL_FACE); // temporarily turns culling of since we're rendering quads here
+    
+    glDisable(GL_CULL_FACE); // temporarily turns off culling since we're rendering quads here
     for (auto& [key, obj] : transparentObjSorted) {
         obj->mShader.use();
 
@@ -296,6 +307,7 @@ void DrawScene(
         obj->Draw();
     }
     glEnable(GL_CULL_FACE);
+
 }
 
 void setLightProperties(

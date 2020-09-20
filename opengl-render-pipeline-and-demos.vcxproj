@@ -167,6 +167,10 @@ xcopy "$(SolutionDir)dependencies\assimp\lib\assimp-vc142-mtd.dll" "$(TargetDir)
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\GLObjectArray\GLObjectArray.cpp" />
+    <ClCompile Include="src\GLObjectGenerator\GLObjectGenerator.cpp" />
+    <ClCompile Include="src\Skybox\Skybox.cpp" />
+    <ClCompile Include="src\CubeMap\Cubemap.cpp" />
     <ClCompile Include="src\FrameBuffer\FrameBuffer.cpp" />
     <ClCompile Include="src\PostProcessEffect\PostProcessEffect.cpp" />
     <ClCompile Include="src\ScreenRenderer\ScreenRenderer.cpp" />
@@ -181,6 +185,8 @@ xcopy "$(SolutionDir)dependencies\assimp\lib\assimp-vc142-mtd.dll" "$(TargetDir)
   <ItemGroup>
     <None Include=".gitattributes" />
     <None Include=".gitignore" />
+    <None Include="resources\shaders\Cubemap\Cubemap.frag" />
+    <None Include="resources\shaders\Cubemap\Cubemap.vert" />
     <None Include="resources\shaders\post_processing\Grayscale.frag" />
     <None Include="resources\shaders\post_processing\InvertColors.frag" />
     <None Include="resources\shaders\post_processing\NoEffect.frag" />
@@ -196,7 +202,10 @@ xcopy "$(SolutionDir)dependencies\assimp\lib\assimp-vc142-mtd.dll" "$(TargetDir)
     <None Include="src\Camera\Camera.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\CubeMap\Cubemap.hpp" />
     <ClInclude Include="src\FrameBuffer\FrameBuffer.hpp" />
+    <ClInclude Include="src\GLObjectGenerator\GLObjectGenerator.hpp" />
+    <ClInclude Include="src\GLObjectArray\GLObjectArray.hpp" />
     <ClInclude Include="src\ScreenRenderer\ScreenRenderer.hpp" />
     <ClInclude Include="src\effects\drawWithOutline\drawWithOutline.hpp" />
     <ClInclude Include="src\light\attributes\PositionalLight.hpp" />
@@ -208,6 +217,7 @@ xcopy "$(SolutionDir)dependencies\assimp\lib\assimp-vc142-mtd.dll" "$(TargetDir)
     <ClInclude Include="src\PostProcessEffect\PostProcessEffect.hpp" />
     <ClInclude Include="src\Shader\Shader.hpp" />
     <ClInclude Include="src\light\PointLight\PointLight.hpp" />
+    <ClInclude Include="src\Skybox\Skybox.hpp" />
     <ClInclude Include="src\Texture2D\Texture2D.hpp" />
     <ClInclude Include="src\utils\array.h" />
     <ClInclude Include="src\utils\fileUtils.h" />

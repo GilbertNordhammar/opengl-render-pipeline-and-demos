@@ -115,7 +115,7 @@ public:
             glDeleteShader(geometry);
     }
 
-    void use()
+    void use() const
     {
         glUseProgram(mProgramID);
     }
