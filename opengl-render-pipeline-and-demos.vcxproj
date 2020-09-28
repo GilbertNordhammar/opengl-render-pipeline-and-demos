@@ -222,7 +222,7 @@ xcopy "$(SolutionDir)dependencies\assimp\lib\assimp-vc142-mtd.dll" "$(TargetDir)
     <ClInclude Include="src\Texture2D\Texture2D.hpp" />
     <ClInclude Include="src\utils\array.h" />
     <ClInclude Include="src\utils\fileUtils.h" />
-    <ClInclude Include="src\WorldObject\WorldObject.hpp" />
+    <ClInclude Include="src\SceneObject\SceneObject.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="resources\textures\steel-wooden-container\diffuse.png" />

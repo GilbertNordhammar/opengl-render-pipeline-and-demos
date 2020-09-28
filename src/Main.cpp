@@ -11,7 +11,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include "Camera/Camera.hpp"
 #include "Model/Model.hpp"
-#include "WorldObject/WorldObject.hpp"
+#include "SceneObject/SceneObject.hpp"
 #include "utils/array.h"
 #include "effects/drawWithOutline/drawWithOutline.hpp"
 #include <vector>
@@ -37,8 +37,8 @@ void setLightProperties(
     SpotLight spotLight
 );
 void DrawScene(
-    std::vector<WorldObject>& opaqueObjects,
-    std::vector<WorldObject>& transparentObjects,
+    std::vector<SceneObject>& opaqueObjects,
+    std::vector<SceneObject>& transparentObjects,
     std::vector<PointLight>& pointLights,
     DirectionalLight& dirLight,
     SpotLight& spotLight,
@@ -129,28 +129,28 @@ int main() {
     std::vector<Mesh> windowMeshes = { Mesh(windowVertices, windowIndices, windowTextures) };
     auto windowModel = Model(windowMeshes);
 
-    std::vector<WorldObject> opaqueObjects = {
-        WorldObject(backpackModel, phongShader, glm::vec3(0.0f,  2.0f,  0.0f)),
-        WorldObject(backpackModel, phongShader, glm::vec3(0.0f, 0.0f, -8.0f)),
-        WorldObject(backpackModel, phongShader, glm::vec3(0.0f, 5.0f, -8.0f)),
-        WorldObject(backpackModel, phongShader, glm::vec3(3.0f, -2.0f, -8.0f)),
-        WorldObject(backpackModel, phongShader, glm::vec3(5.0f, 0.0f, -1.0f)),
-        WorldObject(sphere, pointLightShader,
+    std::vector<SceneObject> opaqueObjects = {
+        SceneObject(backpackModel, phongShader, glm::vec3(0.0f,  2.0f,  0.0f)),
+        SceneObject(backpackModel, phongShader, glm::vec3(0.0f, 0.0f, -8.0f)),
+        SceneObject(backpackModel, phongShader, glm::vec3(0.0f, 5.0f, -8.0f)),
+        SceneObject(backpackModel, phongShader, glm::vec3(3.0f, -2.0f, -8.0f)),
+        SceneObject(backpackModel, phongShader, glm::vec3(5.0f, 0.0f, -1.0f)),
+        SceneObject(sphere, pointLightShader,
             glm::vec3(0.7f,  0.2f,  20.0f), glm::vec3(0.0,  0.0f,  0.0f), glm::vec3(0.2f)),
-        WorldObject(sphere, pointLightShader,
+        SceneObject(sphere, pointLightShader,
             glm::vec3(2.3f, -3.3f, -4.0f), glm::vec3(0.0,  0.0f,  0.0f), glm::vec3(0.2f)),
-        WorldObject(sphere, pointLightShader,
+        SceneObject(sphere, pointLightShader,
             glm::vec3(-4.0f,  2.0f, -12.0f), glm::vec3(0.0,  0.0f,  0.0f), glm::vec3(0.2f)),
-        WorldObject(sphere, pointLightShader,
+        SceneObject(sphere, pointLightShader,
             glm::vec3(0.0f,  1.0f, 3.0f), glm::vec3(0.0,  0.0f,  0.0f), glm::vec3(0.2f))
     };
 
-    std::vector<WorldObject> transparentObjects = {
-        WorldObject(windowModel, phongShader, glm::vec3(-1.5f, 0.0f, -0.48f)),
-        WorldObject(windowModel, phongShader, glm::vec3(1.5f, 0.0f, 0.51f)),
-        WorldObject(windowModel, phongShader, glm::vec3(0.0f, 0.0f, 0.7f)),
-        WorldObject(windowModel, phongShader, glm::vec3(-0.3f, 0.0f, -2.3f)),
-        WorldObject(windowModel, phongShader, glm::vec3(0.5f, 0.0f, -0.6f))
+    std::vector<SceneObject> transparentObjects = {
+        SceneObject(windowModel, phongShader, glm::vec3(-1.5f, 0.0f, -0.48f)),
+        SceneObject(windowModel, phongShader, glm::vec3(1.5f, 0.0f, 0.51f)),
+        SceneObject(windowModel, phongShader, glm::vec3(0.0f, 0.0f, 0.7f)),
+        SceneObject(windowModel, phongShader, glm::vec3(-0.3f, 0.0f, -2.3f)),
+        SceneObject(windowModel, phongShader, glm::vec3(0.5f, 0.0f, -0.6f))
     };
  
     for (auto& obj : transparentObjects) {
@@ -257,8 +257,8 @@ int main() {
 }
 
 void DrawScene(
-    std::vector<WorldObject>& opaqueObjects, 
-    std::vector<WorldObject>& transparentObjects,
+    std::vector<SceneObject>& opaqueObjects, 
+    std::vector<SceneObject>& transparentObjects,
     std::vector<PointLight>& pointLights,
     DirectionalLight& dirLight,
     SpotLight& spotLight,
@@ -290,7 +290,7 @@ void DrawScene(
         obj.Draw();
     }
 
-    std::map<float, WorldObject*, std::greater<float>> transparentObjSorted;
+    std::map<float, SceneObject*, std::greater<float>> transparentObjSorted;
     for (auto& obj : transparentObjects) {
         float distance = glm::length(camera.Position - obj.mPosition);
         transparentObjSorted[distance] = &obj;

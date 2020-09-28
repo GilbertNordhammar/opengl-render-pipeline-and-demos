@@ -5,7 +5,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-class WorldObject {
+class SceneObject {
 public:
 	Model& mModel;
 	Shader& mShader;
@@ -13,7 +13,7 @@ public:
 	glm::vec3 mRotation;
 	glm::vec3 mScale;
 
-	WorldObject(
+	SceneObject(
 		Model& model,
 		Shader& shader,
 		glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f),

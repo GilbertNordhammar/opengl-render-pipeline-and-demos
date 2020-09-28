@@ -4,7 +4,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include "src/Shader/Shader.hpp"
 #include "src/utils/array.h"
-#include "src/WorldObject/WorldObject.hpp"
+#include "src/SceneObject/SceneObject.hpp"
 #include <vector>
 #include <iostream>
 
@@ -12,7 +12,7 @@
 // * thickness must be over 1.0f for visible effect
 
 void drawWithOutline(
-	std::vector<WorldObject> worldObjects,
+	std::vector<SceneObject> worldObjects,
 	const Shader& outlineShader,
 	float thickness,
 	bool disableStencilTestAfterwards,
