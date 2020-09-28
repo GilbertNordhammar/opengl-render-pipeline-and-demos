@@ -5,7 +5,7 @@
 #include <map>
 #include <assimp/scene.h>
 #include "src/Texture2D/Texture2D.hpp"
-#include "src/GLObjectGenerator/GLObjectGenerator.hpp"
+#include "src/OpenGLObjectGenerator/OpenGLObjectGenerator.hpp"
 
 struct Vertex {
     glm::vec3 position;
@@ -29,10 +29,10 @@ public:
 
     void Draw(Shader& shader) const;
 private:
-    GLObjectArray mVboAndEbo;
-    GLObjectArray mVao;
+    OpenGLObjectArray mVboAndEbo;
+    OpenGLObjectArray mVao;
     
-    static GLObjectGenerator mObjGenerator;
+    static OpenGLObjectGenerator mObjGenerator;
 
     void Swap(Mesh& first, Mesh& second);
     void SetupMesh();

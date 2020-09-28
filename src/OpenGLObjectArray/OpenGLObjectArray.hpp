@@ -3,20 +3,20 @@
 #include <vector>
 #include <functional>
 
-class GLObjectArray {
+class OpenGLObjectArray {
 public:
-	GLObjectArray(const std::function<void(unsigned int, GLuint*)> funcGenerateObjects,
+	OpenGLObjectArray(const std::function<void(unsigned int, GLuint*)> funcGenerateObjects,
 				  const std::function<void(unsigned int, GLuint*)> funcDeleteObjects);
 	
-	GLObjectArray(unsigned int nObjects,
+	OpenGLObjectArray(unsigned int nObjects,
 				  const std::function<void(unsigned int, GLuint*)> funcGenerateObjects,
 			      const std::function<void(unsigned int, GLuint*)> funcDeleteObjects);
-	GLObjectArray(const GLObjectArray& other) = delete;
-	GLObjectArray(GLObjectArray&& other);
-	~GLObjectArray();
+	OpenGLObjectArray(const OpenGLObjectArray& other) = delete;
+	OpenGLObjectArray(OpenGLObjectArray&& other);
+	~OpenGLObjectArray();
 
-	GLObjectArray& operator=(GLObjectArray& other) = delete;
-	GLObjectArray& operator=(GLObjectArray&& other) noexcept;
+	OpenGLObjectArray& operator=(OpenGLObjectArray& other) = delete;
+	OpenGLObjectArray& operator=(OpenGLObjectArray&& other) noexcept;
 
 	virtual void Push(unsigned int nObjects);
 	virtual void Remove(GLuint object);
@@ -30,5 +30,5 @@ private:
 	std::function<void(unsigned int, GLuint*)> DeleteObjects;
 	
 	void CleanUp();
-	void Move(GLObjectArray& other);
+	void Move(OpenGLObjectArray& other);
 };

@@ -51,10 +51,10 @@
     <ClCompile Include="src\Skybox\Skybox.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\GLObjectArray\GLObjectArray.cpp">
+    <ClCompile Include="src\OpenGLObjectGenerator\OpenGLObjectGenerator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\GLObjectGenerator\GLObjectGenerator.cpp">
+    <ClCompile Include="src\OpenGLObjectArray\OpenGLObjectArray.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -134,10 +134,10 @@
     <ClInclude Include="src\Skybox\Skybox.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\GLObjectArray\GLObjectArray.hpp">
+    <ClInclude Include="src\OpenGLObjectGenerator\OpenGLObjectGenerator.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\GLObjectGenerator\GLObjectGenerator.hpp">
+    <ClInclude Include="src\OpenGLObjectArray\OpenGLObjectArray.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

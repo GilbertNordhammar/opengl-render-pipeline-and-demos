@@ -167,8 +167,8 @@ xcopy "$(SolutionDir)dependencies\assimp\lib\assimp-vc142-mtd.dll" "$(TargetDir)
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\GLObjectArray\GLObjectArray.cpp" />
-    <ClCompile Include="src\GLObjectGenerator\GLObjectGenerator.cpp" />
+    <ClCompile Include="src\OpenGLObjectArray\OpenGLObjectArray.cpp" />
+    <ClCompile Include="src\OpenGLObjectGenerator\OpenGLObjectGenerator.cpp" />
     <ClCompile Include="src\Skybox\Skybox.cpp" />
     <ClCompile Include="src\CubeMap\Cubemap.cpp" />
     <ClCompile Include="src\FrameBuffer\FrameBuffer.cpp" />
@@ -204,8 +204,8 @@ xcopy "$(SolutionDir)dependencies\assimp\lib\assimp-vc142-mtd.dll" "$(TargetDir)
   <ItemGroup>
     <ClInclude Include="src\CubeMap\Cubemap.hpp" />
     <ClInclude Include="src\FrameBuffer\FrameBuffer.hpp" />
-    <ClInclude Include="src\GLObjectGenerator\GLObjectGenerator.hpp" />
-    <ClInclude Include="src\GLObjectArray\GLObjectArray.hpp" />
+    <ClInclude Include="src\OpenGLObjectArray\OpenGLObjectArray.hpp" />
+    <ClInclude Include="src\OpenGLObjectGenerator\OpenGLObjectGenerator.hpp" />
     <ClInclude Include="src\ScreenRenderer\ScreenRenderer.hpp" />
     <ClInclude Include="src\effects\drawWithOutline\drawWithOutline.hpp" />
     <ClInclude Include="src\light\attributes\PositionalLight.hpp" />

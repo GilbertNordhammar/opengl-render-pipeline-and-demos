@@ -1,27 +1,27 @@
-#include "GLObjectArray.hpp"
+#include "OpenGLObjectArray.hpp"
 #include <iostream>
 
-GLObjectArray::GLObjectArray(const std::function<void(unsigned int, GLuint*)> funcGenerateObjects,
+OpenGLObjectArray::OpenGLObjectArray(const std::function<void(unsigned int, GLuint*)> funcGenerateObjects,
 							 const std::function<void(unsigned int, GLuint*)> funcDeleteObjects) 
 	: GenerateObjects(funcGenerateObjects), DeleteObjects(funcDeleteObjects) {}
 
-GLObjectArray::GLObjectArray(unsigned int nObjects,
+OpenGLObjectArray::OpenGLObjectArray(unsigned int nObjects,
 							 const std::function<void(unsigned int, GLuint*)> funcGenerateObjects,
 							 const std::function<void(unsigned int, GLuint*)> funcDeleteObjects)
-	: GLObjectArray(funcGenerateObjects, funcDeleteObjects) 
+	: OpenGLObjectArray(funcGenerateObjects, funcDeleteObjects) 
 {
 	Push(nObjects);
  }
 
-GLObjectArray::GLObjectArray(GLObjectArray&& other) {
+OpenGLObjectArray::OpenGLObjectArray(OpenGLObjectArray&& other) {
 	Move(other);
 }
 
-GLObjectArray::~GLObjectArray() {
+OpenGLObjectArray::~OpenGLObjectArray() {
 	CleanUp();
 }
 
-void GLObjectArray::Move(GLObjectArray& other) {
+void OpenGLObjectArray::Move(OpenGLObjectArray& other) {
 	CleanUp();
 	mObjects = std::move(other.mObjects);
 	GenerateObjects = std::move(other.GenerateObjects);
@@ -30,19 +30,19 @@ void GLObjectArray::Move(GLObjectArray& other) {
 	other.mObjects.clear();
 }
 
-void GLObjectArray::CleanUp() {
+void OpenGLObjectArray::CleanUp() {
 	if (mObjects.size() > 0) {
 		DeleteObjects(mObjects.size(), &mObjects[0]);
 		mObjects.clear();
 	}
 }
 
-GLObjectArray& GLObjectArray::operator=(GLObjectArray&& other) noexcept {
+OpenGLObjectArray& OpenGLObjectArray::operator=(OpenGLObjectArray&& other) noexcept {
 	Move(other);
 	return *this;
 }
 
-void GLObjectArray::Push(unsigned int nObjects) {
+void OpenGLObjectArray::Push(unsigned int nObjects) {
 	if (nObjects == 0)
 		return;
 
@@ -52,7 +52,7 @@ void GLObjectArray::Push(unsigned int nObjects) {
 	GenerateObjects(nObjects, &mObjects[oldSize]);
 }
 
-void GLObjectArray::Remove(GLuint object) {
+void OpenGLObjectArray::Remove(GLuint object) {
 	auto pos = std::find(mObjects.begin(), mObjects.end(), object);
 	if (pos != mObjects.end()) {
 		int index = std::distance(mObjects.begin(), pos);

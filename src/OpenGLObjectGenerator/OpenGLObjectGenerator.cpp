@@ -1,6 +1,6 @@
-#include "GLObjectGenerator.hpp"
+#include "OpenGLObjectGenerator.hpp"
 
-GLObjectArray GLObjectGenerator::GenBuffers(unsigned int count) {
+OpenGLObjectArray OpenGLObjectGenerator::GenBuffers(unsigned int count) {
     auto funcGenerate = [](unsigned int nObjects, GLuint* firstObject) {
         glGenBuffers(nObjects, firstObject);
     };
@@ -8,10 +8,10 @@ GLObjectArray GLObjectGenerator::GenBuffers(unsigned int count) {
         glDeleteBuffers(nObjects, firstObject);
     };
 
-    return GLObjectArray(count, funcGenerate, funcDelete);
+    return OpenGLObjectArray(count, funcGenerate, funcDelete);
 }
 
-GLObjectArray GLObjectGenerator::GenVertexArrays(unsigned int count) {
+OpenGLObjectArray OpenGLObjectGenerator::GenVertexArrays(unsigned int count) {
     auto funcGenerate = [](unsigned int nObjects, GLuint* firstObject) {
         glGenVertexArrays(nObjects, firstObject);
     };
@@ -19,10 +19,10 @@ GLObjectArray GLObjectGenerator::GenVertexArrays(unsigned int count) {
         glDeleteVertexArrays(nObjects, firstObject);
     };
 
-    return GLObjectArray(count, funcGenerate, funcDelete);
+    return OpenGLObjectArray(count, funcGenerate, funcDelete);
 }
 
-GLObjectArray GLObjectGenerator::GenTexture(unsigned int count) {
+OpenGLObjectArray OpenGLObjectGenerator::GenTexture(unsigned int count) {
     auto funcGenerate = [](unsigned int nObjects, GLuint* firstObject) {
         glGenTextures(nObjects, firstObject);
     };
@@ -30,5 +30,5 @@ GLObjectArray GLObjectGenerator::GenTexture(unsigned int count) {
         glDeleteBuffers(nObjects, firstObject);
     };
 
-    return GLObjectArray(count, funcGenerate, funcDelete);
+    return OpenGLObjectArray(count, funcGenerate, funcDelete);
 }

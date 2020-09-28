@@ -4,7 +4,7 @@
 static const int MAX_NUMB_TEXTURES = 15;
 
 Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<std::shared_ptr<Texture2D>> textures)
-    : mVboAndEbo(GLObjectGenerator::GenBuffers(2)), mVao(GLObjectGenerator::GenVertexArrays(1)),
+    : mVboAndEbo(OpenGLObjectGenerator::GenBuffers(2)), mVao(OpenGLObjectGenerator::GenVertexArrays(1)),
     mVertices(vertices), mIndices(indices), mTextures(textures)
 {
     SetupMesh();

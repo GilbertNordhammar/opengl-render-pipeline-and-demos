@@ -2,7 +2,7 @@
 #include <string>
 #include <assimp/scene.h>
 #include <glad/glad.h>
-#include "src/GLObjectGenerator/GLObjectGenerator.hpp"
+#include "src/OpenGLObjectGenerator/OpenGLObjectGenerator.hpp"
 #include <memory>
 #include <unordered_map>
 
@@ -21,7 +21,7 @@ public:
 
     static std::shared_ptr<Texture2D> Generate(const std::string& path, aiTextureType type);
 private:
-    GLObjectArray mTexture;
+    OpenGLObjectArray mTexture;
     aiTextureType mType;
     std::string mFilePath; 
 

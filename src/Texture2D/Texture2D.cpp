@@ -6,7 +6,7 @@
 std::unordered_map<std::string, std::shared_ptr<Texture2D>> Texture2D::mLoadedTextures;
 
 Texture2D::Texture2D(std::string path, aiTextureType type) 
-    : mFilePath(path), mType(type), mTexture(GLObjectGenerator::GenTexture(1)) 
+    : mFilePath(path), mType(type), mTexture(OpenGLObjectGenerator::GenTexture(1)) 
 {
     LoadTexture(path.c_str());
 }
