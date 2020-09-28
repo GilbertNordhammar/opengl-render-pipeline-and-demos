@@ -1,12 +1,10 @@
 #include "Mesh.hpp"
 #include <glad/glad.h>
 
-const int MAX_NUMB_TEXTURES = 15;
-
-GLObjectGenerator Mesh::mObjGenerator = GLObjectGenerator();
+static const int MAX_NUMB_TEXTURES = 15;
 
 Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<std::shared_ptr<Texture2D>> textures)
-    : mVboAndEbo(Mesh::mObjGenerator.GenBuffers(2)), mVao(Mesh::mObjGenerator.GenVertexArrays(1)),
+    : mVboAndEbo(GLObjectGenerator::GenBuffers(2)), mVao(GLObjectGenerator::GenVertexArrays(1)),
     mVertices(vertices), mIndices(indices), mTextures(textures)
 {
     SetupMesh();
