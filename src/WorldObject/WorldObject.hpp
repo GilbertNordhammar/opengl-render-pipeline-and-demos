@@ -26,14 +26,14 @@ public:
 		mScale(scale) {}
 
 	void Draw() {
-		mShader.use();
+		mShader.Use();
 		glm::mat4 modelMatrix = glm::mat4(1.0f);
 		modelMatrix = glm::translate(modelMatrix, mPosition);
 		modelMatrix = glm::rotate(modelMatrix, glm::radians(mRotation.x), glm::vec3(1.0f, 0.0f, 0.0f));
 		modelMatrix = glm::rotate(modelMatrix, glm::radians(mRotation.y), glm::vec3(0.0f, 1.0f, 0.0f));
 		modelMatrix = glm::rotate(modelMatrix, glm::radians(mRotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
 		modelMatrix = glm::scale(modelMatrix, mScale);
-		mShader.setMat4("model", modelMatrix);
+		mShader.SetMat4("model", modelMatrix);
 
 		mModel.Draw(mShader);
 	}

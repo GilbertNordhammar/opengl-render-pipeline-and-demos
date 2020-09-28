@@ -274,18 +274,18 @@ void DrawScene(
     spotLight.direction = camera.GetFront();
 
     for (auto& obj : opaqueObjects) {
-        obj.mShader.use();
+        obj.mShader.Use();
 
-        obj.mShader.setMat4("view", viewMatrix);
-        obj.mShader.setMat4("projection", projectionMatrix);
+        obj.mShader.SetMat4("view", viewMatrix);
+        obj.mShader.SetMat4("projection", projectionMatrix);
 
-        obj.mShader.setVec3("viewPos", camera.Position);
-        obj.mShader.setFloat("material.shininess", 32.0f);
+        obj.mShader.SetVec3("viewPos", camera.Position);
+        obj.mShader.SetFloat("material.shininess", 32.0f);
 
         setLightProperties(obj.mShader, pointLights, dirLight, spotLight);
 
         // For spot lights
-        obj.mShader.setVec3("lightColor", glm::vec3(1.0f, 1.0f, 1.0f));
+        obj.mShader.SetVec3("lightColor", glm::vec3(1.0f, 1.0f, 1.0f));
 
         obj.Draw();
     }
@@ -298,13 +298,13 @@ void DrawScene(
     
     glDisable(GL_CULL_FACE); // temporarily turns off culling since we're rendering quads here
     for (auto& [key, obj] : transparentObjSorted) {
-        obj->mShader.use();
+        obj->mShader.Use();
 
-        obj->mShader.setMat4("view", viewMatrix);
-        obj->mShader.setMat4("projection", projectionMatrix);
+        obj->mShader.SetMat4("view", viewMatrix);
+        obj->mShader.SetMat4("projection", projectionMatrix);
 
-        obj->mShader.setVec3("viewPos", camera.Position);
-        obj->mShader.setFloat("material.shininess", 32.0f);
+        obj->mShader.SetVec3("viewPos", camera.Position);
+        obj->mShader.SetFloat("material.shininess", 32.0f);
 
         setLightProperties(obj->mShader, pointLights, dirLight, spotLight);
 
@@ -323,30 +323,30 @@ void setLightProperties(
 {
     for (int i = 0; i < pointLights.size(); i++) {
         std::string pointLightSlot = "pointLights[" + std::to_string(i) + "]";
-        shader.setVec3(pointLightSlot + ".position", pointLights[i].positional.position);
-        shader.setVec3(pointLightSlot + ".ambient", pointLights[i].phong.amibent);
-        shader.setVec3(pointLightSlot + ".diffuse", pointLights[i].phong.diffuse);
-        shader.setVec3(pointLightSlot + ".specular", pointLights[i].phong.specular);
-        shader.setFloat(pointLightSlot + ".constant", pointLights[i].positional.constant);
-        shader.setFloat(pointLightSlot + ".linear", pointLights[i].positional.linear);
-        shader.setFloat(pointLightSlot + ".quadratic", pointLights[i].positional.quadratic);
+        shader.SetVec3(pointLightSlot + ".position", pointLights[i].positional.position);
+        shader.SetVec3(pointLightSlot + ".ambient", pointLights[i].phong.amibent);
+        shader.SetVec3(pointLightSlot + ".diffuse", pointLights[i].phong.diffuse);
+        shader.SetVec3(pointLightSlot + ".specular", pointLights[i].phong.specular);
+        shader.SetFloat(pointLightSlot + ".constant", pointLights[i].positional.constant);
+        shader.SetFloat(pointLightSlot + ".linear", pointLights[i].positional.linear);
+        shader.SetFloat(pointLightSlot + ".quadratic", pointLights[i].positional.quadratic);
     }
 
-    shader.setVec3("dirLight.direction", dirLight.direction);
-    shader.setVec3("dirLight.ambient", dirLight.phong.amibent);
-    shader.setVec3("dirLight.diffuse", dirLight.phong.diffuse);
-    shader.setVec3("dirLight.specular", dirLight.phong.specular);
+    shader.SetVec3("dirLight.direction", dirLight.direction);
+    shader.SetVec3("dirLight.ambient", dirLight.phong.amibent);
+    shader.SetVec3("dirLight.diffuse", dirLight.phong.diffuse);
+    shader.SetVec3("dirLight.specular", dirLight.phong.specular);
     
-    shader.setVec3("spotLight.position", spotLight.positional.position);
-    shader.setVec3("spotLight.direction", spotLight.direction);
-    shader.setVec3("spotLight.ambient", spotLight.phong.amibent);
-    shader.setVec3("spotLight.diffuse", spotLight.phong.diffuse);
-    shader.setVec3("spotLight.specular", spotLight.phong.specular);
-    shader.setFloat("spotLight.constant", spotLight.positional.constant);
-    shader.setFloat("spotLight.linear", spotLight.positional.linear);
-    shader.setFloat("spotLight.quadratic", spotLight.positional.quadratic);
-    shader.setFloat("spotLight.cutOff", spotLight.innerCuttoff);
-    shader.setFloat("spotLight.outerCutOff", spotLight.outerCuttoff);
+    shader.SetVec3("spotLight.position", spotLight.positional.position);
+    shader.SetVec3("spotLight.direction", spotLight.direction);
+    shader.SetVec3("spotLight.ambient", spotLight.phong.amibent);
+    shader.SetVec3("spotLight.diffuse", spotLight.phong.diffuse);
+    shader.SetVec3("spotLight.specular", spotLight.phong.specular);
+    shader.SetFloat("spotLight.constant", spotLight.positional.constant);
+    shader.SetFloat("spotLight.linear", spotLight.positional.linear);
+    shader.SetFloat("spotLight.quadratic", spotLight.positional.quadratic);
+    shader.SetFloat("spotLight.cutOff", spotLight.innerCuttoff);
+    shader.SetFloat("spotLight.outerCutOff", spotLight.outerCuttoff);
 }
 
 GLFWwindow* createWindow(int width, int height) {

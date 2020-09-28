@@ -7,8 +7,8 @@ const std::string VERTEX_PATH = fileUtils::getFullResourcesPath("shaders/post_pr
 PostProcessEffect::PostProcessEffect(const std::string& fragmentPath) : mShader(VERTEX_PATH, fragmentPath) {}
 
 void PostProcessEffect::UseShader(GLuint screenTexture) {
-    mShader.use();
-    mShader.setInt("screenTexture", 0);
+    mShader.Use();
+    mShader.SetInt("screenTexture", 0);
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, screenTexture);

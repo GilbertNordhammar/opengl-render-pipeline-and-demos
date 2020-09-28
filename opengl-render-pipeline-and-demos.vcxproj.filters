@@ -48,13 +48,16 @@
     <ClCompile Include="src\CubeMap\Cubemap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Skybox\Skybox.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\OpenGLObjectGenerator\OpenGLObjectGenerator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\OpenGLObjectArray\OpenGLObjectArray.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Skybox\Skybox.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Shader\Shader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -80,9 +83,6 @@
     <None Include="resources\shaders\Cubemap\Cubemap.frag" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Shader\Shader.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\utils\fileUtils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -131,13 +131,16 @@
     <ClInclude Include="src\CubeMap\Cubemap.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Skybox\Skybox.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\OpenGLObjectGenerator\OpenGLObjectGenerator.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\OpenGLObjectArray\OpenGLObjectArray.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Skybox\Skybox.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Shader\Shader.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

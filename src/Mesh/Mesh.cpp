@@ -69,7 +69,7 @@ void Mesh::SetupMesh()
 
 void Mesh::Draw(Shader& shader) const
 {
-    shader.use();
+    shader.Use();
 
     unsigned int diffuseNr = 1;
     unsigned int specularNr = 1;
@@ -105,7 +105,7 @@ void Mesh::Draw(Shader& shader) const
             break;
         }
 
-        shader.setInt(("material." + name + number).c_str(), i);
+        shader.SetInt(("material." + name + number).c_str(), i);
         glActiveTexture(GL_TEXTURE0 + i);
         glBindTexture(GL_TEXTURE_2D, mTextures[i]->GetId());
     }
