@@ -19,9 +19,9 @@ class Mesh {
 public:
     std::vector<Vertex>       mVertices;
     std::vector<unsigned int> mIndices;
-    std::vector<Texture2D>    mTextures;
+    std::vector<std::shared_ptr<Texture2D>> mTextures;
 
-    Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture2D> textures);
+    Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<std::shared_ptr<Texture2D>> textures);
     Mesh(const Mesh& other);
     Mesh(Mesh&& other) noexcept;
 

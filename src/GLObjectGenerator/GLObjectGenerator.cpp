@@ -21,3 +21,14 @@ GLObjectArray GLObjectGenerator::GenVertexArrays(unsigned int count) {
 
     return GLObjectArray(count, funcGenerate, funcDelete);
 }
+
+GLObjectArray GLObjectGenerator::GenTexture(unsigned int count) {
+    auto funcGenerate = [](unsigned int nObjects, GLuint* firstObject) {
+        glGenTextures(nObjects, firstObject);
+    };
+    auto funcDelete = [](unsigned int nObjects, GLuint* firstObject) {
+        glDeleteBuffers(nObjects, firstObject);
+    };
+
+    return GLObjectArray(count, funcGenerate, funcDelete);
+}

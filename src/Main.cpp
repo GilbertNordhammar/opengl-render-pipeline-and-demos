@@ -23,6 +23,7 @@
 #include "PostProcessEffect/PostProcessEffect.hpp"
 #include "FrameBuffer/FrameBuffer.hpp"
 #include "Skybox/Skybox.hpp"
+#include <memory>
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window);
@@ -122,8 +123,8 @@ int main() {
         0, 1, 2,
         1, 3, 2
     };
-    std::vector<Texture2D> windowTextures = {
-        Texture2D(fileUtils::getFullResourcesPath("textures/red-window.png"), aiTextureType::aiTextureType_DIFFUSE)
+    std::vector<std::shared_ptr<Texture2D>> windowTextures = {
+        Texture2D::Generate(fileUtils::getFullResourcesPath("textures/red-window.png"), aiTextureType::aiTextureType_DIFFUSE)
     };
     std::vector<Mesh> windowMeshes = { Mesh(windowVertices, windowIndices, windowTextures) };
     auto windowModel = Model(windowMeshes);
@@ -131,6 +132,9 @@ int main() {
     std::vector<WorldObject> opaqueObjects = {
         WorldObject(backpackModel, phongShader, glm::vec3(0.0f,  2.0f,  0.0f)),
         WorldObject(backpackModel, phongShader, glm::vec3(0.0f, 0.0f, -8.0f)),
+        WorldObject(backpackModel, phongShader, glm::vec3(0.0f, 5.0f, -8.0f)),
+        WorldObject(backpackModel, phongShader, glm::vec3(3.0f, -2.0f, -8.0f)),
+        WorldObject(backpackModel, phongShader, glm::vec3(5.0f, 0.0f, -1.0f)),
         WorldObject(sphere, pointLightShader,
             glm::vec3(0.7f,  0.2f,  20.0f), glm::vec3(0.0,  0.0f,  0.0f), glm::vec3(0.2f)),
         WorldObject(sphere, pointLightShader,

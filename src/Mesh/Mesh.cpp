@@ -5,13 +5,10 @@ const int MAX_NUMB_TEXTURES = 15;
 
 GLObjectGenerator Mesh::mObjGenerator = GLObjectGenerator();
 
-Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture2D> textures)
-    : mVboAndEbo(Mesh::mObjGenerator.GenBuffers(2)), mVao(Mesh::mObjGenerator.GenVertexArrays(1))
+Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<std::shared_ptr<Texture2D>> textures)
+    : mVboAndEbo(Mesh::mObjGenerator.GenBuffers(2)), mVao(Mesh::mObjGenerator.GenVertexArrays(1)),
+    mVertices(vertices), mIndices(indices), mTextures(textures)
 {
-    this->mVertices = vertices;
-    this->mIndices = indices;
-    this->mTextures = textures;
-
     SetupMesh();
 }
 
@@ -91,7 +88,7 @@ void Mesh::Draw(Shader& shader) const
         std::string number;
         std::string name;
 
-        switch (mTextures[i].GetType()) {
+        switch (mTextures[i]->GetType()) {
         case aiTextureType::aiTextureType_DIFFUSE:
             name = "texture_diffuse";
             number = std::to_string(diffuseNr++);
@@ -112,7 +109,7 @@ void Mesh::Draw(Shader& shader) const
 
         shader.setInt(("material." + name + number).c_str(), i);
         glActiveTexture(GL_TEXTURE0 + i);
-        glBindTexture(GL_TEXTURE_2D, mTextures[i].GetId());
+        glBindTexture(GL_TEXTURE_2D, mTextures[i]->GetId());
     }
 
     glBindVertexArray(mVao.GetFirst());

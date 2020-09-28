@@ -18,10 +18,9 @@ public:
 private:
     std::vector<Mesh> mMeshes;
     std::string mDirectory;
-    std::vector<Texture2D> mLoadedTextures;
 
     void LoadModel(std::string path);
     void ProcessNode(aiNode* node, const aiScene* scene);
     Mesh ProcessMesh(aiMesh* mesh, const aiScene* scene);
-    std::vector<Texture2D> LoadMaterialTextures(aiMaterial* mat, aiTextureType type);
+    std::vector<std::shared_ptr<Texture2D>> LoadMaterialTextures(aiMaterial* mat, aiTextureType type);
 };

@@ -49,7 +49,7 @@ Mesh Model::ProcessMesh(aiMesh* mesh, const aiScene* scene)
 {
     std::vector<Vertex> vertices;
     std::vector<unsigned int> indices;
-    std::vector<Texture2D> textures;
+    std::vector<std::shared_ptr<Texture2D>> textures;
 
     vertices.reserve(mesh->mNumVertices);
     for (unsigned int i = 0; i < mesh->mNumVertices; i++)
@@ -90,40 +90,27 @@ Mesh Model::ProcessMesh(aiMesh* mesh, const aiScene* scene)
     if (mesh->mMaterialIndex >= 0)
     {
         aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
-        std::vector<Texture2D> diffuseMaps = LoadMaterialTextures(material, aiTextureType_DIFFUSE);
+        auto diffuseMaps = LoadMaterialTextures(material, aiTextureType_DIFFUSE);
         textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
 
-        std::vector<Texture2D> specularMaps = LoadMaterialTextures(material, aiTextureType_SPECULAR);
+        auto specularMaps = LoadMaterialTextures(material, aiTextureType_SPECULAR);
         textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
     }
 
     return Mesh(vertices, indices, textures);
 }
 
-std::vector<Texture2D> Model::LoadMaterialTextures(aiMaterial* mat, aiTextureType type)
+std::vector<std::shared_ptr<Texture2D>> Model::LoadMaterialTextures(aiMaterial* mat, aiTextureType type)
 {
-    std::vector<Texture2D> textures;
+    std::vector<std::shared_ptr<Texture2D>> textures;
+    auto texCount = mat->GetTextureCount(type);
+    textures.reserve(texCount);
     for (unsigned int i = 0; i < mat->GetTextureCount(type); i++)
     {
         aiString str;
         mat->GetTexture(type, i, &str);
         std::string filePath = mDirectory + "/" + std::string(str.C_Str());
-        bool skip = false;
-        for (unsigned int j = 0; j < mLoadedTextures.size(); j++)
-        {
-            if (std::strcmp(mLoadedTextures[j].GetFilePath().data(), filePath.data()) == 0)
-            {
-                textures.push_back(mLoadedTextures[j]);
-                skip = true;
-                break;
-            }
-        }
-        if (!skip)
-        {   
-            Texture2D texture(filePath, type);
-            textures.push_back(texture);
-            mLoadedTextures.push_back(texture); // add to loaded textures
-        }
+        textures.push_back(Texture2D::Generate(filePath, type));
     }
 
     return textures;
