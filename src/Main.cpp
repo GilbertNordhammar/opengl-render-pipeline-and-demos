@@ -265,9 +265,6 @@ void DrawScene(
     glm::mat4 viewMatrix = camera.GetViewMatrix();
     glm::mat4 projectionMatrix = glm::perspective(glm::radians(camera.GetFov()), (float)windowWidth / windowHeight, 0.1f, 100.0f);
 
-    
-    skybox.Draw(viewMatrix, projectionMatrix);
-
     spotLight.positional.position = camera.Position;
     spotLight.direction = camera.GetFront();
 
@@ -294,6 +291,8 @@ void DrawScene(
         transparentObjSorted[distance] = &obj;
     }
     
+    skybox.Draw(viewMatrix, projectionMatrix);
+
     glDisable(GL_CULL_FACE); // temporarily turns off culling since we're rendering quads here
     for (auto& [key, obj] : transparentObjSorted) {
         obj->mShader->Use();
@@ -309,7 +308,6 @@ void DrawScene(
         obj->Draw();
     }
     glEnable(GL_CULL_FACE);
-
 }
 
 void setLightProperties(
