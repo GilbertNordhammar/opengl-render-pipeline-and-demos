@@ -16,8 +16,8 @@ private:
 
 	GLuint mSkyboxVAO;
 	Shader mShader = Shader(
-		fileUtils::getFullResourcesPath("shaders/Cubemap/Cubemap.vert"),
-		fileUtils::getFullResourcesPath("shaders/Cubemap/Cubemap.frag"));
+		fileUtils::getFullResourcesPath("shaders/Skybox/Skybox.vert"),
+		fileUtils::getFullResourcesPath("shaders/Skybox/Skybox.frag"));
 	Cubemap mCubemap;
 };
 

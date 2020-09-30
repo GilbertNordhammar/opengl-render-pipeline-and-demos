@@ -186,8 +186,8 @@ xcopy "$(SolutionDir)dependencies\assimp\lib\assimp-vc142-mtd.dll" "$(TargetDir)
   <ItemGroup>
     <None Include=".gitattributes" />
     <None Include=".gitignore" />
-    <None Include="resources\shaders\Cubemap\Cubemap.frag" />
-    <None Include="resources\shaders\Cubemap\Cubemap.vert" />
+    <None Include="resources\shaders\Skybox\Skybox.frag" />
+    <None Include="resources\shaders\Skybox\Skybox.vert" />
     <None Include="resources\shaders\post_processing\Grayscale.frag" />
     <None Include="resources\shaders\post_processing\InvertColors.frag" />
     <None Include="resources\shaders\post_processing\NoEffect.frag" />
