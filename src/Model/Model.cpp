@@ -8,7 +8,7 @@ Model::Model(std::string path)
 
 Model::Model(std::vector<Mesh> meshes): mMeshes(meshes) {}
 
-void Model::Draw(Shader& shader)
+void Model::Draw(Shader& shader) const
 {
 	for (unsigned int i = 0; i < mMeshes.size(); i++)
 		mMeshes[i].Draw(shader);

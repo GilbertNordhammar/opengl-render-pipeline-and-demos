@@ -208,7 +208,6 @@ xcopy "$(SolutionDir)dependencies\assimp\lib\assimp-vc142-mtd.dll" "$(TargetDir)
     <ClInclude Include="src\OpenGLObjectArray\OpenGLObjectArray.hpp" />
     <ClInclude Include="src\OpenGLObjectGenerator\OpenGLObjectGenerator.hpp" />
     <ClInclude Include="src\ScreenRenderer\ScreenRenderer.hpp" />
-    <ClInclude Include="src\effects\drawWithOutline\drawWithOutline.hpp" />
     <ClInclude Include="src\light\attributes\PositionalLight.hpp" />
     <ClInclude Include="src\light\DirectionalLight\DirectionalLight.hpp" />
     <ClInclude Include="src\light\attributes\PhongLight.hpp" />

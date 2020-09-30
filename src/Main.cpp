@@ -13,7 +13,6 @@
 #include "Model/Model.hpp"
 #include "SceneObject/SceneObject.hpp"
 #include "utils/array.h"
-#include "effects/drawWithOutline/drawWithOutline.hpp"
 #include <vector>
 #include "Mesh/Mesh.hpp"
 #include "src/light/DirectionalLight/DirectionalLight.hpp"
@@ -82,22 +81,22 @@ int main() {
 
     glEnable(GL_CULL_FACE);
 
-    Shader phongShader(
+    auto phongShader = std::make_shared<Shader>(
         fileUtils::getFullResourcesPath("shaders/StandardPhong/StandardPhong.vert"),
         fileUtils::getFullResourcesPath("shaders/StandardPhong/StandardPhong.frag")
     );
-    Shader pointLightShader(
+    auto pointLightShader = std::make_shared<Shader>(
         fileUtils::getFullResourcesPath("shaders/LightSource/LightSource.vert"),
         fileUtils::getFullResourcesPath("shaders/LightSource/LightSource.frag")
     );
 
-    Shader unlitShader(
+    auto unlitShader = std::make_shared<Shader>(
         fileUtils::getFullResourcesPath("shaders/StandardUnlit/StandardUnlit.vert"),
         fileUtils::getFullResourcesPath("shaders/StandardUnlit/StandardUnlit.frag")
     );
 
-    auto backpackModel = Model(fileUtils::getFullResourcesPath("models/backpack/backpack.obj"));
-    auto sphere = Model(fileUtils::getFullResourcesPath("models/primitives/sphere/sphere.obj"));
+    auto backpackModel = std::make_shared<Model>(fileUtils::getFullResourcesPath("models/backpack/backpack.obj"));
+    auto sphere = std::make_shared<Model>(fileUtils::getFullResourcesPath("models/primitives/sphere/sphere.obj"));
 
     std::vector<glm::vec3> windowVertPositions = {
         glm::vec3(-1.0f, 0.0f, 1.0f),
@@ -126,9 +125,7 @@ int main() {
     std::vector<std::shared_ptr<Texture2D>> windowTextures = {
         Texture2D::Generate(fileUtils::getFullResourcesPath("textures/red-window.png"), aiTextureType::aiTextureType_DIFFUSE)
     };
-    std::vector<Mesh> windowMeshes = { Mesh(windowVertices, windowIndices, windowTextures) };
-    auto windowModel = Model(windowMeshes);
-
+    
     std::vector<SceneObject> opaqueObjects = {
         SceneObject(backpackModel, phongShader, glm::vec3(0.0f,  2.0f,  0.0f)),
         SceneObject(backpackModel, phongShader, glm::vec3(0.0f, 0.0f, -8.0f)),
@@ -145,6 +142,7 @@ int main() {
             glm::vec3(0.0f,  1.0f, 3.0f), glm::vec3(0.0,  0.0f,  0.0f), glm::vec3(0.2f))
     };
 
+    auto windowModel = std::make_shared<Model>(std::vector<Mesh> { Mesh(windowVertices, windowIndices, windowTextures) });
     std::vector<SceneObject> transparentObjects = {
         SceneObject(windowModel, phongShader, glm::vec3(-1.5f, 0.0f, -0.48f)),
         SceneObject(windowModel, phongShader, glm::vec3(1.5f, 0.0f, 0.51f)),
@@ -274,18 +272,18 @@ void DrawScene(
     spotLight.direction = camera.GetFront();
 
     for (auto& obj : opaqueObjects) {
-        obj.mShader.Use();
+        obj.mShader->Use();
 
-        obj.mShader.SetMat4("view", viewMatrix);
-        obj.mShader.SetMat4("projection", projectionMatrix);
+        obj.mShader->SetMat4("view", viewMatrix);
+        obj.mShader->SetMat4("projection", projectionMatrix);
 
-        obj.mShader.SetVec3("viewPos", camera.Position);
-        obj.mShader.SetFloat("material.shininess", 32.0f);
+        obj.mShader->SetVec3("viewPos", camera.Position);
+        obj.mShader->SetFloat("material.shininess", 32.0f);
 
-        setLightProperties(obj.mShader, pointLights, dirLight, spotLight);
+        setLightProperties(*obj.mShader, pointLights, dirLight, spotLight);
 
         // For spot lights
-        obj.mShader.SetVec3("lightColor", glm::vec3(1.0f, 1.0f, 1.0f));
+        obj.mShader->SetVec3("lightColor", glm::vec3(1.0f, 1.0f, 1.0f));
 
         obj.Draw();
     }
@@ -298,15 +296,15 @@ void DrawScene(
     
     glDisable(GL_CULL_FACE); // temporarily turns off culling since we're rendering quads here
     for (auto& [key, obj] : transparentObjSorted) {
-        obj->mShader.Use();
+        obj->mShader->Use();
 
-        obj->mShader.SetMat4("view", viewMatrix);
-        obj->mShader.SetMat4("projection", projectionMatrix);
+        obj->mShader->SetMat4("view", viewMatrix);
+        obj->mShader->SetMat4("projection", projectionMatrix);
 
-        obj->mShader.SetVec3("viewPos", camera.Position);
-        obj->mShader.SetFloat("material.shininess", 32.0f);
+        obj->mShader->SetVec3("viewPos", camera.Position);
+        obj->mShader->SetFloat("material.shininess", 32.0f);
 
-        setLightProperties(obj->mShader, pointLights, dirLight, spotLight);
+        setLightProperties(*obj->mShader, pointLights, dirLight, spotLight);
 
         obj->Draw();
     }

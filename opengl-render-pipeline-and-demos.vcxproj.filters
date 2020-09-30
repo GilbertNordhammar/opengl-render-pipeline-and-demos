@@ -92,9 +92,6 @@
     <ClInclude Include="src\Model\Model.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\effects\drawWithOutline\drawWithOutline.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\utils\array.h">
       <Filter>Header Files</Filter>
     </ClInclude>

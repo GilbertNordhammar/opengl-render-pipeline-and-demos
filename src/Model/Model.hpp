@@ -13,7 +13,7 @@ class Model
 public:
     Model(std::string path);
     Model(std::vector<Mesh> meshes);
-    void Draw(Shader& shader);
+    void Draw(Shader& shader) const;
 
 private:
     std::vector<Mesh> mMeshes;
