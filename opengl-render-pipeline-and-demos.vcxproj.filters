@@ -60,6 +60,9 @@
     <ClCompile Include="src\Shader\Shader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\ShaderLoader\ShaderLoader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include=".gitignore" />
@@ -81,6 +84,7 @@
     <None Include="resources\shaders\post_processing\NoEffect.frag" />
     <None Include="resources\shaders\Skybox\Skybox.frag" />
     <None Include="resources\shaders\Skybox\Skybox.vert" />
+    <None Include="resources\shaders\StandardPhong\Lighting.glsl" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\utils\fileUtils.h">
@@ -138,6 +142,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\SceneObject\SceneObject.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ShaderLoader\ShaderLoader.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

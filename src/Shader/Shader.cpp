@@ -2,6 +2,7 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
+#include "src/ShaderLoader/ShaderLoader.hpp"
 
 Shader::Shader(
 	const std::string vertexPath,
@@ -50,7 +51,7 @@ void Shader::CreateAndLinkProgram() {
 
 	try
 	{
-		vertexCode = RetrieveShaderCode(mVertexPath.c_str());
+		vertexCode = ShaderLoader::Load(mVertexPath);
 	}
 	catch (std::ifstream::failure& e)
 	{
@@ -60,7 +61,10 @@ void Shader::CreateAndLinkProgram() {
 
 	try
 	{
-		fragmentCode = RetrieveShaderCode(mFragmentPath.c_str());
+		fragmentCode = ShaderLoader::Load(mFragmentPath);
+		/*std::cout << "============SOURCE START============\n"
+			<< fragmentCode
+			<< "============SOURCE END============" << std::endl;*/
 	}
 	catch (std::ifstream::failure& e)
 	{
@@ -72,7 +76,7 @@ void Shader::CreateAndLinkProgram() {
 	{
 		if (!mGeometryPath.empty())
 		{
-			geometryCode = RetrieveShaderCode(mGeometryPath.c_str());
+			geometryCode = ShaderLoader::Load(mGeometryPath);
 		}
 	}
 	catch (std::ifstream::failure& e)
