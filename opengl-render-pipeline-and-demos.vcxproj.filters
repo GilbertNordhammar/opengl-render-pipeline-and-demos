@@ -84,7 +84,7 @@
     <None Include="resources\shaders\post_processing\NoEffect.frag" />
     <None Include="resources\shaders\Skybox\Skybox.frag" />
     <None Include="resources\shaders\Skybox\Skybox.vert" />
-    <None Include="resources\shaders\StandardPhong\Lighting.glsl" />
+    <None Include="resources\shaders\lib\PhongShading\Lighting.glsl" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\utils\fileUtils.h">

@@ -27,7 +27,7 @@ SOFTWARE.
 
 */
 
-static const std::string SHADER_LIB_PATH = fileUtils::getFullResourcesPath("shaders/lib");
+static const std::string SHADER_LIB_PATH = fileUtils::getFullResourcesPath("shaders/lib/");
 
 std::string ShaderLoader::Load(const std::string& path, std::string includeIndentifier)
 {
@@ -62,11 +62,19 @@ std::string ShaderLoader::Load(const std::string& path, std::string includeInden
 }
 
 std::string ShaderLoader::GetIncludePath(const std::string& lineBuffer, const std::string& includeIndentifier, const std::string& shaderPath) {
-	size_t found = shaderPath.find_last_of("/\\");
-	std::string folderPath = shaderPath.substr(0, found + 1);
-
 	std::string includePath = lineBuffer;
 	includePath.erase(0, includeIndentifier.size());
-	includePath.insert(0, folderPath);
+
+	if (includePath.front() == '<' && includePath.back() == '>') {
+		// includePath.size() - 2 because last character is '\0'
+		includePath = SHADER_LIB_PATH + includePath.substr(1, includePath.size() - 2);
+	}
+	else {
+		size_t found = shaderPath.find_last_of("/\\");
+		std::string folderPath = shaderPath.substr(0, found + 1);
+		includePath.insert(0, folderPath);
+	}
+
+	
 	return includePath;
 }

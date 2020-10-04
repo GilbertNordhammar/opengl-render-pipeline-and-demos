@@ -1,6 +1,6 @@
 #version 330 core
 
-#include Lighting.glsl
+#include <PhongShading/Lighting.glsl>
 
 in vec2 TexCoords;
 in vec3 FragmentPosWS;

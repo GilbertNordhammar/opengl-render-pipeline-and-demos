@@ -9,6 +9,6 @@ namespace fileUtils {
 	}
 
 	std::string getFullResourcesPath(std::string resourcesPath) {
-		return getCwd() + "/resources/" + resourcesPath;
+		return getCwd() + "resources/" + resourcesPath;
 	}
 }
