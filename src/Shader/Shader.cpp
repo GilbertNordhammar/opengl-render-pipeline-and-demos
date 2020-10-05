@@ -3,14 +3,15 @@
 #include <sstream>
 #include <iostream>
 #include "src/ShaderLoader/ShaderLoader.hpp"
+#include "src/ShaderLoader/ShaderLoader.hpp"
 
 Shader::Shader(
-	const std::string vertexPath,
-	const std::string fragmentPath,
-	const std::string geometryPath) 
+	const std::string& vertexPath,
+	const std::string& fragmentPath,
+	const std::string& geometryPath) 
 	: mVertexPath(vertexPath), mFragmentPath(fragmentPath), mGeometryPath(geometryPath)
 {
-	CreateAndLinkProgram();
+	mProgramID = ShaderLoader::Load(vertexPath, fragmentPath, geometryPath);
 }
 
 Shader::Shader(const Shader& other) 
@@ -42,69 +43,6 @@ void Shader::Swap(Shader& first, Shader& second) noexcept {
 
 Shader::~Shader() {
 	glDeleteProgram(mProgramID);
-}
-
-void Shader::CreateAndLinkProgram() {
-	std::string vertexCode;
-	std::string fragmentCode;
-	std::string geometryCode;
-
-	try
-	{
-		vertexCode = ShaderLoader::Load(mVertexPath);
-	}
-	catch (std::ifstream::failure& e)
-	{
-		std::cout << "ERROR::VERTEX_SHADER::FILE_NOT_SUCCESFULLY_READ" << std::endl;
-		std::cout << "Shader file path: " << mVertexPath << std::endl;
-	}
-
-	try
-	{
-		fragmentCode = ShaderLoader::Load(mFragmentPath);
-		/*std::cout << "============SOURCE START============\n"
-			<< fragmentCode
-			<< "============SOURCE END============" << std::endl;*/
-	}
-	catch (std::ifstream::failure& e)
-	{
-		std::cout << "ERROR::FRAGMENT_SHADER::FILE_NOT_SUCCESFULLY_READ" << std::endl;
-		std::cout << "Shader file path: " << mFragmentPath << std::endl;
-	}
-
-	try
-	{
-		if (!mGeometryPath.empty())
-		{
-			geometryCode = ShaderLoader::Load(mGeometryPath);
-		}
-	}
-	catch (std::ifstream::failure& e)
-	{
-		std::cout << "ERROR::GEOMETRY_SHADER::FILE_NOT_SUCCESFULLY_READ" << std::endl;
-		std::cout << "Shader file path: " << mGeometryPath << std::endl;
-	}
-
-	unsigned int vertex = CreateAndCompileShader(vertexCode, GL_VERTEX_SHADER);
-	unsigned int fragment = CreateAndCompileShader(fragmentCode, GL_FRAGMENT_SHADER);
-	unsigned int geometry = 0;
-	if (!mGeometryPath.empty()) {
-		geometry = CreateAndCompileShader(fragmentCode, GL_GEOMETRY_SHADER);
-	}
-
-	mProgramID = glCreateProgram();
-	glAttachShader(mProgramID, vertex);
-	glAttachShader(mProgramID, fragment);
-	if (geometry != 0)
-		glAttachShader(mProgramID, geometry);
-
-	glLinkProgram(mProgramID);
-	CheckLinkErrors(mProgramID);
-
-	glDeleteShader(vertex);
-	glDeleteShader(fragment);
-	if (!mGeometryPath.empty())
-		glDeleteShader(geometry);
 }
 
 void Shader::Use() const
@@ -167,54 +105,4 @@ void Shader::SetMat3(const std::string& name, const glm::mat3& mat) const
 void Shader::SetMat4(const std::string& name, const glm::mat4& mat) const
 {
 	glUniformMatrix4fv(glGetUniformLocation(mProgramID, name.c_str()), 1, GL_FALSE, &mat[0][0]);
-}
-
-unsigned int Shader::CreateAndCompileShader(std::string shaderCode, GLenum shaderType) {
-	const char* gShaderCode = shaderCode.c_str();
-	unsigned int shaderID = glCreateShader(shaderType);
-	glShaderSource(shaderID, 1, &gShaderCode, NULL);
-	glCompileShader(shaderID);
-	CheckCompileErrors(shaderID, shaderType);
-
-	return shaderID;
-}
-
-std::string Shader::RetrieveShaderCode(const char* shaderFileSrc) {
-	std::ifstream shaderFile;
-	shaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
-
-	std::stringstream shaderStream;
-	shaderFile.open(shaderFileSrc);
-	shaderStream << shaderFile.rdbuf();
-	shaderFile.close();
-
-	return shaderStream.str();
-}
-
-void Shader::CheckCompileErrors(GLuint shader, GLenum shaderType)
-{
-	GLint success;
-	GLchar infoLog[1024];
-
-	glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
-	if (!success)
-	{
-		glGetShaderInfoLog(shader, 1024, NULL, infoLog);
-		std::cout << "ERROR::SHADER_COMPILATION_ERROR" << "\n"
-			<< infoLog << "\n -- --------------------------------------------------- -- " << std::endl;
-	}
-}
-
-void Shader::CheckLinkErrors(GLuint program)
-{
-	GLint success;
-	GLchar infoLog[1024];
-
-	glGetProgramiv(program, GL_LINK_STATUS, &success);
-	if (!success)
-	{
-		glGetProgramInfoLog(program, 1024, NULL, infoLog);
-		std::cout << "ERROR::PROGRAM_LINKING_ERROR" << "\n"
-			<< infoLog << "\n -- --------------------------------------------------- -- " << std::endl;
-	}
 }

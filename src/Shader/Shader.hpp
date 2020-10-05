@@ -7,9 +7,9 @@
 class Shader
 {
 public:    
-    Shader(const std::string vertexPath,
-        const std::string fragmentPath,
-        const std::string geometryPath = "");
+    Shader(const std::string& vertexPath,
+        const std::string& fragmentPath,
+        const std::string& geometryPath = "");
 
     Shader(const Shader& other);
     Shader(Shader&& other) noexcept;
@@ -32,17 +32,16 @@ public:
     void SetMat3(const std::string& name, const glm::mat3& mat) const;
     void SetMat4(const std::string& name, const glm::mat4& mat) const;
 
-    GLuint GetProgramID() { return mProgramID; }
+    GLuint GetProgramID() const { return mProgramID; }
+    const std::string& GetVertexPath() const{ return mVertexPath; }
+    const std::string& GetFragmentPath() const { return mFragmentPath; }
+    const std::string& GetGeometryPath() const { return mGeometryPath; }
+
 private:
-    GLuint mProgramID; 
+    GLuint mProgramID;
     std::string mVertexPath;
     std::string mFragmentPath;
     std::string mGeometryPath;
 
-    void CreateAndLinkProgram();
-    unsigned int CreateAndCompileShader(std::string shaderCode, GLenum shaderType);
-    std::string RetrieveShaderCode(const char* shaderFileSrc);
-    void CheckCompileErrors(GLuint shader, GLenum shaderType);
-    void CheckLinkErrors(GLuint program);
     void Swap(Shader& first, Shader& second) noexcept;
 };
