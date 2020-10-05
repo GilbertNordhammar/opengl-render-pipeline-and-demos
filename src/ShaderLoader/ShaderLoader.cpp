@@ -45,8 +45,8 @@ std::string ShaderLoader::Load(const std::string& path, std::string includeInden
 	std::string lineBuffer;
 	while (std::getline(file, lineBuffer))
 	{
-		// Look for the new shader include identifier
-		if (lineBuffer.find(includeIndentifier) != lineBuffer.npos)
+		bool isInclude = lineBuffer.compare(0, includeIndentifier.length(), includeIndentifier) == 0;
+		if (isInclude)
 		{
 			auto includePath = GetIncludePath(lineBuffer, includeIndentifier, path);
 			sourceCode += Load(includePath);
@@ -62,19 +62,30 @@ std::string ShaderLoader::Load(const std::string& path, std::string includeInden
 }
 
 std::string ShaderLoader::GetIncludePath(const std::string& lineBuffer, const std::string& includeIndentifier, const std::string& shaderPath) {
-	std::string includePath = lineBuffer;
-	includePath.erase(0, includeIndentifier.size());
+	std::string includeLine = lineBuffer;
+	includeLine.erase(0, includeIndentifier.size());
 
-	if (includePath.front() == '<' && includePath.back() == '>') {
-		// includePath.size() - 2 because last character is '\0'
-		includePath = SHADER_LIB_PATH + includePath.substr(1, includePath.size() - 2);
+	if (includeLine.front() == '<' && includeLine.back() == '>') {
+		includeLine = SHADER_LIB_PATH + includeLine.substr(1, includeLine.size() - 2); // -2 because last character is '\0'
 	}
 	else {
-		size_t found = shaderPath.find_last_of("/\\");
-		std::string folderPath = shaderPath.substr(0, found + 1);
-		includePath.insert(0, folderPath);
+		std::string folderPath = shaderPath;
+		std::string slash = "/\\";
+		size_t posSlash = folderPath.find_last_of(slash);
+		folderPath.erase(posSlash, std::string::npos);
+
+		std::string upOneLevel = "../";
+		size_t posUpOneLevel = includeLine.find(upOneLevel);
+		while (posUpOneLevel != std::string::npos) {
+			includeLine.erase(0, upOneLevel.length());
+			posUpOneLevel = includeLine.find(upOneLevel);
+
+			posSlash = folderPath.find_last_of(slash);
+			folderPath.erase(posSlash, std::string::npos);
+		}
+
+		includeLine = folderPath + "/" + includeLine;
 	}
 
-	
-	return includePath;
+	return includeLine;
 }
