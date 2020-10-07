@@ -178,9 +178,10 @@ xcopy "$(SolutionDir)dependencies\assimp\lib\assimp-vc142-mtd.dll" "$(TargetDir)
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\Mesh\Mesh.cpp" />
     <ClCompile Include="src\Model\Model.cpp" />
+    <ClCompile Include="src\ShaderGlobals\SG_Containers\View\View.cpp" />
     <ClCompile Include="src\ShaderLoader\ShaderLoader.cpp" />
     <ClCompile Include="src\Shader\Shader.cpp" />
-    <ClCompile Include="src\SharedShaderData\SharedShaderData.cpp" />
+    <ClCompile Include="src\ShaderGlobals\ShaderGlobals.cpp" />
     <ClCompile Include="src\Skybox\Skybox.cpp" />
     <ClCompile Include="src\Texture2D\Texture2D.cpp" />
     <ClCompile Include="src\utils\fileUtils\path.cpp" />
@@ -189,7 +190,7 @@ xcopy "$(SolutionDir)dependencies\assimp\lib\assimp-vc142-mtd.dll" "$(TargetDir)
     <None Include=".gitattributes" />
     <None Include=".gitignore" />
     <None Include="resources\shaders\lib\PhongShading\Lighting.glsl" />
-    <None Include="resources\shaders\lib\shared-data\Matrix.glsl" />
+    <None Include="resources\shaders\lib\global-data\View.glsl" />
     <None Include="resources\shaders\Skybox\Skybox.frag" />
     <None Include="resources\shaders\Skybox\Skybox.vert" />
     <None Include="resources\shaders\post_processing\Grayscale.frag" />
@@ -220,9 +221,11 @@ xcopy "$(SolutionDir)dependencies\assimp\lib\assimp-vc142-mtd.dll" "$(TargetDir)
     <ClInclude Include="src\Model\Model.hpp" />
     <ClInclude Include="src\PostProcessEffect\PostProcessEffect.hpp" />
     <ClInclude Include="src\light\PointLight\PointLight.hpp" />
+    <ClInclude Include="src\ShaderGlobals\SG_Containers\Container.hpp" />
+    <ClInclude Include="src\ShaderGlobals\SG_Containers\View\View.hpp" />
     <ClInclude Include="src\Shader\Shader.hpp" />
     <ClInclude Include="src\ShaderLoader\ShaderLoader.hpp" />
-    <ClInclude Include="src\SharedShaderData\SharedShaderData.hpp" />
+    <ClInclude Include="src\ShaderGlobals\ShaderGlobals.hpp" />
     <ClInclude Include="src\Skybox\Skybox.hpp" />
     <ClInclude Include="src\Texture2D\Texture2D.hpp" />
     <ClInclude Include="src\utils\array.h" />

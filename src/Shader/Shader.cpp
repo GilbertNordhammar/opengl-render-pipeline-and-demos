@@ -3,7 +3,7 @@
 #include <sstream>
 #include <iostream>
 #include "src/ShaderLoader/ShaderLoader.hpp"
-#include "src/SharedShaderData/SharedShaderData.hpp"
+#include "src/ShaderGlobals/ShaderGlobals.hpp"
 
 Shader::Shader(
 	const std::string& vertexPath,
@@ -12,7 +12,7 @@ Shader::Shader(
 	: mVertexPath(vertexPath), mFragmentPath(fragmentPath), mGeometryPath(geometryPath)
 {
 	mProgramID = ShaderLoader::Load(vertexPath, fragmentPath, geometryPath);
-	SharedShaderData::Get().BindBlocks(mProgramID);
+	ShaderGlobals::Get().LinkGlobals(mProgramID);
 }
 
 Shader::Shader(const Shader& other) 

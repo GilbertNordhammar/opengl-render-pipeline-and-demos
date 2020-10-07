@@ -1,12 +1,11 @@
 #version 330 core
 
 #include <PhongShading/Lighting.glsl>
+#include <global-data/View.glsl>
 
 in vec2 TexCoords;
 in vec3 FragmentPosWS;
 in vec3 Normal;
-
-uniform vec3 viewPos;
 
 out vec4 FragColor;  
 
@@ -14,7 +13,7 @@ void main()
 {
     // properties
     vec3 norm = normalize(Normal);
-    vec3 viewDir = normalize(viewPos - FragmentPosWS);
+    vec3 viewDir = normalize(rp_viewPosWS - FragmentPosWS);
     
     vec4 diffuseMap = texture(material.texture_diffuse1, TexCoords);
     vec4 specularMap = texture(material.texture_specular1, TexCoords);

@@ -22,7 +22,7 @@
 #include "PostProcessEffect/PostProcessEffect.hpp"
 #include "FrameBuffer/FrameBuffer.hpp"
 #include "Skybox/Skybox.hpp"
-#include "SharedShaderData/SharedShaderData.hpp"
+#include "ShaderGlobals/ShaderGlobals.hpp"
 #include <memory>
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
@@ -264,9 +264,10 @@ void DrawScene(
     SpotLight& spotLight,
     Skybox& skybox
 ) {
-    SharedShaderData::Get().SetViewMatrix(camera.GetViewMatrix());
-    SharedShaderData::Get().SetProjectionMatrix(
+    ShaderGlobals::Get().mView.SetViewMatrix(camera.GetViewMatrix());
+    ShaderGlobals::Get().mView.SetProjectionMatrix(
         glm::perspective(glm::radians(camera.GetFov()), (float)windowWidth / windowHeight, 0.1f, 100.0f));
+    ShaderGlobals::Get().mView.SetViewPosWS(camera.Position);
 
     glm::mat4 viewMatrix = camera.GetViewMatrix();
     glm::mat4 projectionMatrix = glm::perspective(glm::radians(camera.GetFov()), (float)windowWidth / windowHeight, 0.1f, 100.0f);
@@ -277,7 +278,6 @@ void DrawScene(
     for (auto& obj : opaqueObjects) {
         obj.mShader->Use();
 
-        obj.mShader->SetVec3("viewPos", camera.Position);
         obj.mShader->SetFloat("material.shininess", 32.0f);
 
         setLightProperties(*obj.mShader, pointLights, dirLight, spotLight);

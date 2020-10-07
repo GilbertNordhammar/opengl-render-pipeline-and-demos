@@ -63,7 +63,10 @@
     <ClCompile Include="src\ShaderLoader\ShaderLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\SharedShaderData\SharedShaderData.cpp">
+    <ClCompile Include="src\ShaderGlobals\ShaderGlobals.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ShaderGlobals\SG_Containers\View\View.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -88,7 +91,7 @@
     <None Include="resources\shaders\Skybox\Skybox.frag" />
     <None Include="resources\shaders\Skybox\Skybox.vert" />
     <None Include="resources\shaders\lib\PhongShading\Lighting.glsl" />
-    <None Include="resources\shaders\lib\shared-data\Matrix.glsl" />
+    <None Include="resources\shaders\lib\global-data\View.glsl" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\utils\fileUtils.h">
@@ -151,7 +154,13 @@
     <ClInclude Include="src\ShaderLoader\ShaderLoader.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\SharedShaderData\SharedShaderData.hpp">
+    <ClInclude Include="src\ShaderGlobals\ShaderGlobals.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ShaderGlobals\SG_Containers\View\View.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ShaderGlobals\SG_Containers\Container.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
