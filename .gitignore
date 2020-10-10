@@ -337,3 +337,6 @@ ASALocalRun/
 
 # BeatPulse healthcheck temp database
 healthchecksdb
+
+# VTune Profiler
+VTune Profiler Results
