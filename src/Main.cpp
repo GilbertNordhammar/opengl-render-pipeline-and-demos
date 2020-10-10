@@ -297,7 +297,8 @@ void DrawScene(
     skybox.Draw(viewMatrix, projectionMatrix);
 
     glDisable(GL_CULL_FACE); // temporarily turns off culling since we're rendering quads here
-    for (auto& [key, obj] : transparentObjSorted) {
+    for (auto it = transparentObjSorted.begin(); it != transparentObjSorted.end(); it++) {
+        auto obj = it->second;
         obj->mShader->Use();
 
         obj->mShader->SetMat4("view", viewMatrix);
