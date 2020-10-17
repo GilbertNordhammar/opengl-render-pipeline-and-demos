@@ -1,14 +1,17 @@
-#define STB_IMAGE_IMPLEMENTATION // Must be defined before stb_image.h is included anywhere
+
+/*
+    stb config
+*/
+#define STB_IMAGE_IMPLEMENTATION
 
 /* 
     Optick Profiler config
-    
-    TOOD: 
-        * Create VS Configuration 'Release_Profiling_Enabled'
-        * Have USE_OPTICK == 1 for 'Debug' and 'Release_Profiling_Enabled'
-        * Have USE_OPTICK == 0 for 'Release'
 */
-#define USE_OPTICK (1)
+#if defined(_RELEASE)
+    #define USE_OPTICK (0)
+#else
+    #define USE_OPTICK (1)
+#endif
 #define OPTICK_ENABLE_TRACING (USE_OPTICK)
 #define OPTICK_ENABLE_GPU (USE_OPTICK)
 
