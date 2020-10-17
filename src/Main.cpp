@@ -1,5 +1,17 @@
 #define STB_IMAGE_IMPLEMENTATION // Must be defined before stb_image.h is included anywhere
 
+/* 
+    Optick Profiler config
+    
+    TOOD: 
+        * Create VS Configuration 'Release_Profiling_Enabled'
+        * Have USE_OPTICK == 1 for 'Debug' and 'Release_Profiling_Enabled'
+        * Have USE_OPTICK == 0 for 'Release'
+*/
+#define USE_OPTICK (1)
+#define OPTICK_ENABLE_TRACING (USE_OPTICK)
+#define OPTICK_ENABLE_GPU (USE_OPTICK)
+
 #include <iostream>
 #include <glad/glad.h>
 #include <glfw3.h>
@@ -24,6 +36,7 @@
 #include "Skybox/Skybox.hpp"
 #include "ShaderGlobals/ShaderGlobals.hpp"
 #include "utils/random.hpp"
+#include <optick.h>
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window);
@@ -212,6 +225,8 @@ int main() {
 
     while (!glfwWindowShouldClose(window))
     {
+        OPTICK_FRAME("Render loop");
+
         float currentFrame = glfwGetTime();
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
