@@ -23,7 +23,7 @@
 #include "FrameBuffer/FrameBuffer.hpp"
 #include "Skybox/Skybox.hpp"
 #include "ShaderGlobals/ShaderGlobals.hpp"
-#include <memory>
+#include "utils/random.hpp"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window);
@@ -53,7 +53,7 @@ float deltaTime = 0.0f;	// Time between current frame and last frame
 float lastFrame = 0.0f; // Time of last frame
 bool firstMouse = false;
 
-Camera camera(glm::vec3(0.0f, 0.0f, 0.0f));
+Camera camera(glm::vec3(0.0f, 0.0f, 50.0f));
 
 FrameBuffer* sceneFrameBuffer;
 FrameBuffer* ppEffect1FrameBuffer;
@@ -127,8 +127,16 @@ int main() {
     std::vector<std::shared_ptr<Texture2D>> windowTextures = {
         Texture2D::Generate(fileUtils::getFullResourcesPath("textures/red-window.png"), aiTextureType::aiTextureType_DIFFUSE)
     };
-    
-    std::vector<SceneObject> opaqueObjects = {
+
+    const int NUMB_OPAQUE_OBJECTS = 100;
+    auto randomPositions = randomUtils::uniformRandomVec3(-12.0f, 12.0f, NUMB_OPAQUE_OBJECTS);
+    std::vector<SceneObject> opaqueObjects;
+    opaqueObjects.reserve(NUMB_OPAQUE_OBJECTS);
+    for (auto& pos : randomPositions) {
+        opaqueObjects.emplace_back(SceneObject(backpackModel, phongShader, pos));
+    }
+
+    /*std::vector<SceneObject> opaqueObjects = {
         SceneObject(backpackModel, phongShader, glm::vec3(0.0f,  2.0f,  0.0f)),
         SceneObject(backpackModel, phongShader, glm::vec3(0.0f, 0.0f, -8.0f)),
         SceneObject(backpackModel, phongShader, glm::vec3(0.0f, 5.0f, -8.0f)),
@@ -142,7 +150,7 @@ int main() {
             glm::vec3(-4.0f,  2.0f, -12.0f), glm::vec3(0.0,  0.0f,  0.0f), glm::vec3(0.2f)),
         SceneObject(sphere, pointLightShader,
             glm::vec3(0.0f,  1.0f, 3.0f), glm::vec3(0.0,  0.0f,  0.0f), glm::vec3(0.2f))
-    };
+    };*/
 
     auto windowModel = std::make_shared<Model>(std::vector<Mesh> { Mesh(windowVertices, windowIndices, windowTextures) });
     std::vector<SceneObject> transparentObjects = {
@@ -301,10 +309,6 @@ void DrawScene(
         auto obj = it->second;
         obj->mShader->Use();
 
-        obj->mShader->SetMat4("view", viewMatrix);
-        obj->mShader->SetMat4("projection", projectionMatrix);
-
-        obj->mShader->SetVec3("viewPos", camera.Position);
         obj->mShader->SetFloat("material.shininess", 32.0f);
 
         setLightProperties(*obj->mShader, pointLights, dirLight, spotLight);

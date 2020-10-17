@@ -3,6 +3,7 @@
 #include <time.h>
 #include <random>
 #include <iostream>
+#include <glm/glm.hpp>
 
 static std::random_device rd;
 static std::mt19937 gen(rd());
@@ -29,6 +30,18 @@ namespace randomUtils {
 		std::uniform_int_distribution dis(min, max);
 		for (int i = 0; i < numbElements; i++) {
 			randomValues.push_back(dis(gen));
+		}
+
+		return randomValues;
+	}
+
+	std::vector<glm::vec3> uniformRandomVec3(float min, float max, unsigned int numbElements) {
+		std::vector<glm::vec3> randomValues;
+		randomValues.reserve(numbElements);
+
+		std::uniform_real_distribution<float> dis(min, max);
+		for (int i = 0; i < numbElements; i++) {
+			randomValues.emplace_back(glm::vec3(dis(gen), dis(gen), dis(gen)));
 		}
 
 		return randomValues;
