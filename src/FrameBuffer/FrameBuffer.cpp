@@ -1,5 +1,6 @@
 #include "FrameBuffer.hpp"
 #include <iostream>
+#include <optick.h>
 
 FrameBuffer::FrameBuffer(
 	unsigned int width, unsigned int height,
@@ -139,6 +140,7 @@ void FrameBuffer::CheckFrambufferStatus() {
 }
 
 void FrameBuffer::Bind() {
+	OPTICK_EVENT();
 	glBindFramebuffer(GL_FRAMEBUFFER, mFbo);
 }
 

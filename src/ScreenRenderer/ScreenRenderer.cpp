@@ -1,6 +1,7 @@
 #include "ScreenRenderer.hpp"
 #include "src/utils/fileUtils.h"
 #include <string>
+#include <optick.h>
 
 const std::string NO_EFFECT_PP_FRAGMENT_PATH = fileUtils::getFullResourcesPath("shaders/post_processing/NoEffect.frag");
 
@@ -13,6 +14,8 @@ void ScreenRenderer::Draw(GLuint screenTexture) {
 }
 
 void ScreenRenderer::Draw(GLuint screenTexture, PostProcessEffect* ppEffect) {
+    OPTICK_EVENT();
+
     glClear(GL_COLOR_BUFFER_BIT);
 
     ppEffect->UseShader(screenTexture);

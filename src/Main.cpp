@@ -1,4 +1,3 @@
-
 /*
     stb config
 */
@@ -77,7 +76,7 @@ FrameBuffer* ppEffect2FrameBuffer;
 
 int main() {
     glfwInit();
-    
+
     GLFWwindow* window = createWindow(windowWidth, windowHeight);
     if (window == NULL)
     {
@@ -290,6 +289,8 @@ void DrawScene(
     SpotLight& spotLight,
     Skybox& skybox
 ) {
+    OPTICK_EVENT();
+
     ShaderGlobals::Get().mView.SetViewMatrix(camera.GetViewMatrix());
     ShaderGlobals::Get().mView.SetProjectionMatrix(
         glm::perspective(glm::radians(camera.GetFov()), (float)windowWidth / windowHeight, 0.1f, 100.0f));
@@ -396,6 +397,8 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 
 void processInput(GLFWwindow* window)
 {
+    OPTICK_EVENT();
+
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
 
