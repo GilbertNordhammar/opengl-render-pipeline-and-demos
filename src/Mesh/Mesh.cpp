@@ -1,8 +1,6 @@
 #include "Mesh.hpp"
 #include <glad/glad.h>
 
-static const int MAX_NUMB_TEXTURES = 15;
-
 Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<std::shared_ptr<Texture2D>> textures)
     : mVboAndEbo(OpenGLObjectGenerator::GenBuffers(2)), mVao(OpenGLObjectGenerator::GenVertexArrays(1)),
     mVertices(vertices), mIndices(indices), mTextures(textures)
@@ -70,16 +68,11 @@ void Mesh::SetupMesh()
 void Mesh::Draw(Shader& shader) const
 {
     shader.Use();
-
+    
     unsigned int diffuseNr = 1;
     unsigned int specularNr = 1;
     unsigned int normalNr = 1;
     unsigned int heightNr = 1;
-
-    for (int i = 0; i < MAX_NUMB_TEXTURES; i++) {
-        glActiveTexture(GL_TEXTURE0 + i);
-        glBindTexture(GL_TEXTURE_2D, 0);
-    }
 
     for (unsigned int i = 0; i < mTextures.size(); i++)
     {

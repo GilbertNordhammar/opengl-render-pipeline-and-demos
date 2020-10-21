@@ -143,7 +143,7 @@ int main() {
         Texture2D::Generate(fileUtils::getFullResourcesPath("textures/red-window.png"), aiTextureType::aiTextureType_DIFFUSE)
     };
 
-    const int NUMB_OPAQUE_OBJECTS = 100;
+    const int NUMB_OPAQUE_OBJECTS = 10;
     auto randomPositions = randomUtils::uniformRandomVec3(-12.0f, 12.0f, NUMB_OPAQUE_OBJECTS);
     std::vector<SceneObject> opaqueObjects;
     opaqueObjects.reserve(NUMB_OPAQUE_OBJECTS);
@@ -225,6 +225,9 @@ int main() {
     ppEffect1FrameBuffer = new FrameBuffer(windowWidth, windowHeight, ColorType::Texture, DepthStencilType::None);
     ppEffect2FrameBuffer = new FrameBuffer(windowWidth, windowHeight, ColorType::Texture, DepthStencilType::None);
 
+    // For switching off vsync. However, messes with Optick callstack sampling rate for some reason
+    /*glfwMakeContextCurrent(window);
+    glfwSwapInterval(0);*/
     while (!glfwWindowShouldClose(window))
     {
         OPTICK_FRAME("Render loop");
@@ -402,19 +405,20 @@ void processInput(GLFWwindow* window)
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
 
-    const float cameraSpeed = 2.5f * deltaTime; // adjust accordingly
+    float cameraSpeed = glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS
+        ? 7.5 * deltaTime : deltaTime;
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-        camera.Move(CameraMovement::FORWARD, deltaTime);
+        camera.Move(CameraMovement::FORWARD, cameraSpeed);
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-        camera.Move(CameraMovement::BACKWARD, deltaTime);
+        camera.Move(CameraMovement::BACKWARD, cameraSpeed);
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-        camera.Move(CameraMovement::LEFT, deltaTime);
+        camera.Move(CameraMovement::LEFT, cameraSpeed);
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-        camera.Move(CameraMovement::RIGHT, deltaTime);
+        camera.Move(CameraMovement::RIGHT, cameraSpeed);
     if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
-        camera.Move(CameraMovement::UP, deltaTime);
+        camera.Move(CameraMovement::UP, cameraSpeed);
     if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
-        camera.Move(CameraMovement::DOWN, deltaTime);
+        camera.Move(CameraMovement::DOWN, cameraSpeed);
 }
 
 void mouseCallback(GLFWwindow* window, double xpos, double ypos) {
