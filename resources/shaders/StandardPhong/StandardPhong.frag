@@ -9,6 +9,8 @@ in vec3 Normal;
 
 out vec4 FragColor;  
 
+uniform bool enableSpecular;
+
 void main()
 {
     // properties
@@ -16,7 +18,9 @@ void main()
     vec3 viewDir = normalize(rp_viewPosWS - FragmentPosWS);
     
     vec4 diffuseMap = texture(material.texture_diffuse1, TexCoords);
-    vec4 specularMap = texture(material.texture_specular1, TexCoords);
+    vec4 specularMap = enableSpecular ? 
+        texture(material.texture_specular1, TexCoords)
+        : vec4(0);
 
     // phase 1: Directional lighting
     vec3 result = CalcDirLight(
