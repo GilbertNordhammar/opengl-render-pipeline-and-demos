@@ -1,8 +1,11 @@
 #include "Mesh.hpp"
 #include <glad/glad.h>
+#include <iostream>
 
 Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<std::shared_ptr<Texture2D>> textures)
-    : mVboAndEbo(OpenGLObjectGenerator::GenBuffers(2)), mVao(OpenGLObjectGenerator::GenVertexArrays(1)),
+    : mVboAndEbo(OpenGLObjectGenerator::GenBuffers(2)), 
+    mVao(OpenGLObjectGenerator::GenVertexArrays(1)),
+    mModelMatrices(OpenGLObjectGenerator::GenBuffers(1)),
     mVertices(vertices), mIndices(indices), mTextures(textures)
 {
     SetupMesh();
@@ -15,7 +18,8 @@ Mesh::Mesh(Mesh&& other) noexcept :
     mIndices(std::move(other.mIndices)),
     mTextures(std::move(other.mTextures)),
     mVboAndEbo(std::move(other.mVboAndEbo)),
-    mVao(std::move(other.mVao)) {}
+    mVao(std::move(other.mVao)),
+    mModelMatrices(std::move(other.mModelMatrices)) {}
 
 Mesh& Mesh::operator=(Mesh other) {
     Swap(*this, other);
@@ -65,10 +69,52 @@ void Mesh::SetupMesh()
     glBindVertexArray(0);
 }
 
-void Mesh::Draw(Shader& shader) const
-{
-    shader.Use();
+void Mesh::SetInstancedModelMatrices(const std::vector<glm::mat4>& modelMatrices) const {
+    glBindBuffer(GL_ARRAY_BUFFER, mModelMatrices.GetFirst());
+    glBufferData(GL_ARRAY_BUFFER, modelMatrices.size() * sizeof(glm::mat4), &modelMatrices[0], GL_STATIC_DRAW);
+
+    glBindVertexArray(mVao.GetFirst());
+
+    glEnableVertexAttribArray(5);
+    glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), (void*)0);
+    glEnableVertexAttribArray(6);
+    glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), (void*)(sizeof(glm::vec4)));
+    glEnableVertexAttribArray(7);
+    glVertexAttribPointer(7, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), (void*)(2 * sizeof(glm::vec4)));
+    glEnableVertexAttribArray(8);
+    glVertexAttribPointer(8, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), (void*)(3 * sizeof(glm::vec4)));
+
+    glVertexAttribDivisor(5, 1);
+    glVertexAttribDivisor(6, 1);
+    glVertexAttribDivisor(7, 1);
+    glVertexAttribDivisor(8, 1);
+
+    glBindVertexArray(0);
+}
+
+void Mesh::UpdateInstancedModelMatrices(const std::vector<glm::mat4>& modelMatrices, int bufferOffset) const {
+    assert(bufferOffset >= 0);
+
+    glBindBuffer(GL_ARRAY_BUFFER, mModelMatrices.GetFirst());
     
+    auto offs = bufferOffset * sizeof(glm::mat4);
+    auto dataSize = modelMatrices.size() * sizeof(glm::mat4);
+    glBufferSubData(GL_ARRAY_BUFFER, offs, dataSize, &modelMatrices[0]);
+}
+
+void Mesh::Draw() const {
+    glBindVertexArray(mVao.GetFirst());
+    glDrawElements(GL_TRIANGLES, mIndices.size(), GL_UNSIGNED_INT, 0);
+    glBindVertexArray(0);
+}
+
+void Mesh::DrawInstanced(unsigned int count) const {
+    glBindVertexArray(mVao.GetFirst());
+    glDrawElementsInstanced(GL_TRIANGLES, mIndices.size(), GL_UNSIGNED_INT, 0, count);
+    glBindVertexArray(0);
+}
+
+void Mesh::PassTextures(const Shader& shader) const {
     unsigned int diffuseNr = 1;
     unsigned int specularNr = 1;
     unsigned int normalNr = 1;
@@ -102,10 +148,5 @@ void Mesh::Draw(Shader& shader) const
         glActiveTexture(GL_TEXTURE0 + i);
         glBindTexture(GL_TEXTURE_2D, mTextures[i]->GetId());
     }
-
-    glBindVertexArray(mVao.GetFirst());
-    glDrawElements(GL_TRIANGLES, mIndices.size(), GL_UNSIGNED_INT, 0);
-    
-    glBindVertexArray(0);
     glActiveTexture(GL_TEXTURE0);
 }

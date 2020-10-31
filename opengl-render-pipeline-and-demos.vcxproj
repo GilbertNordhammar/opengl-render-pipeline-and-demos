@@ -255,6 +255,7 @@ xcopy "$(SolutionDir)dependencies\optick\lib\x64\release\OptickCore.dll" "$(Targ
     <ClCompile Include="src\CubeMap\Cubemap.cpp" />
     <ClCompile Include="src\FrameBuffer\FrameBuffer.cpp" />
     <ClCompile Include="src\PostProcessEffect\PostProcessEffect.cpp" />
+    <ClCompile Include="src\SceneObject\SceneObject.cpp" />
     <ClCompile Include="src\ScreenRenderer\ScreenRenderer.cpp" />
     <ClCompile Include="src\Camera\Camera.cpp" />
     <ClCompile Include="src\glad.c" />
@@ -311,6 +312,7 @@ xcopy "$(SolutionDir)dependencies\optick\lib\x64\release\OptickCore.dll" "$(Targ
     <ClInclude Include="src\ShaderGlobals\ShaderGlobals.hpp" />
     <ClInclude Include="src\Skybox\Skybox.hpp" />
     <ClInclude Include="src\Texture2D\Texture2D.hpp" />
+    <ClInclude Include="src\Transform\Transform.hpp" />
     <ClInclude Include="src\utils\array.h" />
     <ClInclude Include="src\utils\fileUtils.h" />
     <ClInclude Include="src\SceneObject\SceneObject.hpp" />

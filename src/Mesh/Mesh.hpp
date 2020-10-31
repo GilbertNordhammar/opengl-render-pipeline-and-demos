@@ -17,8 +17,8 @@ struct Vertex {
 
 class Mesh {
 public:
-    std::vector<Vertex>       mVertices;
-    std::vector<unsigned int> mIndices;
+    std::vector<Vertex>                     mVertices;
+    std::vector<unsigned int>               mIndices;
     std::vector<std::shared_ptr<Texture2D>> mTextures;
 
     Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<std::shared_ptr<Texture2D>> textures);
@@ -27,12 +27,19 @@ public:
 
     Mesh& operator=(Mesh other);
 
-    void Draw(Shader& shader) const;
+    // Creates/recreates model matrix buffer and initializes it
+    void SetInstancedModelMatrices(const std::vector<glm::mat4>& modelMatrices) const;
+
+    // Updates existing model matrix buffer starting at byte bufferOffset * sizeof(glm::mat4)
+    void UpdateInstancedModelMatrices(const std::vector<glm::mat4>& modelMatrices, int bufferOffset) const;
+    
+    void DrawInstanced(unsigned int count) const;
+    void Draw() const;
+    void PassTextures(const Shader& shader) const;
 private:
     OpenGLObjectArray mVboAndEbo;
     OpenGLObjectArray mVao;
-    
-    static OpenGLObjectGenerator mObjGenerator;
+    OpenGLObjectArray mModelMatrices;
 
     void Swap(Mesh& first, Mesh& second);
     void SetupMesh();

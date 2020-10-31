@@ -50,4 +50,5 @@ void main()
         specularMap);    
     
     FragColor = vec4(result, diffuseMap.a);
+//    FragColor = vec4(diffuseMap.rgb, 1.0);
 }

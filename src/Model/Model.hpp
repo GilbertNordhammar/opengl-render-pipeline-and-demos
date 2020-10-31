@@ -13,10 +13,9 @@ class Model
 public:
     Model(std::string path);
     Model(std::vector<Mesh> meshes);
-    void Draw(Shader& shader) const;
 
-private:
     std::vector<Mesh> mMeshes;
+private:
     std::string mDirectory;
 
     void LoadModel(std::string path);
