@@ -69,7 +69,7 @@
     <ClCompile Include="src\ShaderGlobals\SG_Containers\View\View.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\SceneObject\SceneObject.cpp">
+    <ClCompile Include="src\SceneObjectCluster\SceneObjectCluster.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -151,9 +151,6 @@
     <ClInclude Include="src\Shader\Shader.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\SceneObject\SceneObject.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\ShaderLoader\ShaderLoader.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -170,6 +167,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Transform\Transform.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SceneObjectCluster\SceneObjectCluster.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -25,7 +25,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include "Camera/Camera.hpp"
 #include "Model/Model.hpp"
-#include "SceneObject/SceneObject.hpp"
+#include "SceneObjectCluster/SceneObjectCluster.hpp"
 #include "utils/array.h"
 #include <vector>
 #include "Mesh/Mesh.hpp"
@@ -53,14 +53,14 @@ void setLightProperties(
 );
 
 void DrawScene(
-    std::vector<SceneObject*>& opaqueObjects,
-    std::vector<SceneObject*>& transparentObjects,
+    std::vector<SceneObjectCluster*>& opaqueObjects,
+    std::vector<SceneObjectCluster*>& transparentObjects,
     std::vector<PointLight>& pointLights,
     DirectionalLight& dirLight,
     SpotLight& spotLight,
     Skybox& skybox
 );
-SceneObject createBackpacks(const int count, glm::vec2 offset, glm::vec2 direction);
+SceneObjectCluster createBackpacks(const int count, glm::vec2 offset, glm::vec2 direction);
 
 int windowWidth = 800;
 int windowHeight = 600;
@@ -142,14 +142,14 @@ int main() {
         fileUtils::getFullResourcesPath("shaders/StandardPhong/StandardPhong.vert"),
         fileUtils::getFullResourcesPath("shaders/StandardPhong/StandardPhong.frag")
     );
-    SceneObject windows(std::move(windowModel), windowShader, true);
+    SceneObjectCluster windows(std::move(windowModel), windowShader, true);
 
     windows.mTransforms.reserve(5);
-    windows.mTransforms.emplace_back(Transform { glm::vec3(-1.5f, 0.0f, 1.5f), glm::vec3(90.0f, 0.0f, 0.0f) });
-    windows.mTransforms.emplace_back(Transform { glm::vec3(1.5f, 0.0f, 2.5f), glm::vec3(90.0f, 0.0f, 0.0f) });
+    windows.mTransforms.emplace_back(Transform { glm::vec3(-1.5f, 0.0f, 5.5f), glm::vec3(90.0f, 0.0f, 0.0f) });
+    windows.mTransforms.emplace_back(Transform { glm::vec3(1.5f, 0.0f, 4.5f), glm::vec3(90.0f, 0.0f, 0.0f) });
     windows.mTransforms.emplace_back(Transform { glm::vec3(0.0f, 0.0f, 3.5f), glm::vec3(90.0f, 0.0f, 0.0f) });
-    windows.mTransforms.emplace_back(Transform { glm::vec3(-0.3f, 0.0f, 4.5f), glm::vec3(90.0f, 0.0f, 0.0f) });
-    windows.mTransforms.emplace_back(Transform { glm::vec3(0.5f, 0.0f, 5.5f), glm::vec3(90.0f, 0.0f, 0.0f) });
+    windows.mTransforms.emplace_back(Transform { glm::vec3(-0.3f, 0.0f, 2.5f), glm::vec3(90.0f, 0.0f, 0.0f) });
+    windows.mTransforms.emplace_back(Transform { glm::vec3(0.5f, 0.0f, 1.5f), glm::vec3(90.0f, 0.0f, 0.0f) });
     windows.Update();
 
     /*
@@ -197,7 +197,7 @@ int main() {
         fileUtils::getFullResourcesPath("shaders/LightSource/LightSource.vert"),
         fileUtils::getFullResourcesPath("shaders/LightSource/LightSource.frag")
     );
-    SceneObject pointlightGlobes(std::move(sphere), pointlightShader, true);
+    SceneObjectCluster pointlightGlobes(std::move(sphere), pointlightShader, true);
 
     const int NUMB_POINTLIGHTS = 4;
     pointlightGlobes.mTransforms.reserve(NUMB_POINTLIGHTS);
@@ -236,8 +236,8 @@ int main() {
     glfwSwapInterval(0);*/
 
     // FYI these are being copied
-    std::vector<SceneObject*> opaqueObjects { &staticBackpacks, &dynamicBackpacks, &pointlightGlobes };
-    std::vector<SceneObject*> transparentObjects { &windows };
+    std::vector<SceneObjectCluster*> opaqueObjects { &staticBackpacks, &dynamicBackpacks, &pointlightGlobes };
+    std::vector<SceneObjectCluster*> transparentObjects { &windows };
 
     while (!glfwWindowShouldClose(window))
     {
@@ -307,8 +307,8 @@ int main() {
 }
 
 void DrawScene(
-    std::vector<SceneObject*>& opaqueObjects,
-    std::vector<SceneObject*>& transparentObjects,
+    std::vector<SceneObjectCluster*>& opaqueObjects,
+    std::vector<SceneObjectCluster*>& transparentObjects,
     std::vector<PointLight>& pointLights,
     DirectionalLight& dirLight,
     SpotLight& spotLight,
@@ -394,13 +394,13 @@ void setLightProperties(
     shader.SetFloat("spotLight.outerCutOff", spotLight.outerCuttoff);
 }
 
-SceneObject createBackpacks(const int count, glm::vec2 offset, glm::vec2 direction) {
+SceneObjectCluster createBackpacks(const int count, glm::vec2 offset, glm::vec2 direction) {
     Model staticBackpackModel(fileUtils::getFullResourcesPath("models/backpack/backpack.obj"));
     auto staticBackpackShader = std::make_shared<Shader>(
         fileUtils::getFullResourcesPath("shaders/StandardPhong/StandardPhong.vert"),
         fileUtils::getFullResourcesPath("shaders/StandardPhong/StandardPhong.frag")
     );
-    SceneObject staticBackpacks(std::move(staticBackpackModel), staticBackpackShader, true);
+    SceneObjectCluster staticBackpacks(std::move(staticBackpackModel), staticBackpackShader, true);
 
     staticBackpacks.mTransforms.reserve(count);
     for (int i = 0; i < count; i++) {

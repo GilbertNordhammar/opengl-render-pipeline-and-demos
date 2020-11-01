@@ -6,20 +6,20 @@
 #include <vector>
 #include "src/Transform/Transform.hpp"
 
-class SceneObject {
+class SceneObjectCluster {
 public:
 	Model mModel;
 	std::shared_ptr<Shader> mShader;
 	std::vector<Transform> mTransforms;
 
-	SceneObject(const SceneObject& other);
-	SceneObject(SceneObject&& other);
-	SceneObject(
+	SceneObjectCluster(const SceneObjectCluster& other);
+	SceneObjectCluster(SceneObjectCluster&& other);
+	SceneObjectCluster(
 		Model&& model,
 		std::shared_ptr<Shader> shader,
 		bool useInstancing);
 
-	SceneObject& operator=(SceneObject other);
+	SceneObjectCluster& operator=(SceneObjectCluster other);
 
 	void Update();
 	void Draw();
@@ -31,5 +31,5 @@ private:
 	void RecalculateMatrices();
 	void DrawSingle();
 	void DrawInstanced();
-	void Swap(SceneObject& first, SceneObject& second);
+	void Swap(SceneObjectCluster& first, SceneObjectCluster& second);
 };

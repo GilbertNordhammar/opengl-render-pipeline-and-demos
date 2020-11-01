@@ -1,8 +1,8 @@
-#include "SceneObject.hpp"
+#include "SceneObjectCluster.hpp"
 #include <glm/gtc/matrix_transform.hpp>
 #include <optick.h>
 
-SceneObject::SceneObject(const SceneObject& other)
+SceneObjectCluster::SceneObjectCluster(const SceneObjectCluster& other)
 	: mModel(other.mModel),
 	mShader(other.mShader),
 	mTransforms(other.mTransforms),
@@ -13,7 +13,7 @@ SceneObject::SceneObject(const SceneObject& other)
 		ApplyInstancedMatrices(true);
 }
 
-SceneObject::SceneObject(SceneObject&& other)
+SceneObjectCluster::SceneObjectCluster(SceneObjectCluster&& other)
 	: mModel(std::move(other.mModel)),
 	mShader(std::move(other.mShader)),
 	mTransforms(std::move(other.mTransforms)),
@@ -24,19 +24,19 @@ SceneObject::SceneObject(SceneObject&& other)
 		ApplyInstancedMatrices(true);
 }
 
-SceneObject::SceneObject(
+SceneObjectCluster::SceneObjectCluster(
 	Model&& model,
 	std::shared_ptr<Shader> shader,
 	bool useInstancing)
 	: mModel(model), mShader(shader), mUseInstancing(useInstancing) {}
 
-SceneObject& SceneObject::operator=(SceneObject other) {
+SceneObjectCluster& SceneObjectCluster::operator=(SceneObjectCluster other) {
 	Swap(*this, other);
 
 	return *this;
 }
 
-void SceneObject::Swap(SceneObject& first, SceneObject& second) {
+void SceneObjectCluster::Swap(SceneObjectCluster& first, SceneObjectCluster& second) {
 	using std::swap;
 
 	swap(first.mModel, second.mModel);
@@ -46,7 +46,7 @@ void SceneObject::Swap(SceneObject& first, SceneObject& second) {
 	swap(first.mUseInstancing, second.mUseInstancing);
 }
 
-void SceneObject::Update() {
+void SceneObjectCluster::Update() {
 	bool hasResized = false;
 	int count = mTransforms.size();
 	if (mModelMatrices.size() != count) {
@@ -60,7 +60,7 @@ void SceneObject::Update() {
 		ApplyInstancedMatrices(hasResized);
 }
 
-void SceneObject::ApplyInstancedMatrices(bool createNewBuffer) {
+void SceneObjectCluster::ApplyInstancedMatrices(bool createNewBuffer) {
 	if (createNewBuffer) {
 		for (int i = 0; i < mModel.mMeshes.size(); i++)
 			mModel.mMeshes[i].SetInstancedModelMatrices(mModelMatrices);
@@ -71,7 +71,7 @@ void SceneObject::ApplyInstancedMatrices(bool createNewBuffer) {
 	}
 }
 
-void SceneObject::RecalculateMatrices() {
+void SceneObjectCluster::RecalculateMatrices() {
 	int count = mModelMatrices.size();
 	for (int i = 0; i < count; i++) {
 		mModelMatrices[i] = glm::mat4(1.0f);
@@ -83,7 +83,7 @@ void SceneObject::RecalculateMatrices() {
 	}
 }
 
-void SceneObject::Draw() {
+void SceneObjectCluster::Draw() {
 	OPTICK_EVENT();
 
 	mShader->Use();
@@ -97,7 +97,7 @@ void SceneObject::Draw() {
 	}
 }
 
-void SceneObject::DrawSingle() {
+void SceneObjectCluster::DrawSingle() {
 	OPTICK_EVENT();
 
 	for (const auto& mesh : mModel.mMeshes) {
@@ -109,7 +109,7 @@ void SceneObject::DrawSingle() {
 	}
 }
 
-void SceneObject::DrawInstanced() {
+void SceneObjectCluster::DrawInstanced() {
 	OPTICK_EVENT();
 
 	for (const auto& mesh : mModel.mMeshes) {
