@@ -8,16 +8,18 @@
 
 class SceneObject {
 public:
-	std::shared_ptr<Model> mModel;
+	Model mModel;
 	std::shared_ptr<Shader> mShader;
-
 	std::vector<Transform> mTransforms;
 
+	SceneObject(const SceneObject& other);
+	SceneObject(SceneObject&& other);
 	SceneObject(
-		std::shared_ptr<Model> model,
+		Model&& model,
 		std::shared_ptr<Shader> shader,
-		bool useInstancing)
-		: mModel(model), mShader(shader), mUseInstancing(useInstancing) {}
+		bool useInstancing);
+
+	SceneObject& operator=(SceneObject other);
 
 	void Update();
 	void Draw();
@@ -25,8 +27,9 @@ private:
 	std::vector<glm::mat4> mModelMatrices;
 	bool mUseInstancing;
 
-	void ApplyInstancedMatrices(bool hasResized);
+	void ApplyInstancedMatrices(bool createNewBuffer);
 	void RecalculateMatrices();
 	void DrawSingle();
 	void DrawInstanced();
+	void Swap(SceneObject& first, SceneObject& second);
 };

@@ -53,13 +53,14 @@ void setLightProperties(
 );
 
 void DrawScene(
-    std::vector<SceneObject>& opaqueObjects,
-    std::vector<SceneObject>& transparentObjects,
+    std::vector<SceneObject*>& opaqueObjects,
+    std::vector<SceneObject*>& transparentObjects,
     std::vector<PointLight>& pointLights,
     DirectionalLight& dirLight,
     SpotLight& spotLight,
     Skybox& skybox
 );
+SceneObject createBackpacks(const int count, glm::vec2 offset, glm::vec2 direction);
 
 int windowWidth = 800;
 int windowHeight = 600;
@@ -68,7 +69,7 @@ float deltaTime = 0.0f;	// Time between current frame and last frame
 float lastFrame = 0.0f; // Time of last frame
 bool firstMouse = false;
 
-Camera camera(glm::vec3(5.0f, 0.0f, 40.0f));
+Camera camera(glm::vec3(20.0f, 0.0f, 70.0f));
 
 FrameBuffer* sceneFrameBuffer;
 FrameBuffer* ppEffect1FrameBuffer;
@@ -99,7 +100,14 @@ int main() {
     glEnable(GL_CULL_FACE);
 
     /*
-        Creating window mesh and model
+        Creating backpacks
+    */
+
+    auto staticBackpacks = createBackpacks(50, glm::vec2(0, 0), glm::vec2(1, 1));
+    auto dynamicBackpacks = createBackpacks(50, glm::vec2(0, 5), glm::vec2(1, -1));
+
+    /*
+        Creating windows
     */
     std::vector<glm::vec3> windowVertPositions = {
         glm::vec3(-1.0f, 0.0f, 1.0f),
@@ -121,48 +129,21 @@ int main() {
         vert.normal = glm::vec3(0.0f, 1.0f, 0.0f);
         windowVertices.push_back(vert);
     }
-    std::vector<unsigned int> windowIndices = { 
+    std::vector<unsigned int> windowIndices = {
         0, 1, 2,
         1, 3, 2
     };
     std::vector<std::shared_ptr<Texture2D>> windowTextures = {
         Texture2D::Generate(fileUtils::getFullResourcesPath("textures/red-window.png"), aiTextureType::aiTextureType_DIFFUSE)
     };
-    auto windowModel = std::make_shared<Model>(std::vector<Mesh> { Mesh(windowVertices, windowIndices, windowTextures) });
 
-    /*
-        Generating opaque and transparent objects to be rendered (i.e. backpacks, light globes and windows)
-    */
-    auto backpackModel = std::make_shared<Model>(fileUtils::getFullResourcesPath("models/backpack/backpack.obj"));
-    auto phongShader = std::make_shared<Shader>(
-        fileUtils::getFullResourcesPath("shaders/StandardPhong/StandardPhong.vert"),
-        fileUtils::getFullResourcesPath("shaders/StandardPhong/StandardPhong.frag")
-    );
-    
-    auto backpackShader = std::make_shared<Shader>(
-        fileUtils::getFullResourcesPath("shaders/StandardPhong/StandardPhong.vert"),
-        fileUtils::getFullResourcesPath("shaders/StandardPhong/StandardPhong.frag")
-    );
-
-    SceneObject backpacks(backpackModel, backpackShader, true);
-
-    const int NUMB_BACKPACKS = 20;
-    backpacks.mTransforms.reserve(NUMB_BACKPACKS);
-    const glm::vec3 OBJECT_OFFS(-5, -5, 0);
-    for (int i = 0; i < NUMB_BACKPACKS; i++) {
-        int x = (i % 5) * 5;
-        int y = (i / 5) * 5;
-
-        Transform transform { glm::vec3(x, y, 0) + OBJECT_OFFS };
-        backpacks.mTransforms.push_back(transform);
-    }
-    backpacks.Update();
-
+    Model windowModel(std::vector<Mesh> { Mesh(windowVertices, windowIndices, windowTextures) });
     auto windowShader = std::make_shared<Shader>(
         fileUtils::getFullResourcesPath("shaders/StandardPhong/StandardPhong.vert"),
         fileUtils::getFullResourcesPath("shaders/StandardPhong/StandardPhong.frag")
     );
-    SceneObject windows(windowModel, windowShader, true);
+    SceneObject windows(std::move(windowModel), windowShader, true);
+
     windows.mTransforms.reserve(5);
     windows.mTransforms.emplace_back(Transform { glm::vec3(-1.5f, 0.0f, 1.5f), glm::vec3(90.0f, 0.0f, 0.0f) });
     windows.mTransforms.emplace_back(Transform { glm::vec3(1.5f, 0.0f, 2.5f), glm::vec3(90.0f, 0.0f, 0.0f) });
@@ -210,13 +191,13 @@ int main() {
         fileUtils::getFullResourcesPath("shaders/LightSource/LightSource.vert"),
         fileUtils::getFullResourcesPath("shaders/LightSource/LightSource.frag")
     );
-    auto sphere = std::make_shared<Model>(fileUtils::getFullResourcesPath("models/primitives/sphere/sphere.obj"));
+    Model sphere(fileUtils::getFullResourcesPath("models/primitives/sphere/sphere.obj"));
     
     auto pointlightShader = std::make_shared<Shader>(
         fileUtils::getFullResourcesPath("shaders/LightSource/LightSource.vert"),
         fileUtils::getFullResourcesPath("shaders/LightSource/LightSource.frag")
     );
-    SceneObject pointlightGlobes(sphere, pointlightShader, true);
+    SceneObject pointlightGlobes(std::move(sphere), pointlightShader, true);
 
     const int NUMB_POINTLIGHTS = 4;
     pointlightGlobes.mTransforms.reserve(NUMB_POINTLIGHTS);
@@ -224,7 +205,7 @@ int main() {
         int x = (i % 5) * 5;
         int y = x;
 
-        auto pos = glm::vec3(x, y, 1.5) + OBJECT_OFFS;
+        auto pos = glm::vec3(x, y, 1.5);
         auto rot = glm::vec3(0);
         auto scale = glm::vec3(0.3);
         pointlightGlobes.mTransforms.emplace_back(Transform { pos, rot, scale });
@@ -255,8 +236,8 @@ int main() {
     glfwSwapInterval(0);*/
 
     // FYI these are being copied
-    std::vector<SceneObject> opaqueObjects { backpacks, pointlightGlobes };
-    std::vector<SceneObject> transparentObjects { windows };
+    std::vector<SceneObject*> opaqueObjects { &staticBackpacks, &dynamicBackpacks, &pointlightGlobes };
+    std::vector<SceneObject*> transparentObjects { &windows };
 
     while (!glfwWindowShouldClose(window))
     {
@@ -277,6 +258,11 @@ int main() {
 
         glEnable(GL_BLEND);
         glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+
+        for (int i = 0; i < dynamicBackpacks.mTransforms.size(); i++) {
+            dynamicBackpacks.mTransforms[i].mRotation.z += 50.0 * deltaTime;
+        }
+        dynamicBackpacks.Update();
 
         // dynamic object test
         /*for (int i = 0; i < 5; i++) {
@@ -321,8 +307,8 @@ int main() {
 }
 
 void DrawScene(
-    std::vector<SceneObject>& opaqueObjects,
-    std::vector<SceneObject>& transparentObjects,
+    std::vector<SceneObject*>& opaqueObjects,
+    std::vector<SceneObject*>& transparentObjects,
     std::vector<PointLight>& pointLights,
     DirectionalLight& dirLight,
     SpotLight& spotLight,
@@ -341,18 +327,18 @@ void DrawScene(
     spotLight.positional.position = camera.Position;
     spotLight.direction = camera.GetFront();
 
-    for (auto& obj : opaqueObjects) {
-        obj.mShader->Use();
+    for (const auto& obj : opaqueObjects) {
+        obj->mShader->Use();
 
-        obj.mShader->SetFloat("material.shininess", 32.0f);
-        obj.mShader->SetBool("enableSpecular", true);
+        obj->mShader->SetFloat("material.shininess", 32.0f);
+        obj->mShader->SetBool("enableSpecular", true);
 
-        setLightProperties(*obj.mShader, pointLights, dirLight, spotLight);
+        setLightProperties(*obj->mShader, pointLights, dirLight, spotLight);
 
         // For spot lights
-        obj.mShader->SetVec3("lightColor", glm::vec3(1.0f, 1.0f, 1.0f));
+        obj->mShader->SetVec3("lightColor", glm::vec3(1.0f, 1.0f, 1.0f));
 
-        obj.Draw();
+        obj->Draw();
     }
 
     skybox.Draw(viewMatrix, projectionMatrix);
@@ -360,15 +346,15 @@ void DrawScene(
     // TODO: Implement transparency sorting again
 
     glDisable(GL_CULL_FACE); // temporarily turns off culling since we're rendering quads here
-    for (auto it = transparentObjects.begin(); it != transparentObjects.end(); it++) {
-        it->mShader->Use();
+    for (const auto& obj : transparentObjects) {
+        obj->mShader->Use();
 
-        it->mShader->SetFloat("material.shininess", 32.0f);
-        it->mShader->SetBool("enableSpecular", false);
+        obj->mShader->SetFloat("material.shininess", 32.0f);
+        obj->mShader->SetBool("enableSpecular", false);
 
-        setLightProperties(*it->mShader, pointLights, dirLight, spotLight);
+        setLightProperties(*obj->mShader, pointLights, dirLight, spotLight);
 
-        it->Draw();
+        obj->Draw();
     }
     glEnable(GL_CULL_FACE);
 }
@@ -406,6 +392,30 @@ void setLightProperties(
     shader.SetFloat("spotLight.quadratic", spotLight.positional.quadratic);
     shader.SetFloat("spotLight.cutOff", spotLight.innerCuttoff);
     shader.SetFloat("spotLight.outerCutOff", spotLight.outerCuttoff);
+}
+
+SceneObject createBackpacks(const int count, glm::vec2 offset, glm::vec2 direction) {
+    Model staticBackpackModel(fileUtils::getFullResourcesPath("models/backpack/backpack.obj"));
+    auto staticBackpackShader = std::make_shared<Shader>(
+        fileUtils::getFullResourcesPath("shaders/StandardPhong/StandardPhong.vert"),
+        fileUtils::getFullResourcesPath("shaders/StandardPhong/StandardPhong.frag")
+    );
+    SceneObject staticBackpacks(std::move(staticBackpackModel), staticBackpackShader, true);
+
+    staticBackpacks.mTransforms.reserve(count);
+    for (int i = 0; i < count; i++) {
+        int x = (i % 10) * 5 + offset.x;
+        int y = (i / 10) * 5 + offset.y;
+
+        x *= direction.x;
+        y *= direction.y;
+
+        Transform transform{ glm::vec3(x, y, 0) };
+        staticBackpacks.mTransforms.push_back(transform);
+    }
+    staticBackpacks.Update();
+
+    return staticBackpacks;
 }
 
 GLFWwindow* createWindow(int width, int height) {
