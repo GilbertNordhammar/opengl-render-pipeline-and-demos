@@ -26,6 +26,7 @@
 #include "Camera/Camera.hpp"
 #include "Model/Model.hpp"
 #include "SceneObjectCluster/SceneObjectCluster.hpp"
+#include "SceneObject/SceneObject.hpp"
 #include "utils/array.h"
 #include <vector>
 #include "Mesh/Mesh.hpp"
@@ -53,9 +54,9 @@ void setLightProperties(
 );
 
 void DrawScene(
-    std::vector<SceneObjectCluster*>& opaqueObjects,
-    std::vector<SceneObjectCluster*>& transparentObjects,
-    std::vector<PointLight>& pointLights,
+    const std::vector<SceneObjectCluster*>& opaqueObjects,
+    const std::vector<SceneObject>& transparentObjects,
+    const std::vector<PointLight>& pointLights,
     DirectionalLight& dirLight,
     SpotLight& spotLight,
     Skybox& skybox
@@ -107,7 +108,7 @@ int main() {
     auto dynamicBackpacks = createBackpacks(50, glm::vec2(0, 5), glm::vec2(1, -1));
 
     /*
-        Creating windows
+        Creating windows (transparent objects)
     */
     std::vector<glm::vec3> windowVertPositions = {
         glm::vec3(-1.0f, 0.0f, 1.0f),
@@ -137,20 +138,25 @@ int main() {
         Texture2D::Generate(fileUtils::getFullResourcesPath("textures/red-window.png"), aiTextureType::aiTextureType_DIFFUSE)
     };
 
-    Model windowModel(std::vector<Mesh> { Mesh(windowVertices, windowIndices, windowTextures) });
+    auto windowModel = std::make_shared<Model>(std::vector<Mesh> { Mesh(windowVertices, windowIndices, windowTextures) });
     auto windowShader = std::make_shared<Shader>(
         fileUtils::getFullResourcesPath("shaders/StandardPhong/StandardPhong.vert"),
         fileUtils::getFullResourcesPath("shaders/StandardPhong/StandardPhong.frag")
     );
-    SceneObjectCluster windows(std::move(windowModel), windowShader, true);
 
-    windows.mTransforms.reserve(5);
-    windows.mTransforms.emplace_back(Transform { glm::vec3(-1.5f, 0.0f, 5.5f), glm::vec3(90.0f, 0.0f, 0.0f) });
-    windows.mTransforms.emplace_back(Transform { glm::vec3(1.5f, 0.0f, 4.5f), glm::vec3(90.0f, 0.0f, 0.0f) });
-    windows.mTransforms.emplace_back(Transform { glm::vec3(0.0f, 0.0f, 3.5f), glm::vec3(90.0f, 0.0f, 0.0f) });
-    windows.mTransforms.emplace_back(Transform { glm::vec3(-0.3f, 0.0f, 2.5f), glm::vec3(90.0f, 0.0f, 0.0f) });
-    windows.mTransforms.emplace_back(Transform { glm::vec3(0.5f, 0.0f, 1.5f), glm::vec3(90.0f, 0.0f, 0.0f) });
-    windows.Update();
+    auto trans = Transform{ glm::vec3(-1.5f, 0.0f, 5.5f), glm::vec3(90.0f, 0.0f, 0.0f) };
+    std::vector<SceneObject> transparentObjects;
+    transparentObjects.reserve(5);
+    transparentObjects.emplace_back(
+        windowModel, windowShader, Transform{ glm::vec3(-1.5f, 0.0f, 5.5f), glm::vec3(90.0f, 0.0f, 0.0f) });
+    transparentObjects.emplace_back(
+        windowModel, windowShader, Transform{ glm::vec3(1.5f, 0.0f, 4.5f), glm::vec3(90.0f, 0.0f, 0.0f) });
+    transparentObjects.emplace_back(
+        windowModel, windowShader, Transform{ glm::vec3(0.0f, 0.0f, 3.5f), glm::vec3(90.0f, 0.0f, 0.0f) });
+    transparentObjects.emplace_back(
+        windowModel, windowShader, Transform{ glm::vec3(-0.3f, 0.0f, 2.5f), glm::vec3(90.0f, 0.0f, 0.0f) });
+    transparentObjects.emplace_back(
+        windowModel, windowShader, Transform{ glm::vec3(0.5f, 0.0f, 1.5f), glm::vec3(90.0f, 0.0f, 0.0f) });
 
     /*
         Generating skybox
@@ -237,7 +243,6 @@ int main() {
 
     // FYI these are being copied
     std::vector<SceneObjectCluster*> opaqueObjects { &staticBackpacks, &dynamicBackpacks, &pointlightGlobes };
-    std::vector<SceneObjectCluster*> transparentObjects { &windows };
 
     while (!glfwWindowShouldClose(window))
     {
@@ -263,12 +268,6 @@ int main() {
             dynamicBackpacks.mTransforms[i].mRotation.z += 50.0 * deltaTime;
         }
         dynamicBackpacks.Update();
-
-        // dynamic object test
-        /*for (int i = 0; i < 5; i++) {
-            opaqueObjects[0].mTransforms[i].mRotation.z += 50.0 * deltaTime;
-        }
-        opaqueObjects[0].Update();*/
 
         DrawScene(
             opaqueObjects,
@@ -307,9 +306,9 @@ int main() {
 }
 
 void DrawScene(
-    std::vector<SceneObjectCluster*>& opaqueObjects,
-    std::vector<SceneObjectCluster*>& transparentObjects,
-    std::vector<PointLight>& pointLights,
+    const std::vector<SceneObjectCluster*>& opaqueObjects,
+    const std::vector<SceneObject>& transparentObjects,
+    const std::vector<PointLight>& pointLights,
     DirectionalLight& dirLight,
     SpotLight& spotLight,
     Skybox& skybox
@@ -343,18 +342,22 @@ void DrawScene(
 
     skybox.Draw(viewMatrix, projectionMatrix);
 
-    // TODO: Implement transparency sorting again
+    std::map<float, SceneObject, std::greater<float>> transparentObjSorted;
+    for (int i = 0; i < transparentObjects.size(); i++) {
+        float distance = glm::length(camera.Position - transparentObjects[i].mTransform.mPosition);
+        transparentObjSorted.insert(std::make_pair(distance, transparentObjects[i]));
+    }
 
     glDisable(GL_CULL_FACE); // temporarily turns off culling since we're rendering quads here
-    for (const auto& obj : transparentObjects) {
-        obj->mShader->Use();
+    for (const auto& obj : transparentObjSorted) {
+        obj.second.mShader->Use();
 
-        obj->mShader->SetFloat("material.shininess", 32.0f);
-        obj->mShader->SetBool("enableSpecular", false);
+        obj.second.mShader->SetFloat("material.shininess", 32.0f);
+        obj.second.mShader->SetBool("enableSpecular", false);
 
-        setLightProperties(*obj->mShader, pointLights, dirLight, spotLight);
+        setLightProperties(*obj.second.mShader, pointLights, dirLight, spotLight);
 
-        obj->Draw();
+        obj.second.Draw();
     }
     glEnable(GL_CULL_FACE);
 }

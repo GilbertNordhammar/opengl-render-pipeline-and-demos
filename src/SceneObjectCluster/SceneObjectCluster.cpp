@@ -74,12 +74,7 @@ void SceneObjectCluster::ApplyInstancedMatrices(bool createNewBuffer) {
 void SceneObjectCluster::RecalculateMatrices() {
 	int count = mModelMatrices.size();
 	for (int i = 0; i < count; i++) {
-		mModelMatrices[i] = glm::mat4(1.0f);
-		mModelMatrices[i] = glm::translate(mModelMatrices[i], mTransforms[i].mPosition);
-		mModelMatrices[i] = glm::rotate(mModelMatrices[i], glm::radians(mTransforms[i].mRotation.x), glm::vec3(1.0f, 0.0f, 0.0f));
-		mModelMatrices[i] = glm::rotate(mModelMatrices[i], glm::radians(mTransforms[i].mRotation.y), glm::vec3(0.0f, 1.0f, 0.0f));
-		mModelMatrices[i] = glm::rotate(mModelMatrices[i], glm::radians(mTransforms[i].mRotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
-		mModelMatrices[i] = glm::scale(mModelMatrices[i], mTransforms[i].mScale);
+		mModelMatrices[i] = mTransforms[i].CalculateModelMatrix();
 	}
 }
 
