@@ -78,6 +78,9 @@
     <ClCompile Include="src\Transform\Transform.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\debug\VertexNormalDisplayer\VertexNormalDisplayer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include=".gitignore" />
@@ -101,6 +104,9 @@
     <None Include="resources\shaders\Skybox\Skybox.vert" />
     <None Include="resources\shaders\lib\PhongShading\Lighting.glsl" />
     <None Include="resources\shaders\lib\global-data\View.glsl" />
+    <None Include="resources\shaders\debug\DisplayVertexNormals\DisplayVertexNormals.frag" />
+    <None Include="resources\shaders\debug\DisplayVertexNormals\DisplayVertexNormals.geom" />
+    <None Include="resources\shaders\debug\DisplayVertexNormals\DisplayVertexNormals.vert" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\utils\fileUtils.h">
@@ -179,6 +185,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\SceneObject\SceneObject.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\debug\VertexNormalDisplayer\VertexNormalDisplayer.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -40,6 +40,7 @@
 #include "ShaderGlobals/ShaderGlobals.hpp"
 #include "utils/random.hpp"
 #include <optick.h>
+#include "src/debug/VertexNormalDisplayer/VertexNormalDisplayer.hpp"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window);
@@ -76,6 +77,9 @@ FrameBuffer* sceneFrameBuffer;
 FrameBuffer* ppEffect1FrameBuffer;
 FrameBuffer* ppEffect2FrameBuffer;
 
+SceneObject* debugBag;
+VertexNormalDisplayer* vertexNormalDisplayer;
+
 int main() {
     glfwInit();
 
@@ -106,6 +110,14 @@ int main() {
 
     auto staticBackpacks = createBackpacks(50, glm::vec2(0, 0), glm::vec2(1, 1));
     auto dynamicBackpacks = createBackpacks(50, glm::vec2(0, 5), glm::vec2(1, -1));
+
+    vertexNormalDisplayer = new VertexNormalDisplayer();
+    debugBag = new SceneObject(
+        std::make_shared<Model>(fileUtils::getFullResourcesPath("models/backpack/backpack.obj")),
+        std::make_shared<Shader>(
+            fileUtils::getFullResourcesPath("shaders/StandardPhong/StandardPhong.vert"),
+            fileUtils::getFullResourcesPath("shaders/StandardPhong/StandardPhong.frag")),
+        Transform{ glm::vec3(0, 0, 20) });
 
     /*
         Creating windows (transparent objects)
@@ -301,6 +313,10 @@ int main() {
     delete ppEffect1FrameBuffer;
     delete ppEffect2FrameBuffer;
 
+    // Vertex normal debug stuff
+    delete vertexNormalDisplayer;
+    delete debugBag;
+
     glfwTerminate();
     return 0;
 }
@@ -339,6 +355,13 @@ void DrawScene(
 
         obj->Draw();
     }
+
+    // Vertex normal debug stuff
+    debugBag->mShader->Use();
+    debugBag->mShader->SetFloat("material.shininess", 32.0f);
+    debugBag->mShader->SetBool("enableSpecular", true);
+    setLightProperties(*debugBag->mShader, pointLights, dirLight, spotLight);
+    vertexNormalDisplayer->Draw(*debugBag);
 
     skybox.Draw(viewMatrix, projectionMatrix);
 

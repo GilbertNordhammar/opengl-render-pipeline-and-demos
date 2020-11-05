@@ -48,7 +48,7 @@ GLuint ShaderLoader::Load(
 	unsigned int fragment = CreateAndCompileShader(fragmentCode, GL_FRAGMENT_SHADER);
 	unsigned int geometry = 0;
 	if (!geometryPath.empty()) {
-		geometry = CreateAndCompileShader(fragmentCode, GL_GEOMETRY_SHADER);
+		geometry = CreateAndCompileShader(geometryCode, GL_GEOMETRY_SHADER);
 	}
 
 	GLuint programID = glCreateProgram();

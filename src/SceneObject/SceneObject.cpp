@@ -10,6 +10,7 @@ SceneObject::SceneObject(
 void SceneObject::Draw() const {
 	OPTICK_EVENT();
 
+	mShader->Use();
 	mShader->SetMat4("model", mTransform.CalculateModelMatrix());
 	for (const auto& mesh : mModel->mMeshes) {
 		mesh.PassTextures(*mShader);
