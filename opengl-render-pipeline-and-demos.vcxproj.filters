@@ -107,6 +107,8 @@
     <None Include="resources\shaders\debug\DisplayVertexNormals\DisplayVertexNormals.geom" />
     <None Include="resources\shaders\debug\DisplayVertexNormals\DisplayVertexNormals.vert" />
     <None Include="resources\shaders\lib\pipeline\Lighting\Phong.glsl" />
+    <None Include="resources\shaders\lib\pipeline\SceneObject.glsl" />
+    <None Include="resources\shaders\lib\pipeline\Common.glsl" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\utils\fileUtils.h">

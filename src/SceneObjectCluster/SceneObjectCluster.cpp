@@ -98,7 +98,7 @@ void SceneObjectCluster::DrawSingle() {
 	for (const auto& mesh : mModel.mMeshes) {
 		mesh.PassTextures(*mShader);
 		for (const auto& modelMat : mModelMatrices) {
-			mShader->SetMat4("model", modelMat);
+			mShader->SetMat4("_modelMatrix", modelMat);
 			mesh.Draw();
 		}
 	}
