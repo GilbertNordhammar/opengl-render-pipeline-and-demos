@@ -82,7 +82,7 @@ void SceneObjectCluster::Draw() {
 	OPTICK_EVENT();
 
 	mShader->Use();
-	mShader->SetBool("rp_instancingEnabled", mUseInstancing);
+	mShader->SetBool("_instancingEnabled", mUseInstancing);
 
 	if (mUseInstancing) {
 		DrawInstanced();

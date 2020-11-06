@@ -47,7 +47,7 @@ void processInput(GLFWwindow* window);
 GLFWwindow* createWindow(int width, int height);
 void mouseCallback(GLFWwindow* window, double xpos, double ypos);
 void scrollCallback(GLFWwindow* window, double xoffset, double yoffset);
-void setLightProperties(
+void setLightPropertiesPhong(
     Shader& shader,
     std::vector<PointLight> pointLights,
     DirectionalLight dirLight,
@@ -345,10 +345,10 @@ void DrawScene(
     for (const auto& obj : opaqueObjects) {
         obj->mShader->Use();
 
-        obj->mShader->SetFloat("material.shininess", 32.0f);
+        obj->mShader->SetFloat("_material_phong.shininess", 32.0f);
         obj->mShader->SetBool("enableSpecular", true);
 
-        setLightProperties(*obj->mShader, pointLights, dirLight, spotLight);
+        setLightPropertiesPhong(*obj->mShader, pointLights, dirLight, spotLight);
 
         // For spot lights
         obj->mShader->SetVec3("lightColor", glm::vec3(1.0f, 1.0f, 1.0f));
@@ -358,9 +358,9 @@ void DrawScene(
 
     // Vertex normal debug stuff
     debugBag->mShader->Use();
-    debugBag->mShader->SetFloat("material.shininess", 32.0f);
+    debugBag->mShader->SetFloat("_material_phong.shininess", 32.0f);
     debugBag->mShader->SetBool("enableSpecular", true);
-    setLightProperties(*debugBag->mShader, pointLights, dirLight, spotLight);
+    setLightPropertiesPhong(*debugBag->mShader, pointLights, dirLight, spotLight);
     vertexNormalDisplayer->Draw(*debugBag);
 
     skybox.Draw(viewMatrix, projectionMatrix);
@@ -375,17 +375,17 @@ void DrawScene(
     for (const auto& obj : transparentObjSorted) {
         obj.second.mShader->Use();
 
-        obj.second.mShader->SetFloat("material.shininess", 32.0f);
+        obj.second.mShader->SetFloat("_material_phong.shininess", 32.0f);
         obj.second.mShader->SetBool("enableSpecular", false);
 
-        setLightProperties(*obj.second.mShader, pointLights, dirLight, spotLight);
+        setLightPropertiesPhong(*obj.second.mShader, pointLights, dirLight, spotLight);
 
         obj.second.Draw();
     }
     glEnable(GL_CULL_FACE);
 }
 
-void setLightProperties(
+void setLightPropertiesPhong(
     Shader& shader, 
     std::vector<PointLight> pointLights, 
     DirectionalLight dirLight, 
@@ -393,7 +393,7 @@ void setLightProperties(
     ) 
 {
     for (int i = 0; i < pointLights.size(); i++) {
-        std::string pointLightSlot = "pointLights[" + std::to_string(i) + "]";
+        std::string pointLightSlot = "_pointLights_phong[" + std::to_string(i) + "]";
         shader.SetVec3(pointLightSlot + ".position", pointLights[i].positional.position);
         shader.SetVec3(pointLightSlot + ".ambient", pointLights[i].phong.amibent);
         shader.SetVec3(pointLightSlot + ".diffuse", pointLights[i].phong.diffuse);
@@ -403,21 +403,21 @@ void setLightProperties(
         shader.SetFloat(pointLightSlot + ".quadratic", pointLights[i].positional.quadratic);
     }
 
-    shader.SetVec3("dirLight.direction", dirLight.direction);
-    shader.SetVec3("dirLight.ambient", dirLight.phong.amibent);
-    shader.SetVec3("dirLight.diffuse", dirLight.phong.diffuse);
-    shader.SetVec3("dirLight.specular", dirLight.phong.specular);
+    shader.SetVec3("_dirLight_phong.direction", dirLight.direction);
+    shader.SetVec3("_dirLight_phong.ambient", dirLight.phong.amibent);
+    shader.SetVec3("_dirLight_phong.diffuse", dirLight.phong.diffuse);
+    shader.SetVec3("_dirLight_phong.specular", dirLight.phong.specular);
     
-    shader.SetVec3("spotLight.position", spotLight.positional.position);
-    shader.SetVec3("spotLight.direction", spotLight.direction);
-    shader.SetVec3("spotLight.ambient", spotLight.phong.amibent);
-    shader.SetVec3("spotLight.diffuse", spotLight.phong.diffuse);
-    shader.SetVec3("spotLight.specular", spotLight.phong.specular);
-    shader.SetFloat("spotLight.constant", spotLight.positional.constant);
-    shader.SetFloat("spotLight.linear", spotLight.positional.linear);
-    shader.SetFloat("spotLight.quadratic", spotLight.positional.quadratic);
-    shader.SetFloat("spotLight.cutOff", spotLight.innerCuttoff);
-    shader.SetFloat("spotLight.outerCutOff", spotLight.outerCuttoff);
+    shader.SetVec3("_spotLight_phong.position", spotLight.positional.position);
+    shader.SetVec3("_spotLight_phong.direction", spotLight.direction);
+    shader.SetVec3("_spotLight_phong.ambient", spotLight.phong.amibent);
+    shader.SetVec3("_spotLight_phong.diffuse", spotLight.phong.diffuse);
+    shader.SetVec3("_spotLight_phong.specular", spotLight.phong.specular);
+    shader.SetFloat("_spotLight_phong.constant", spotLight.positional.constant);
+    shader.SetFloat("_spotLight_phong.linear", spotLight.positional.linear);
+    shader.SetFloat("_spotLight_phong.quadratic", spotLight.positional.quadratic);
+    shader.SetFloat("_spotLight_phong.cutOff", spotLight.innerCuttoff);
+    shader.SetFloat("_spotLight_phong.outerCutOff", spotLight.outerCuttoff);
 }
 
 SceneObjectCluster createBackpacks(const int count, glm::vec2 offset, glm::vec2 direction) {

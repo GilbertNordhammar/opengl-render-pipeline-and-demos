@@ -1,11 +1,11 @@
-struct Material {
+struct Material_Phong {
     float shininess;
 
     sampler2D texture_diffuse1;
     sampler2D texture_specular1;
 };
 
-struct DirLight {
+struct DirLight_Phong {
     vec3 direction;
   
     vec3 ambient;
@@ -13,7 +13,7 @@ struct DirLight {
     vec3 specular;
 };
 
-struct PointLight {    
+struct PointLight_Phong {    
     vec3 position;
     
     float constant;
@@ -25,7 +25,7 @@ struct PointLight {
     vec3 specular;
 };
 
-struct SpotLight {
+struct SpotLight_Phong {
     vec3 position;
     vec3 direction;
     float cutOff;
@@ -42,15 +42,16 @@ struct SpotLight {
 
 #define NR_POINT_LIGHTS 4
 
-uniform Material material;
-uniform DirLight dirLight;
-uniform PointLight pointLights[NR_POINT_LIGHTS];
-uniform SpotLight spotLight;
+uniform Material_Phong _material_phong;
+uniform DirLight_Phong _dirLight_phong;
+uniform PointLight_Phong _pointLights_phong[NR_POINT_LIGHTS];
+uniform SpotLight_Phong _spotLight_phong;
 
-vec3 CalcDirLight(
-    DirLight light, 
+vec3 CalcDirLight_Phong(
+    DirLight_Phong light, 
     vec3 normal, 
     vec3 viewDir,
+    float shininess,
     vec4 diffuseMap,
     vec4 specularMap
     )
@@ -62,7 +63,7 @@ vec3 CalcDirLight(
     
     // specular shading
     vec3 reflectDir = reflect(-lightDir, normal);
-    float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0), shininess);
     
     // combine results
     vec3 ambient  = light.ambient  * diffuseMap.rgb * diffuseMap.a;
@@ -71,11 +72,12 @@ vec3 CalcDirLight(
     return max(vec3(0), ambient + diffuse + specular);
 }
 
-vec3 CalcPointLight(
-    PointLight light, 
+vec3 CalcPointLight_Phong(
+    PointLight_Phong light, 
     vec3 normal, 
     vec3 fragPos, 
     vec3 viewDir,
+    float shininess,
     vec4 diffuseMap,
     vec4 specularMap
     )
@@ -87,7 +89,7 @@ vec3 CalcPointLight(
     
     // specular shading
     vec3 reflectDir = reflect(-lightDir, normal);
-    float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0), shininess);
     
     // attenuation
     float distance    = length(light.position - fragPos);
@@ -104,11 +106,12 @@ vec3 CalcPointLight(
     return max(vec3(0), ambient + diffuse + specular);
 }
 
-vec3 CalcSpotLight(
-    SpotLight light, 
+vec3 CalcSpotLight_Phong(
+    SpotLight_Phong light, 
     vec3 normal, 
     vec3 fragPos, 
     vec3 viewDir,
+    float shininess,
     vec4 diffuseMap,
     vec4 specularMap
     )
@@ -120,7 +123,7 @@ vec3 CalcSpotLight(
 
     // specular shading
     vec3 reflectDir = reflect(-lightDir, normal);
-    float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0), shininess);
 
     // attenuation
     float distance = length(light.position - fragPos);

@@ -144,7 +144,8 @@ void Mesh::PassTextures(const Shader& shader) const {
             break;
         }
 
-        shader.SetInt(("material." + name + number).c_str(), i);
+        // TODO: Make the material not hard coded
+        shader.SetInt(("_material_phong." + name + number).c_str(), i);
         glActiveTexture(GL_TEXTURE0 + i);
         glBindTexture(GL_TEXTURE_2D, mTextures[i]->GetId());
     }

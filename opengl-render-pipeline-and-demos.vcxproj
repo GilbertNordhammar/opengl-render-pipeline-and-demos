@@ -279,8 +279,8 @@ xcopy "$(SolutionDir)dependencies\optick\lib\x64\release\OptickCore.dll" "$(Targ
     <None Include="resources\shaders\debug\DisplayVertexNormals\DisplayVertexNormals.frag" />
     <None Include="resources\shaders\debug\DisplayVertexNormals\DisplayVertexNormals.geom" />
     <None Include="resources\shaders\debug\DisplayVertexNormals\DisplayVertexNormals.vert" />
-    <None Include="resources\shaders\lib\PhongShading\Lighting.glsl" />
-    <None Include="resources\shaders\lib\global-data\View.glsl" />
+    <None Include="resources\shaders\lib\pipeline\Lighting\Phong.glsl" />
+    <None Include="resources\shaders\lib\pipeline\View.glsl" />
     <None Include="resources\shaders\Skybox\Skybox.frag" />
     <None Include="resources\shaders\Skybox\Skybox.vert" />
     <None Include="resources\shaders\post_processing\Grayscale.frag" />

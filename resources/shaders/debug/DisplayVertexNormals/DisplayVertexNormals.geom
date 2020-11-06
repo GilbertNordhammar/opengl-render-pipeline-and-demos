@@ -1,6 +1,6 @@
 #version 330 core
 
-#include <global-data/View.glsl>
+#include <pipeline/View.glsl>
 
 layout (triangles) in;
 layout (line_strip, max_vertices = 6) out;
@@ -15,9 +15,9 @@ uniform mat4 projection;
 
 void GenerateLine(int index)
 {
-    gl_Position = rp_projection * gl_in[index].gl_Position;
+    gl_Position = _projection * gl_in[index].gl_Position;
     EmitVertex();
-    gl_Position = rp_projection * (gl_in[index].gl_Position + vec4(gs_in[index].normal, 0.0) * MAGNITUDE);
+    gl_Position = _projection * (gl_in[index].gl_Position + vec4(gs_in[index].normal, 0.0) * MAGNITUDE);
     EmitVertex();
     EndPrimitive();
 }

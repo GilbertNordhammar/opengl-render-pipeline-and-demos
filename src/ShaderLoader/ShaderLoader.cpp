@@ -44,26 +44,34 @@ GLuint ShaderLoader::Load(
 		std::cout << "Shader file path: " << geometryPath << std::endl;
 	}
 
-	unsigned int vertex = CreateAndCompileShader(vertexCode, GL_VERTEX_SHADER);
-	unsigned int fragment = CreateAndCompileShader(fragmentCode, GL_FRAGMENT_SHADER);
-	unsigned int geometry = 0;
+	unsigned int vertexId = CreateAndCompileShader(vertexCode, GL_VERTEX_SHADER);
+	unsigned int fragmentId = CreateAndCompileShader(fragmentCode, GL_FRAGMENT_SHADER);
+	unsigned int geometryId = 0;
 	if (!geometryPath.empty()) {
-		geometry = CreateAndCompileShader(geometryCode, GL_GEOMETRY_SHADER);
+		geometryId = CreateAndCompileShader(geometryCode, GL_GEOMETRY_SHADER);
 	}
 
+	
+#if !defined(NDEBUG)
+	CheckCompileErrors(vertexId, GL_VERTEX_SHADER, vertexPath);
+	CheckCompileErrors(fragmentId, GL_FRAGMENT_SHADER, fragmentPath);
+	if (geometryId != 0)
+		CheckCompileErrors(geometryId, GL_GEOMETRY_SHADER, geometryPath);
+#endif
+
 	GLuint programID = glCreateProgram();
-	glAttachShader(programID, vertex);
-	glAttachShader(programID, fragment);
-	if (geometry != 0)
-		glAttachShader(programID, geometry);
+	glAttachShader(programID, vertexId);
+	glAttachShader(programID, fragmentId);
+	if (geometryId != 0)
+		glAttachShader(programID, geometryId);
 
 	glLinkProgram(programID);
 	CheckLinkErrors(programID);
 
-	glDeleteShader(vertex);
-	glDeleteShader(fragment);
+	glDeleteShader(vertexId);
+	glDeleteShader(fragmentId);
 	if (!geometryPath.empty())
-		glDeleteShader(geometry);
+		glDeleteShader(geometryId);
 
 	return programID;
 }
@@ -134,12 +142,11 @@ unsigned int ShaderLoader::CreateAndCompileShader(std::string shaderCode, GLenum
 	unsigned int shaderID = glCreateShader(shaderType);
 	glShaderSource(shaderID, 1, &gShaderCode, NULL);
 	glCompileShader(shaderID);
-	CheckCompileErrors(shaderID, shaderType);
 
 	return shaderID;
 }
 
-void ShaderLoader::CheckCompileErrors(GLuint shader, GLenum shaderType)
+void ShaderLoader::CheckCompileErrors(GLuint shader, GLenum shaderType, const std::string& shaderPath)
 {
 	GLint success;
 	GLchar infoLog[1024];
@@ -149,6 +156,8 @@ void ShaderLoader::CheckCompileErrors(GLuint shader, GLenum shaderType)
 	{
 		glGetShaderInfoLog(shader, 1024, NULL, infoLog);
 		std::cout << "ERROR::SHADER_COMPILATION_ERROR" << "\n"
+			<< "Path: " << shaderPath << "\n"
+			<< "Errors" << shaderPath << "\n"
 			<< infoLog << "\n -- --------------------------------------------------- -- " << std::endl;
 	}
 }

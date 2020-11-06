@@ -13,7 +13,7 @@ public:
 
 	void LinkGlobals(GLuint shaderObj);
 
-	SG_Containers::View mView = SG_Containers::View(1, "rp_uniformBlock_View");
+	SG_Containers::View mView = SG_Containers::View(1, "_uniformBlock_View");
 private:
 	ShaderGlobals() {};
 };

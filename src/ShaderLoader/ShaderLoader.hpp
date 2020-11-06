@@ -18,6 +18,6 @@ private:
 	static std::string GetIncludePath(const std::string& lineBuffer, const std::string& includeIndentifier, const std::string& shaderPath);
 	static void CreateAndLinkProgram();
 	static unsigned int CreateAndCompileShader(std::string shaderCode, GLenum shaderType);
-	static void CheckCompileErrors(GLuint shader, GLenum shaderType);
+	static void CheckCompileErrors(GLuint shader, GLenum shaderType, const std::string& shaderPath);
 	static void CheckLinkErrors(GLuint program);
 };
