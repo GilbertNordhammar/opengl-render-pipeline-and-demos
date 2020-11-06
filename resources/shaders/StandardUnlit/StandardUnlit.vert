@@ -13,5 +13,5 @@ void main()
     TexCoords = aTexCoord;
 
     mat4 modelMatrix = _instancingEnabled ? aInstanceModel : _modelMatrix;
-    gl_Position = _projection * _view * modelMatrix * vec4(aPos, 1.0);
+    gl_Position = _projectionMatrix * _viewMatrix * modelMatrix * vec4(aPos, 1.0);
 }
