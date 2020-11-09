@@ -1,5 +1,6 @@
 #version 330 core
 
+#include <pipeline/Mesh/vertexInput.glsl>
 #include <pipeline/Common.glsl>
 
 layout (location = 0) in vec3 aPos;
