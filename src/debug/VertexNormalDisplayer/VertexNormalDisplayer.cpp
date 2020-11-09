@@ -14,7 +14,7 @@ void VertexNormalDisplayer::Draw(const SceneObject& sceneObject) {
     sceneObject.Draw();
     mVertexNormalShader.Use();
 
-    mVertexNormalShader.SetMat4("model", sceneObject.mTransform.CalculateModelMatrix());
+    mVertexNormalShader.SetMat4("matrix_M", sceneObject.mTransform.CalculateModelMatrix());
     for (const auto& mesh : sceneObject.mModel->mMeshes) {
         mesh.PassTextures(mVertexNormalShader);
         mesh.Draw();

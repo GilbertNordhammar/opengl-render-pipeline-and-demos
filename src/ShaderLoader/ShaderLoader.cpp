@@ -52,7 +52,7 @@ GLuint ShaderLoader::Load(
 	}
 
 	
-#if !defined(NDEBUG)
+#if !defined(_RELEASE)
 	CheckCompileErrors(vertexId, GL_VERTEX_SHADER, vertexPath);
 	CheckCompileErrors(fragmentId, GL_FRAGMENT_SHADER, fragmentPath);
 	if (geometryId != 0)
@@ -66,7 +66,9 @@ GLuint ShaderLoader::Load(
 		glAttachShader(programID, geometryId);
 
 	glLinkProgram(programID);
+#if !defined(_RELEASE)
 	CheckLinkErrors(programID);
+#endif
 
 	glDeleteShader(vertexId);
 	glDeleteShader(fragmentId);

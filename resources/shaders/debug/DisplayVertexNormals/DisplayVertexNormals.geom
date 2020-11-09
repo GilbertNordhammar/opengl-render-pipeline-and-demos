@@ -11,8 +11,6 @@ in VS_OUT {
 
 const float MAGNITUDE = 0.2;
 
-uniform mat4 projection;
-
 void GenerateLine(int index)
 {
     gl_Position = _projectionMatrix * gl_in[index].gl_Position;

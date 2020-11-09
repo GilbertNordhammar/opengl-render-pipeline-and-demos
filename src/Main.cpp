@@ -336,9 +336,6 @@ void DrawScene(
         glm::perspective(glm::radians(camera.GetFov()), (float)windowWidth / windowHeight, 0.1f, 100.0f));
     ShaderGlobals::Get().mView.SetViewPosWS(camera.Position);
 
-    glm::mat4 viewMatrix = camera.GetViewMatrix();
-    glm::mat4 projectionMatrix = glm::perspective(glm::radians(camera.GetFov()), (float)windowWidth / windowHeight, 0.1f, 100.0f);
-
     spotLight.positional.position = camera.Position;
     spotLight.direction = camera.GetFront();
 
@@ -363,7 +360,7 @@ void DrawScene(
     setLightPropertiesPhong(*debugBag->mShader, pointLights, dirLight, spotLight);
     vertexNormalDisplayer->Draw(*debugBag);
 
-    skybox.Draw(viewMatrix, projectionMatrix);
+    skybox.Draw(ShaderGlobals::Get().mView.GetViewMatrix(), ShaderGlobals::Get().mView.GetProjectionMatrix());
 
     std::map<float, SceneObject, std::greater<float>> transparentObjSorted;
     for (int i = 0; i < transparentObjects.size(); i++) {

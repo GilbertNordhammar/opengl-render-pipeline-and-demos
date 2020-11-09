@@ -15,7 +15,7 @@ void main()
 {
     // properties
     vec3 norm = normalize(Normal);
-    vec3 viewDir = normalize(_viewPosWS - FragmentPosWS);
+    vec3 viewDir = normalize(_viewPosWS.xyz - FragmentPosWS);
     
     vec4 diffuseMap = texture(_material_phong.texture_diffuse1, TexCoords);
     vec4 specularMap = enableSpecular ? 

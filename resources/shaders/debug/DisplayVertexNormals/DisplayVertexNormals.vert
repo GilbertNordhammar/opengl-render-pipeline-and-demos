@@ -9,9 +9,11 @@ out VS_OUT {
     vec3 normal;
 } vs_out;
 
+uniform mat4 matrix_M;
+
 void main()
 {
-    mat3 normalMatrix = mat3(transpose(inverse(_viewMatrix * _modelMatrix)));
+    mat3 normalMatrix = mat3(transpose(inverse(_viewMatrix * matrix_M)));
     vs_out.normal = vec3(vec4(normalMatrix * aNormal, 0.0));
-    gl_Position = _viewMatrix * _modelMatrix * vec4(aPos, 1.0); 
+    gl_Position = _viewMatrix * matrix_M * vec4(aPos, 1.0); 
 }

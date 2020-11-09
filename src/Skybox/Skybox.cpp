@@ -5,15 +5,11 @@ Skybox::Skybox(Cubemap cubemap) :
     mSkyboxVAO = CreateSkyboxVAO();
 }
 
-
-// TODO: Use optimzation so that we don't need to toggle glDepthMask() off and on
 void Skybox::Draw(const glm::mat4& view, const glm::mat4& projection) {
     glDepthFunc(GL_LEQUAL);
     mShader.Use();
-    mShader.SetMat4("view", glm::mat3(view));
-    mShader.SetMat4("projection", projection);
+    mShader.SetMat4("matrix_V_noTranslation", glm::mat3(view));
 
-	// ... set view and projection matrix
 	glBindVertexArray(mSkyboxVAO);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, mCubemap.GetId());
 	glDrawArrays(GL_TRIANGLES, 0, 36);
