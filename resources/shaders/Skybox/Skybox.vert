@@ -2,7 +2,7 @@
 
 #include <pipeline/View.glsl>
 
-layout (location = 0) in vec3 aPos;
+layout (location = 0) in vec3 vPos;
 
 out vec3 TexCoords;
 
@@ -10,8 +10,8 @@ uniform mat4 matrix_V_noTranslation;
 
 void main()
 {
-    TexCoords = aPos;
-    vec4 pos = _matrix_P * matrix_V_noTranslation * vec4(aPos, 1.0);
+    TexCoords = vPos;
+    vec4 pos = _matrix_P * matrix_V_noTranslation * vec4(vPos, 1.0);
 
     gl_Position = pos.xyww;
 }  

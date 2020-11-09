@@ -7,8 +7,8 @@ out vec2 TexCoords;
 
 void main()
 {
-    TexCoords = aTexCoord;
+    TexCoords = _vTexCoord;
 
-    mat4 modelMatrix = _instancingEnabled ? aInstanceModel : _modelMatrix;
-    gl_Position = _matrix_P * _matrix_V * modelMatrix * vec4(aPos, 1.0);
+    mat4 modelMatrix = _instancingEnabled ? _vInstanceModel : _modelMatrix;
+    gl_Position = _matrix_P * _matrix_V * modelMatrix * vec4(_vPos, 1.0);
 }
