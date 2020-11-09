@@ -6,9 +6,9 @@ using namespace fileUtils;
 
 VertexNormalDisplayer::VertexNormalDisplayer() :
     mVertexNormalShader(
-        getFullResourcesPath("shaders/debug/DisplayVertexNormals/DisplayVertexNormals.vert"),
-        getFullResourcesPath("shaders/debug/DisplayVertexNormals/DisplayVertexNormals.frag"),
-        getFullResourcesPath("shaders/debug/DisplayVertexNormals/DisplayVertexNormals.geom")) {}
+        getFullResourcesPath("shaders/debugTools/DisplayVertexNormals/DisplayVertexNormals.vert"),
+        getFullResourcesPath("shaders/debugTools/DisplayVertexNormals/DisplayVertexNormals.frag"),
+        getFullResourcesPath("shaders/debugTools/DisplayVertexNormals/DisplayVertexNormals.geom")) {}
 
 void VertexNormalDisplayer::Draw(const SceneObject& sceneObject) {
     sceneObject.Draw();

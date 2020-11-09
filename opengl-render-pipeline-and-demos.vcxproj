@@ -250,7 +250,7 @@ xcopy "$(SolutionDir)dependencies\optick\lib\x64\release\OptickCore.dll" "$(Targ
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\debug\VertexNormalDisplayer\VertexNormalDisplayer.cpp" />
+    <ClCompile Include="src\debugTools\VertexNormalDisplayer\VertexNormalDisplayer.cpp" />
     <ClCompile Include="src\OpenGLObjectArray\OpenGLObjectArray.cpp" />
     <ClCompile Include="src\OpenGLObjectGenerator\OpenGLObjectGenerator.cpp" />
     <ClCompile Include="src\CubeMap\Cubemap.cpp" />
@@ -276,6 +276,9 @@ xcopy "$(SolutionDir)dependencies\optick\lib\x64\release\OptickCore.dll" "$(Targ
   <ItemGroup>
     <None Include=".gitattributes" />
     <None Include=".gitignore" />
+    <None Include="resources\shaders\debugTools\DisplayVertexNormals\DisplayVertexNormals.frag" />
+    <None Include="resources\shaders\debugTools\DisplayVertexNormals\DisplayVertexNormals.geom" />
+    <None Include="resources\shaders\debugTools\DisplayVertexNormals\DisplayVertexNormals.vert" />
     <None Include="resources\shaders\debug\DisplayVertexNormals\DisplayVertexNormals.frag" />
     <None Include="resources\shaders\debug\DisplayVertexNormals\DisplayVertexNormals.geom" />
     <None Include="resources\shaders\debug\DisplayVertexNormals\DisplayVertexNormals.vert" />
@@ -301,7 +304,7 @@ xcopy "$(SolutionDir)dependencies\optick\lib\x64\release\OptickCore.dll" "$(Targ
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\CubeMap\Cubemap.hpp" />
-    <ClInclude Include="src\debug\VertexNormalDisplayer\VertexNormalDisplayer.hpp" />
+    <ClInclude Include="src\debugTools\VertexNormalDisplayer\VertexNormalDisplayer.hpp" />
     <ClInclude Include="src\FrameBuffer\FrameBuffer.hpp" />
     <ClInclude Include="src\OpenGLObjectArray\OpenGLObjectArray.hpp" />
     <ClInclude Include="src\OpenGLObjectGenerator\OpenGLObjectGenerator.hpp" />

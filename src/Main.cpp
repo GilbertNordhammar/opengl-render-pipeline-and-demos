@@ -40,7 +40,7 @@
 #include "ShaderGlobals/ShaderGlobals.hpp"
 #include "utils/random.hpp"
 #include <optick.h>
-#include "src/debug/VertexNormalDisplayer/VertexNormalDisplayer.hpp"
+#include "src/debugTools/VertexNormalDisplayer/VertexNormalDisplayer.hpp"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window);

@@ -78,7 +78,7 @@
     <ClCompile Include="src\Transform\Transform.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\debug\VertexNormalDisplayer\VertexNormalDisplayer.cpp">
+    <ClCompile Include="src\debugTools\VertexNormalDisplayer\VertexNormalDisplayer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -103,12 +103,15 @@
     <None Include="resources\shaders\Skybox\Skybox.frag" />
     <None Include="resources\shaders\Skybox\Skybox.vert" />
     <None Include="resources\shaders\lib\pipeline\View.glsl" />
-    <None Include="resources\shaders\debug\DisplayVertexNormals\DisplayVertexNormals.frag" />
-    <None Include="resources\shaders\debug\DisplayVertexNormals\DisplayVertexNormals.geom" />
-    <None Include="resources\shaders\debug\DisplayVertexNormals\DisplayVertexNormals.vert" />
     <None Include="resources\shaders\lib\pipeline\Lighting\Phong.glsl" />
     <None Include="resources\shaders\lib\pipeline\SceneObject.glsl" />
     <None Include="resources\shaders\lib\pipeline\Common.glsl" />
+    <None Include="resources\shaders\debug\DisplayVertexNormals\DisplayVertexNormals.frag" />
+    <None Include="resources\shaders\debug\DisplayVertexNormals\DisplayVertexNormals.geom" />
+    <None Include="resources\shaders\debug\DisplayVertexNormals\DisplayVertexNormals.vert" />
+    <None Include="resources\shaders\debugTools\DisplayVertexNormals\DisplayVertexNormals.frag" />
+    <None Include="resources\shaders\debugTools\DisplayVertexNormals\DisplayVertexNormals.geom" />
+    <None Include="resources\shaders\debugTools\DisplayVertexNormals\DisplayVertexNormals.vert" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\utils\fileUtils.h">
@@ -189,7 +192,7 @@
     <ClInclude Include="src\SceneObject\SceneObject.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\debug\VertexNormalDisplayer\VertexNormalDisplayer.hpp">
+    <ClInclude Include="src\debugTools\VertexNormalDisplayer\VertexNormalDisplayer.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
