@@ -13,9 +13,9 @@ const float MAGNITUDE = 0.2;
 
 void GenerateLine(int index)
 {
-    gl_Position = _projectionMatrix * gl_in[index].gl_Position;
+    gl_Position = _matrix_P * gl_in[index].gl_Position;
     EmitVertex();
-    gl_Position = _projectionMatrix * (gl_in[index].gl_Position + vec4(gs_in[index].normal, 0.0) * MAGNITUDE);
+    gl_Position = _matrix_P * (gl_in[index].gl_Position + vec4(gs_in[index].normal, 0.0) * MAGNITUDE);
     EmitVertex();
     EndPrimitive();
 }

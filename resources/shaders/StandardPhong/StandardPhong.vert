@@ -19,5 +19,5 @@ void main()
     
     Normal = mat3(transpose(inverse(modelMatrix))) * aNormal; // TODO: Move transpose calculation to CPU and pass via uniform
     FragmentPosWS = vec3(modelMatrix * vec4(aPos, 1.0)); 
-    gl_Position = _projectionMatrix * _viewMatrix * modelMatrix * vec4(aPos, 1.0);
+    gl_Position = _matrix_P * _matrix_V * modelMatrix * vec4(aPos, 1.0);
 }

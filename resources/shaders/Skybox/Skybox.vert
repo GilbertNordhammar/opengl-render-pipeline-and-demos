@@ -11,7 +11,7 @@ uniform mat4 matrix_V_noTranslation;
 void main()
 {
     TexCoords = aPos;
-    vec4 pos = _projectionMatrix * matrix_V_noTranslation * vec4(aPos, 1.0);
+    vec4 pos = _matrix_P * matrix_V_noTranslation * vec4(aPos, 1.0);
 
     gl_Position = pos.xyww;
 }  
